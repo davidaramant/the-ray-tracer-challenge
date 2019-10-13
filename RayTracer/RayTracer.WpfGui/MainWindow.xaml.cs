@@ -26,11 +26,11 @@ namespace RayTracer.WpfGui
             var width = (int)OutputImage.Width;
             var height = (int)OutputImage.Height;
             _canvas = new WriteableBitmap(
-                width, 
-                height, 
-                96, 
-                96, 
-                PixelFormats.Bgr32, 
+                width,
+                height,
+                96,
+                96,
+                PixelFormats.Bgr32,
                 null);
             _gameState = new GameState(DrawPixel, width, height);
 
@@ -75,7 +75,7 @@ namespace RayTracer.WpfGui
             _lastElapsed = timeStamp;
 
             _canvas.Clear(Colors.White);
-            
+
             try
             {
                 _canvas.Lock();
@@ -89,22 +89,7 @@ namespace RayTracer.WpfGui
 
         private void DrawPixel(int x, int y, Vector4 color)
         {
-            unsafe
-            {
-                IntPtr pBackBuffer = _canvas.BackBuffer;
-
-                // Find the address of the pixel to draw.
-                pBackBuffer += y * _canvas.BackBufferStride;
-                pBackBuffer += x * 4;
-
-                int colorData = (int)(color.X*255) << 16;
-                colorData |= (int)(color.Y*255) << 8;
-                colorData |= (int)(color.Z*255);
-
-                // Assign the color data to the pixel.
-                *((int*) pBackBuffer) = colorData;
-            }
-            _canvas.AddDirtyRect(new Int32Rect(x, y, 1, 1));
+            _canvas.SetPixel(x, y, (byte)(255 * color.X), (byte)(255 * color.Y), (byte)(255 * color.Z));
         }
     }
 }
