@@ -253,8 +253,8 @@ namespace RayTracer.Tests.SpecTests
         {
             var a = MakeVector(1, 2, 3);
             var b = MakeVector(2, 3, 4);
-            AssertActualEqualToExpected(Cross(a, b), MakeVector(-1, 2, -1));
-            AssertActualEqualToExpected(Cross(b, a), MakeVector(1, -2, 1));
+            AssertActualEqualToExpected(Cross(ref a, ref b), MakeVector(-1, 2, -1));
+            AssertActualEqualToExpected(Cross(ref b, ref a), MakeVector(1, -2, 1));
         }
 
         //Scenario: Colors are (red, green, blue) tuples
