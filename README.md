@@ -14,6 +14,6 @@ Implemented using .NET Core 3.
 
 Looked into using [FNA](https://fna-xna.github.io/) as a real-time canvas since outputting images seems simple enough to add in later should I need it. Unfortunately just like MonoGame, FNA is still tied to .NET Framework as of 2019-10-13 (although they are working on supporting Core).  
 
-I decided to use the [WPF version](https://github.com/davidaramant/DotNetPixelByPixel) since I wanted to keep everything .NET Core.  Had some difficulties porting it over; I guess they dropped some methods in `WriteableBitmap` along the way?
+I decided to use the [WPF version](https://github.com/davidaramant/DotNetPixelByPixel) since I wanted to keep everything .NET Core.  Had some difficulties porting it over until I realized I had used [WriteableBitmapEx](https://github.com/reneschulte/WriteableBitmapEx) in the example which is now also Core 3 compatible; yay!
 
 Did not bother with the projectile example the book used since I already had a simplistic interactive demo.
