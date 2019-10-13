@@ -20,11 +20,11 @@ namespace RayTracer.WpfGui
         {
             InitializeComponent();
 
-            RenderOptions.SetBitmapScalingMode(PlaygroundImage, BitmapScalingMode.NearestNeighbor);
-            RenderOptions.SetEdgeMode(PlaygroundImage, EdgeMode.Aliased);
+            RenderOptions.SetBitmapScalingMode(OutputImage, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetEdgeMode(OutputImage, EdgeMode.Aliased);
 
-            var width = (int)PlaygroundImage.Width;
-            var height = (int)PlaygroundImage.Height;
+            var width = (int)OutputImage.Width;
+            var height = (int)OutputImage.Height;
             _canvas = new WriteableBitmap(
                 width, 
                 height, 
@@ -34,11 +34,11 @@ namespace RayTracer.WpfGui
                 null);
             _gameState = new GameState(DrawPixel, width, height);
 
-            PlaygroundImage.Source = _canvas;
+            OutputImage.Source = _canvas;
 
-            PlaygroundImage.Stretch = Stretch.None;
-            PlaygroundImage.HorizontalAlignment = HorizontalAlignment.Left;
-            PlaygroundImage.VerticalAlignment = VerticalAlignment.Top;
+            OutputImage.Stretch = Stretch.None;
+            OutputImage.HorizontalAlignment = HorizontalAlignment.Left;
+            OutputImage.VerticalAlignment = VerticalAlignment.Top;
 
             _canvas.Clear(Colors.White);
 
