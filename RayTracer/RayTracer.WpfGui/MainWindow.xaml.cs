@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -87,7 +88,7 @@ namespace RayTracer.WpfGui
             }
         }
 
-        private void DrawPixel(int x, int y, byte r, byte g, byte b)
+        private void DrawPixel(int x, int y, Vector4 color)
         {
             unsafe
             {
@@ -97,9 +98,9 @@ namespace RayTracer.WpfGui
                 pBackBuffer += y * _canvas.BackBufferStride;
                 pBackBuffer += x * 4;
 
-                int colorData = r << 16;
-                colorData |= g << 8;
-                colorData |= b;
+                int colorData = (int)(color.X*255) << 16;
+                colorData |= (int)(color.Y*255) << 8;
+                colorData |= (int)(color.Z*255);
 
                 // Assign the color data to the pixel.
                 *((int*) pBackBuffer) = colorData;

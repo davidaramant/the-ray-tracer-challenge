@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Drawing;
+using System.Numerics;
+using static System.Numerics.Vector4;
+using static RayTracer.Tuples;
+using static RayTracer.Graphics;
 
 namespace RayTracer.WpfGui
 {
-    public delegate void DrawPixel(int x, int y, byte r, byte g, byte b);
-
     public sealed class GameState
     {
-        // Distance from center to side (perpendicularly)
         const int SquareRadius = 4;
 
         private readonly DrawPixel _drawPixel;
         private readonly int _canvasWidth;
         private readonly int _canvasHeight;
-        private Point _centerPosition;
+        private Vector4 _centerPosition;
+        
 
         public GameState(DrawPixel drawPixel, int canvasWidth, int canvasHeight)
         {
@@ -21,24 +23,24 @@ namespace RayTracer.WpfGui
             _canvasWidth = canvasWidth;
             _canvasHeight = canvasHeight;
 
-            _centerPosition = new Point(canvasWidth / 2, canvasHeight / 2);
+            _centerPosition = MakePoint(canvasHeight / 2f, canvasHeight / 2f, 0);
         }
 
         public void Update(KeysPressed input, TimeSpan elapsed)
         {
-            const double pixelsPerMs = 0.5;
+            const float pixelsPerMs = 0.5f;
 
-            int movement = (int)(pixelsPerMs * elapsed.TotalMilliseconds);
+            float movement = pixelsPerMs * (float)elapsed.TotalMilliseconds;
 
-            Size delta = new Size();
+            var delta = MakeVector(0, 0, 0);
             if (input.Up)
-                delta.Height -= movement;
+                delta.Y -= movement;
             else if (input.Down)
-                delta.Height += movement;
+                delta.Y += movement;
             if (input.Left)
-                delta.Width -= movement;
+                delta.X -= movement;
             else if (input.Right)
-                delta.Width += movement;
+                delta.X += movement;
 
             _centerPosition += delta;
             _centerPosition.X = Math.Max(SquareRadius, Math.Min(_canvasWidth - SquareRadius, _centerPosition.X));
@@ -47,11 +49,17 @@ namespace RayTracer.WpfGui
 
         public void Render()
         {
+            var pixelCenter = MakeVector(0.5f, 0.5f, 0);
+            var color = MakeColor(0, 0, 1);
+
             for (int yOffset = -SquareRadius; yOffset < SquareRadius; yOffset++)
             {
                 for (int xOffset = -SquareRadius; xOffset < SquareRadius; xOffset++)
                 {
-                    _drawPixel(_centerPosition.X + xOffset, _centerPosition.Y + yOffset, 0, 0, 0);
+                    var offset = MakeVector(xOffset, yOffset, 0);
+                    var screenCoords = _centerPosition + offset + pixelCenter;
+
+                    _drawPixel((int)screenCoords.X, (int)screenCoords.Y, color);
                 }
             }
         }
