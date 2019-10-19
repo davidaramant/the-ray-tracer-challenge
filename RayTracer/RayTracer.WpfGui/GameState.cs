@@ -23,7 +23,7 @@ namespace RayTracer.WpfGui
             _canvasWidth = canvasWidth;
             _canvasHeight = canvasHeight;
 
-            _centerPosition = MakePoint(canvasHeight / 2f, canvasHeight / 2f, 0);
+            _centerPosition = CreatePoint(canvasHeight / 2f, canvasHeight / 2f, 0);
         }
 
         public void Update(KeysPressed input, TimeSpan elapsed)
@@ -32,7 +32,7 @@ namespace RayTracer.WpfGui
 
             float movement = pixelsPerMs * (float)elapsed.TotalMilliseconds;
 
-            var delta = MakeVector(0, 0, 0);
+            var delta = CreateVector(0, 0, 0);
             if (input.Up)
                 delta.Y -= movement;
             else if (input.Down)
@@ -49,14 +49,14 @@ namespace RayTracer.WpfGui
 
         public void Render()
         {
-            var pixelCenter = MakeVector(0.5f, 0.5f, 0);
+            var pixelCenter = CreateVector(0.5f, 0.5f, 0);
             var color = MakeColor(0, 0, 1);
 
             for (int yOffset = -SquareRadius; yOffset < SquareRadius; yOffset++)
             {
                 for (int xOffset = -SquareRadius; xOffset < SquareRadius; xOffset++)
                 {
-                    var offset = MakeVector(xOffset, yOffset, 0);
+                    var offset = CreateVector(xOffset, yOffset, 0);
                     var screenCoords = _centerPosition + offset + pixelCenter;
 
                     _drawPixel((int)screenCoords.X, (int)screenCoords.Y, color);

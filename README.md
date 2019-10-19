@@ -25,3 +25,7 @@ Unsurprisingly used [`Matrix4x4`](https://docs.microsoft.com/en-us/dotnet/api/sy
 There also weren't types for 2x2 or 3x3 matrices.  Kind of tedious.
 
 Not sure if these SIMD types like `Vector4` really benefit from being passed as `ref` or not.
+
+### Chapter 4 - Matrix Transformations
+
+With regards to the previous chapter, _of course_ there is a method to multiple a `Matrix4x4` and a `Vector4` (`Vector4.Transform`); it's just that it's based around `Vector4` being a row vector and not a column vector.  Ran into this headache when trying to make a method to construct a shear matrix since there didn't seem to be one.  Hopefully this won't cause too much confusion for later chapters.  **Really** glad the book includes tests for everything!

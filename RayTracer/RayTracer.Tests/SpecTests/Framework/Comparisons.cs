@@ -8,8 +8,7 @@ namespace RayTracer.Tests.SpecTests.Framework
     {
         public const float Tolerance = 0.00001f;
 
-        public static bool EquivalentTo(this float a, float b) => Math.Abs(a - b) < Tolerance;
-        public static bool EquivalentTo(this float a, double b) => Math.Abs(a - b) < Tolerance;
+        public static bool EquivalentTo(this float a, float b) => MathF.Abs(a - b) < Tolerance;
 
         public static bool IsPoint(this Vector4 tuple) => tuple.W.EquivalentTo(1);
         public static bool IsVector(this Vector4 tuple) => tuple.W.EquivalentTo(0);

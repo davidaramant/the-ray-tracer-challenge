@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using NUnit.Framework;
-using static System.Math;
+using static System.MathF;
 using static System.Numerics.Vector4;
 using static RayTracer.Tuples;
 using static RayTracer.Tests.SpecTests.Framework.Comparisons;
@@ -50,14 +50,14 @@ namespace RayTracer.Tests.SpecTests
         //  Then p = tuple(4, -4, 3, 1)
         [Test]
         public void ShouldMakePoint() =>
-            AssertActualEqualToExpected(MakePoint(4, -4, 3), new Vector4(4, -4, 3, 1));
+            AssertActualEqualToExpected(CreatePoint(4, -4, 3), new Vector4(4, -4, 3, 1));
 
         //Scenario: vector() creates tuples with w=0
         //  Given v ← vector(4, -4, 3)
         //  Then v = tuple(4, -4, 3, 0)
         [Test]
         public void ShouldMakeVector() =>
-            AssertActualEqualToExpected(MakeVector(4, -4, 3), new Vector4(4, -4, 3, 0));
+            AssertActualEqualToExpected(CreateVector(4, -4, 3), new Vector4(4, -4, 3, 0));
 
         //Scenario: Adding two tuples
         //  Given a1 ← tuple(3, -2, 5, 1)
@@ -79,10 +79,10 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldSubtractPoints()
         {
-            var p1 = MakePoint(3, 2, 1);
-            var p2 = MakePoint(5, 6, 7);
+            var p1 = CreatePoint(3, 2, 1);
+            var p2 = CreatePoint(5, 6, 7);
 
-            AssertActualEqualToExpected(p1 - p2, MakeVector(-2, -4, -6));
+            AssertActualEqualToExpected(p1 - p2, CreateVector(-2, -4, -6));
         }
 
         //Scenario: Subtracting a vector from a point
@@ -92,10 +92,10 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldSubtractVectorFromPoint()
         {
-            var p = MakePoint(3, 2, 1);
-            var v = MakeVector(5, 6, 7);
+            var p = CreatePoint(3, 2, 1);
+            var v = CreateVector(5, 6, 7);
 
-            AssertActualEqualToExpected(p - v, MakePoint(-2, -4, -6));
+            AssertActualEqualToExpected(p - v, CreatePoint(-2, -4, -6));
         }
 
         //Scenario: Subtracting two vectors
@@ -105,10 +105,10 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldSubtractTwoVectors()
         {
-            var v1 = MakeVector(3, 2, 1);
-            var v2 = MakeVector(5, 6, 7);
+            var v1 = CreateVector(3, 2, 1);
+            var v2 = CreateVector(5, 6, 7);
 
-            AssertActualEqualToExpected(v1 - v2, MakeVector(-2, -4, -6));
+            AssertActualEqualToExpected(v1 - v2, CreateVector(-2, -4, -6));
         }
 
         //Scenario: Subtracting a vector from the zero vector
@@ -117,7 +117,7 @@ namespace RayTracer.Tests.SpecTests
         //  Then zero - v = vector(-1, 2, -3)
         [Test]
         public void ShouldSubtractVectorFromZero() =>
-            AssertActualEqualToExpected(Vector4.Zero - MakeVector(1, -2, 3), MakeVector(-1, 2, -3));
+            AssertActualEqualToExpected(Vector4.Zero - CreateVector(1, -2, 3), CreateVector(-1, 2, -3));
 
         //Scenario: Negating a tuple
         //  Given a ← tuple(1, -2, 3, -4)
@@ -175,7 +175,7 @@ namespace RayTracer.Tests.SpecTests
         [TestCase(0, 0, 1)]
         public void ShouldComputeMagnitudeOfUnitVector(float x, float y, float z)
         {
-            var v = MakeVector(x, y, z);
+            var v = CreateVector(x, y, z);
             Assert.That(v.Length(), Is.EqualTo(1));
         }
 
@@ -185,7 +185,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldComputeMagnitudeOfVector123()
         {
-            var v = MakeVector(1, 2, 3);
+            var v = CreateVector(1, 2, 3);
             Assert.That(v.Length(), Is.EqualTo(Sqrt(14)).Within(Tolerance));
         }
 
@@ -195,7 +195,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldComputeMagnitudeOfVectorNegative123()
         {
-            var v = MakeVector(-1, -2, -3);
+            var v = CreateVector(-1, -2, -3);
             Assert.That(v.Length(), Is.EqualTo(Sqrt(14)).Within(Tolerance));
         }
 
@@ -205,8 +205,8 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldNormalizeVector400()
         {
-            var v = MakeVector(4, 0, 0);
-            AssertActualEqualToExpected(Normalize(v), MakeVector(1, 0, 0));
+            var v = CreateVector(4, 0, 0);
+            AssertActualEqualToExpected(Normalize(v), CreateVector(1, 0, 0));
         }
 
         //Scenario: Normalizing vector(1, 2, 3)
@@ -216,8 +216,8 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldNormalizeVector123()
         {
-            var v = MakeVector(1, 2, 3);
-            AssertActualEqualToExpected(Normalize(v), MakeVector(0.26726f, 0.53452f, 0.80178f));
+            var v = CreateVector(1, 2, 3);
+            AssertActualEqualToExpected(Normalize(v), CreateVector(0.26726f, 0.53452f, 0.80178f));
         }
 
         //Scenario: The magnitude of a normalized vector
@@ -227,7 +227,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldGetMagnitudeOfNormalizedVector123()
         {
-            var v = MakeVector(1, 2, 3);
+            var v = CreateVector(1, 2, 3);
             Assert.That(Normalize(v).Length(), Is.EqualTo(1).Within(Tolerance));
         }
 
@@ -238,8 +238,8 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldGetDotProductOfTwoTuples()
         {
-            var a = MakeVector(1, 2, 3);
-            var b = MakeVector(2, 3, 4);
+            var a = CreateVector(1, 2, 3);
+            var b = CreateVector(2, 3, 4);
             Assert.That(Dot(a, b), Is.EqualTo(20).Within(Tolerance));
         }
 
@@ -251,10 +251,10 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldGetCrossProductOfTwoVectors()
         {
-            var a = MakeVector(1, 2, 3);
-            var b = MakeVector(2, 3, 4);
-            AssertActualEqualToExpected(Cross(ref a, ref b), MakeVector(-1, 2, -1));
-            AssertActualEqualToExpected(Cross(ref b, ref a), MakeVector(1, -2, 1));
+            var a = CreateVector(1, 2, 3);
+            var b = CreateVector(2, 3, 4);
+            AssertActualEqualToExpected(Cross(ref a, ref b), CreateVector(-1, 2, -1));
+            AssertActualEqualToExpected(Cross(ref b, ref a), CreateVector(1, -2, 1));
         }
 
         //Scenario: Colors are (red, green, blue) tuples
