@@ -10,7 +10,18 @@ namespace RayTracer
 {
     public sealed class Sphere : IShape
     {
-        public Matrix4x4 Transform { get; set; } = Matrix4x4.Identity;
+        private Matrix4x4 _transform = Identity;
+        private Matrix4x4 _inverseTransform = Identity;
+
+        public Matrix4x4 Transform
+        {
+            get => _transform;
+            set
+            {
+                _transform = value;
+                Invert(value, out _inverseTransform);
+            }
+        }
         public Vector4 Position { get; }
         public float Radius { get; }
 
@@ -33,8 +44,7 @@ namespace RayTracer
 
         public List<Intersection> Intersect(Ray ray)
         {
-            Invert(Transform, out var inverse);
-            var ray2 = ray.Transform(ref inverse);
+            var ray2 = ray.Transform(ref _inverseTransform);
             var sphereToRay = ray2.Origin - Position;
 
             var a = Dot(ray2.Direction, ray2.Direction);
