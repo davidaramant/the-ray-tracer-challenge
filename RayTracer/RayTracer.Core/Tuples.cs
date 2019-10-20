@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace RayTracer
+namespace RayTracer.Core
 {
     public static class Tuples
     {

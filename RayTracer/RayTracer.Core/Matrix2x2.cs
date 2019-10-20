@@ -1,4 +1,4 @@
-﻿namespace RayTracer
+﻿namespace RayTracer.Core
 {
     public sealed class Matrix2x2
     {

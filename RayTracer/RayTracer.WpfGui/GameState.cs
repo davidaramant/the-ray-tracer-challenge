@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Numerics;
+using RayTracer.Core;
 using static System.Numerics.Vector4;
-using static RayTracer.Tuples;
-using static RayTracer.Graphics;
+using static RayTracer.Core.Tuples;
+using static RayTracer.Core.Graphics;
 
 namespace RayTracer.WpfGui
 {

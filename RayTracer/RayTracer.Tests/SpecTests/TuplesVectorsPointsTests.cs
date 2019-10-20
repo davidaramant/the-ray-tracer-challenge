@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using static System.MathF;
 using static System.Numerics.Vector4;
-using static RayTracer.Tuples;
+using static RayTracer.Core.Tuples;
 using static RayTracer.Tests.SpecTests.Framework.Comparisons;
 
 namespace RayTracer.Tests.SpecTests

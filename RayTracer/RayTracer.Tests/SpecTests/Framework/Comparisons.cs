@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using NUnit.Framework;
-using static RayTracer.Tuples;
+using static RayTracer.Core.Tuples;
 
 namespace RayTracer.Tests.SpecTests.Framework
 {

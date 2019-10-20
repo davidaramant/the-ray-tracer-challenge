@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RayTracer\RayTracer.csproj" />
+    <ProjectReference Include="..\RayTracer.Core\RayTracer.Core.csproj" />
   </ItemGroup>
 
 </Project>

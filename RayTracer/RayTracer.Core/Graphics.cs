@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace RayTracer
+namespace RayTracer.Core
 {
     public delegate void DrawPixel(int x, int y, Vector4 color);
 

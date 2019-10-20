@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RayTracer
+namespace RayTracer.Core
 {
     public sealed class IntersectionList : IEnumerable<Intersection>
     {

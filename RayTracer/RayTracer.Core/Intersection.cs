@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RayTracer
+namespace RayTracer.Core
 {
     public sealed class Intersection : IEquatable<Intersection>
     {

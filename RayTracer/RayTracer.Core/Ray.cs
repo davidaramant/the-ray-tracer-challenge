@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Numerics;
-using static RayTracer.Tuples;
+using static RayTracer.Core.Tuples;
 
-namespace RayTracer
+namespace RayTracer.Core
 {
     public sealed class Ray
     {
