@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using RayTracer.Core;
 
 namespace RayTracer.WpfGui
 {
@@ -42,12 +43,21 @@ namespace RayTracer.WpfGui
 
             _canvas.Clear(Colors.White);
 
-            CompositionTarget.Rendering += GameLoop;
+            //CompositionTarget.Rendering += GameLoop;
             KeyDown += OnKeyDown;
             KeyUp += OnKeyUp;
 
             _timer.Start();
             _lastElapsed = _timer.Elapsed;
+
+            _canvas.Clear(Colors.Black);
+
+            this.Loaded += MainWindow_Loaded;
+        }
+
+        private async void MainWindow_Loaded(object sender, EventArgs e)
+        {
+            await Renderer.TraceScene(new System.Drawing.Size((int)OutputImage.Width, (int)OutputImage.Height), DrawPixel);
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -89,7 +99,13 @@ namespace RayTracer.WpfGui
 
         private void DrawPixel(int x, int y, Vector4 color)
         {
-            _canvas.SetPixel(x, y, (byte)(255 * color.X), (byte)(255 * color.Y), (byte)(255 * color.Z));
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                using (_canvas.GetBitmapContext())
+                {
+                    _canvas.SetPixel(x, y, (byte) (255 * color.X), (byte) (255 * color.Y), (byte) (255 * color.Z));
+                }
+            });
         }
     }
 }

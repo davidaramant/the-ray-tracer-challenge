@@ -51,7 +51,7 @@ namespace RayTracer.WpfGui
         public void Render()
         {
             var pixelCenter = CreateVector(0.5f, 0.5f, 0);
-            var color = MakeColor(0, 0, 1);
+            var color = CreateColor(0, 0, 1);
 
             for (int yOffset = -SquareRadius; yOffset < SquareRadius; yOffset++)
             {

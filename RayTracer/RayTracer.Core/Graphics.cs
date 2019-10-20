@@ -6,6 +6,6 @@ namespace RayTracer.Core
 
     public static class Graphics
     {
-        public static Vector4 MakeColor(float r, float g, float b) => new Vector4(r, g, b, 0);
+        public static Vector4 CreateColor(float r, float g, float b) => new Vector4(r, g, b, 0);
     }
 }
