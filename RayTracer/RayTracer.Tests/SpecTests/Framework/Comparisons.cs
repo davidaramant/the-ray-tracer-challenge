@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Numerics;
 using NUnit.Framework;
+using static RayTracer.Tuples;
 
 namespace RayTracer.Tests.SpecTests.Framework
 {
     static class Comparisons
     {
-        public const float Tolerance = 0.00001f;
-
-        public static bool EquivalentTo(this float a, float b) => MathF.Abs(a - b) < Tolerance;
-
-        public static bool IsPoint(this Vector4 tuple) => tuple.W.EquivalentTo(1);
-        public static bool IsVector(this Vector4 tuple) => tuple.W.EquivalentTo(0);
-
         public static void AssertActualEqualToExpected(Vector4 actual, Vector4 expected)
         {
             Assert.That(actual.X, Is.EqualTo(expected.X).Within(Tolerance), "Unexpected X value");

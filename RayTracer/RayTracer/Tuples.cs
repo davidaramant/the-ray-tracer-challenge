@@ -4,6 +4,13 @@ namespace RayTracer
 {
     public static class Tuples
     {
+        public const float Tolerance = 0.00001f;
+
+        public static bool EquivalentTo(this float a, float b) => System.MathF.Abs(a - b) < Tolerance;
+
+        public static bool IsPoint(this Vector4 tuple) => tuple.W.EquivalentTo(1);
+        public static bool IsVector(this Vector4 tuple) => tuple.W.EquivalentTo(0);
+
         public static Vector4 CreatePoint(float x, float y, float z) => new Vector4(x, y, z, 1);
         public static Vector4 CreateVector(float x, float y, float z) => new Vector4(x, y, z, 0);
 
@@ -36,5 +43,7 @@ namespace RayTracer
                 xy, 1, zy, 0,
                 xz, yz, 1, 0,
                 0, 0, 0, 1);
+
+        public static Ray CreateRay(Vector4 origin, Vector4 direction) => new Ray(origin, direction);
     }
 }
