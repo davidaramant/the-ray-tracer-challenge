@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using RayTracer.Core;
-using static System.MathF;
-using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
 using static RayTracer.Core.Tuples;
 using static RayTracer.Core.Graphics;
@@ -17,7 +13,8 @@ namespace RayTracer.Core
     {
         public delegate void DrawPixel(int x, int y, Vector4 color);
 
-        public static Task TraceScene(Size canvasSize, DrawPixel drawPixel)
+        public static Task TraceScene(Size canvasSize, DrawPixel drawPixel, Action reportRowRendered = null)
+
         {
             var rayOrigin = CreatePoint(0, 0, -5);
             var wallZ = 10f;
@@ -28,7 +25,7 @@ namespace RayTracer.Core
             var sphereColor = CreateColor(1, 0, 0);
             var shape = new Sphere();
 
-            return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, new ParallelOptions{MaxDegreeOfParallelism = 1}, y =>
+            return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, y =>
             {
                 var worldY = halfWallSize - pixelSize.Height * y;
                 for (int x = 0; x < canvasSize.Width; x++)
@@ -45,6 +42,7 @@ namespace RayTracer.Core
                         drawPixel(x, y, sphereColor);
                     }
                 }
+                reportRowRendered?.Invoke();
             }));
         }
     }

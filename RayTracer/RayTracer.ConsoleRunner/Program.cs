@@ -11,13 +11,9 @@ namespace RayTracer.ConsoleRunner
         {
             var image = new FastImage(100, 100);
 
-            using (var progress = new ProgressBar(image.PixelCount, "Tracing image..."))
+            using (var progress = new ProgressBar(image.Height, "Tracing image..."))
             {
-                await Renderer.TraceScene(image.Dimensions, (x, y, color) =>
-                    {
-                        image.SetPixel(x, y, color);
-                        progress.Tick();
-                    });
+                await Renderer.TraceScene(image.Dimensions, image.SetPixel, () => progress.Tick());
             }
 
             image.Save("output.png");
