@@ -29,3 +29,9 @@ Not sure if these SIMD types like `Vector4` really benefit from being passed as 
 ### Chapter 4 - Matrix Transformations
 
 With regards to the previous chapter, _of course_ there is a method to multiple a `Matrix4x4` and a `Vector4` (`Vector4.Transform`); it's just that it's based around `Vector4` being a row vector and not a column vector.  Ran into this headache when trying to make a method to construct a shear matrix since there didn't seem to be one.  Hopefully this won't cause too much confusion for later chapters.  **Really** glad the book includes tests for everything!
+
+### Chapter 5 - Ray-Sphere Intersections
+
+Perhaps I got a bit too clever and went ahead of the book in some ways...  But, eventually I found all the stupid typos and mistakes I made and everything works.  
+
+I ended up making a simple console runner to directly spit out an image to test my abstracted ray tracer renderer.  Once that worked, I managed to fix the WPF viewer to actually work the way I envisioned it.  The console runner has a nice progress bar, the WPF renderer will visualize the traced scene in real-time, and everything is nicely threaded!  I only wish I had more threads to throw at it...
