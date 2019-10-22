@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using RayTracer.Core;
 using RayTracer.Core.Utilities;
 using ShellProgressBar;
@@ -16,8 +15,7 @@ namespace RayTracer.ConsoleRunner
             {
                 await Renderer.TraceScene(image.Dimensions, (x, y, color) =>
                     {
-                        image.SetPixel(x, y,
-                            Color.FromArgb((int) (255 * color.X), (int) (255 * color.Y), (int) (255 * color.Z)));
+                        image.SetPixel(x, y, color);
                         progress.Tick();
                     });
             }

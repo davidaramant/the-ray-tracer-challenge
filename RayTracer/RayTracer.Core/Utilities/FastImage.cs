@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace RayTracer.Core.Utilities
 {
     public sealed class FastImage
     {
-        const PixelFormat Format = PixelFormat.Format24bppRgb;
+        public const PixelFormat Format = PixelFormat.Format32bppRgb;
         readonly int _pixelSizeInBytes = Image.GetPixelFormatSize(Format) / 8;
-        readonly int _stride;
         readonly byte[] _pixelBuffer;
 
         public int Width { get; }
         public int Height { get; }
         public Size Dimensions => new Size(Width, Height);
         public int PixelCount => Width * Height;
+        public int Stride { get; }
 
         public FastImage(Size resolution) : this(resolution.Width, resolution.Height)
         {
@@ -25,13 +26,22 @@ namespace RayTracer.Core.Utilities
         {
             Width = width;
             Height = height;
-            _stride = width * _pixelSizeInBytes;
-            _pixelBuffer = new byte[_stride * height];
+            Stride = width * _pixelSizeInBytes;
+            _pixelBuffer = new byte[Stride * height];
+        }
+
+        public byte[] GetBuffer() => _pixelBuffer;
+
+        public void SetPixel(int x, int y, Vector4 color)
+        {
+            var index = y * Stride + x * _pixelSizeInBytes;
+            var actualColor = Color.FromArgb((int)(255 * color.X), (int)(255 * color.Y), (int)(255 * color.Z));
+            SetPixelFromIndex(index, actualColor);
         }
 
         public void SetPixel(int x, int y, Color color)
         {
-            var index = y * _stride + x * _pixelSizeInBytes;
+            var index = y * Stride + x * _pixelSizeInBytes;
             SetPixelFromIndex(index, color);
         }
 
