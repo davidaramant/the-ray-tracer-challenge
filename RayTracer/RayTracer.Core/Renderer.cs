@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using RayTracer.Core;
@@ -18,16 +19,16 @@ namespace RayTracer.Core
 
         public static Task TraceScene(Size canvasSize, DrawPixel drawPixel)
         {
-            var camera = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var rayOrigin = CreatePoint(0, 0, -5);
             var wallZ = 10f;
             var wallSize = 7f;
             var halfWallSize = wallSize / 2;
 
-            var pixelSize = new SizeF(wallSize/ canvasSize.Width, wallSize / canvasSize.Height);
+            var pixelSize = new SizeF(wallSize / canvasSize.Width, wallSize / canvasSize.Height);
             var sphereColor = CreateColor(1, 0, 0);
             var shape = new Sphere();
 
-            return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, y =>
+            return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, new ParallelOptions{MaxDegreeOfParallelism = 1}, y =>
             {
                 var worldY = halfWallSize - pixelSize.Height * y;
                 for (int x = 0; x < canvasSize.Width; x++)
@@ -36,10 +37,10 @@ namespace RayTracer.Core
 
                     var targetPosition = CreatePoint(worldX, worldY, wallZ);
 
-                    var ray = CreateRay(camera.Origin, Normalize(targetPosition - camera.Origin));
+                    var ray = CreateRay(rayOrigin, Normalize(targetPosition - rayOrigin));
                     var xs = shape.Intersect(ray);
 
-                    if (xs != null)
+                    if (xs.Any())
                     {
                         drawPixel(x, y, sphereColor);
                     }
