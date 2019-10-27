@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Grid>
-        <Image Width="200" Height="200" Name="OutputImage"/>
+        <Image Width="800" Height="800" Name="OutputImage"/>
     </Grid>
 </Window>

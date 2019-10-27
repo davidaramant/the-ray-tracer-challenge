@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using static System.Numerics.Vector4;
+using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
 using static RayTracer.Core.Graphics;
 
@@ -21,13 +22,13 @@ namespace RayTracer.Core
             var halfWallSize = wallSize / 2;
 
             var pixelSize = new SizeF(wallSize / canvasSize.Width, wallSize / canvasSize.Height);
-            var sphereColor = CreateColor(1, 0, 0);
             var shape = new Sphere
             {
                 Material =
                 {
                     Color = CreateColor(1,0.2f,1)
-                }
+                },
+                Transform = CreateShear(0, 0, 0.75f, 0, 0, 0)
             };
 
             var light = new PointLight(CreatePoint(-10, 10, -10), CreateColor(1, 1, 1));
