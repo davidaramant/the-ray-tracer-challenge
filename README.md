@@ -35,3 +35,11 @@ With regards to the previous chapter, _of course_ there is a method to multiple 
 Perhaps I got a bit too clever and went ahead of the book in some ways...  But, eventually I found all the stupid typos and mistakes I made and everything works.  
 
 I ended up making a simple console runner to directly spit out an image to test my abstracted ray tracer renderer.  Once that worked, I managed to fix the WPF viewer to actually work the way I envisioned it.  The console runner has a nice progress bar, the WPF renderer will visualize the traced scene in real-time, and everything is nicely threaded!  I only wish I had more threads to throw at it...
+
+### Chapter 6 - Light and Shading
+
+I don't remember too many surprises from this chapter.
+
+I was severely tempted to hook up the key bindings again to be able to move the sphere around on screen, but I figure I'll wait until the book introduces a real camera.
+
+I included [Colourful](https://github.com/tompazourek/Colourful) to support the conversion from linear RGB (which, I suspect, is what the book is really using) to sRGB.  I learned about this from a wonderful [talk at Strange Loop 2019](https://www.youtube.com/watch?v=AS1OHMW873s).  Messing with CIELAB would be interesting too, but my understanding is that would drastically change all the math done on colors throughout the ray tracer and I would probably get lost from diverging from the book too much.
