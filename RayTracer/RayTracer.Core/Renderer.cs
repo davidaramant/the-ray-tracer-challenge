@@ -14,7 +14,6 @@ namespace RayTracer.Core
         public delegate void DrawPixel(int x, int y, Vector4 color);
 
         public static Task TraceScene(Size canvasSize, DrawPixel drawPixel, Action reportRowRendered = null)
-
         {
             var rayOrigin = CreatePoint(0, 0, -5);
             var wallZ = 10f;
@@ -23,7 +22,15 @@ namespace RayTracer.Core
 
             var pixelSize = new SizeF(wallSize / canvasSize.Width, wallSize / canvasSize.Height);
             var sphereColor = CreateColor(1, 0, 0);
-            var shape = new Sphere();
+            var shape = new Sphere
+            {
+                Material =
+                {
+                    Color = CreateColor(1,0.2f,1)
+                }
+            };
+
+            var light = new PointLight(CreatePoint(-10, 10, -10), CreateColor(1, 1, 1));
 
             return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, y =>
             {
@@ -39,7 +46,15 @@ namespace RayTracer.Core
 
                     if (xs.Any())
                     {
-                        drawPixel(x, y, sphereColor);
+                        var hit = xs.First();
+
+                        var hitPoint = ray.ComputePosition(hit.T);
+                        var normal = hit.Shape.GetNormalAt(hitPoint);
+                        var eyeVector = -ray.Direction;
+
+                        var color = hit.Shape.Material.GetLight(light, hitPoint, eyeVector, normal);
+
+                        drawPixel(x, y, color);
                     }
                 }
                 reportRowRendered?.Invoke();

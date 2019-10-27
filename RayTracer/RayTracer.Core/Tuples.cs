@@ -45,5 +45,8 @@ namespace RayTracer.Core
                 0, 0, 0, 1);
 
         public static Ray CreateRay(Vector4 origin, Vector4 direction) => new Ray(origin, direction);
+
+        public static Vector4 Reflect(Vector4 direction, Vector4 normal) =>
+            direction - normal * 2 * Vector4.Dot(direction, normal);
     }
 }

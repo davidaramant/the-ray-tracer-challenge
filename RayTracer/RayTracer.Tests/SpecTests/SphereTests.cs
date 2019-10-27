@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Numerics;
 using NUnit.Framework;
-using System.Numerics;
 using RayTracer.Core;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -107,12 +104,24 @@ namespace RayTracer.Tests.SpecTests
         //Scenario: A sphere's default transformation
         //  Given s ← sphere()
         //  Then s.transform = identity_matrix
+        [Test]
+        public void ShouldHaveDefaultTransformation()
+        {
+            var s = new Sphere();
+            AssertActualEqualToExpected(s.Transform, Identity);
+        }
 
         //Scenario: Changing a sphere's transformation
         //  Given s ← sphere()
         //    And t ← translation(2, 3, 4)
         //  When set_transform(s, t)
         //  Then s.transform = t
+        [Test]
+        public void ShouldSetTransformation()
+        {
+            var s = new Sphere { Transform = CreateTranslation(2, 3, 4) };
+            AssertActualEqualToExpected(s.Transform, CreateTranslation(2, 3, 4));
+        }
 
         //Scenario: Intersecting a scaled sphere with a ray
         //  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
@@ -126,7 +135,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldIntersectScaledSphereWithARay()
         {
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
-            var s = new Sphere {Transform = CreateScale(2, 2, 2)};
+            var s = new Sphere { Transform = CreateScale(2, 2, 2) };
             var xs = s.Intersect(r);
             Assert.That(xs, Is.EqualTo(new[] { new Intersection(3f, s), new Intersection(7f, s) }));
         }
@@ -141,7 +150,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldIntersectTranslatedSphereWithARay()
         {
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
-            var s = new Sphere {Transform = CreateTranslation(5, 0, 0)};
+            var s = new Sphere { Transform = CreateTranslation(5, 0, 0) };
             var xs = s.Intersect(r);
             Assert.That(xs, Is.Empty);
         }
@@ -150,32 +159,62 @@ namespace RayTracer.Tests.SpecTests
         //  Given s ← sphere()
         //  When n ← normal_at(s, point(1, 0, 0))
         //  Then n = vector(1, 0, 0)
-
+        //
         //Scenario: The normal on a sphere at a point on the y axis
         //  Given s ← sphere()
         //  When n ← normal_at(s, point(0, 1, 0))
         //  Then n = vector(0, 1, 0)
-
+        //
         //Scenario: The normal on a sphere at a point on the z axis
         //  Given s ← sphere()
         //  When n ← normal_at(s, point(0, 0, 1))
         //  Then n = vector(0, 0, 1)
+        [TestCase(1, 0, 0)]
+        [TestCase(0, 1, 0)]
+        [TestCase(0, 0, 1)]
+        public void ShouldGetNormalAtAxisPoint(float x, float y, float z)
+        {
+            var s = new Sphere();
+            var n = s.GetNormalAt(CreatePoint(x, y, z));
+            AssertActualEqualToExpected(n, CreateVector(x, y, z));
+        }
 
         //Scenario: The normal on a sphere at a nonaxial point
         //  Given s ← sphere()
         //  When n ← normal_at(s, point(√3/3, √3/3, √3/3))
         //  Then n = vector(√3/3, √3/3, √3/3)
+        [Test]
+        public void ShouldGetNormalAtNonAxialPoint()
+        {
+            var s = new Sphere();
+            var n = s.GetNormalAt(CreatePoint(Sqrt(3) / 3, Sqrt(3) / 3, Sqrt(3) / 3));
+            AssertActualEqualToExpected(n, CreateVector(Sqrt(3) / 3, Sqrt(3) / 3, Sqrt(3) / 3));
+        }
 
         //Scenario: The normal is a normalized vector
         //  Given s ← sphere()
         //  When n ← normal_at(s, point(√3/3, √3/3, √3/3))
         //  Then n = normalize(n)
+        [Test]
+        public void ShouldReturnNormalThatIsNormalized()
+        {
+            var s = new Sphere();
+            var n = s.GetNormalAt(CreatePoint(Sqrt(3) / 3, Sqrt(3) / 3, Sqrt(3) / 3));
+            AssertActualEqualToExpected(n, Normalize(n));
+        }
 
         //Scenario: Computing the normal on a translated sphere
         //  Given s ← sphere()
         //    And set_transform(s, translation(0, 1, 0))
         //  When n ← normal_at(s, point(0, 1.70711, -0.70711))
         //  Then n = vector(0, 0.70711, -0.70711)
+        [Test]
+        public void ShouldComputeNormalOfTranslatedSphere()
+        {
+            var s = new Sphere { Transform = CreateTranslation(0, 1, 0) };
+            var n = s.GetNormalAt(CreatePoint(0, 1.70711f, -0.70711f));
+            AssertActualEqualToExpected(n, CreateVector(0, 0.70711f, -0.70711f));
+        }
 
         //Scenario: Computing the normal on a transformed sphere
         //  Given s ← sphere()
@@ -183,11 +222,24 @@ namespace RayTracer.Tests.SpecTests
         //    And set_transform(s, m)
         //  When n ← normal_at(s, point(0, √2/2, -√2/2))
         //  Then n = vector(0, 0.97014, -0.24254)
+        [Test]
+        public void ShouldComputeNormalOfTransformedSphere()
+        {
+            var s = new Sphere { Transform = CreateRotationZ(PI / 5) * CreateScale(1, 0.5f, 1) };
+            var n = s.GetNormalAt(CreatePoint(0, Sqrt(2) / 2, -Sqrt(2) / 2));
+            AssertActualEqualToExpected(n, CreateVector(0, 0.97014f, -0.24254f));
+        }
 
         //Scenario: A sphere has a default material
         //  Given s ← sphere()
         //  When m ← s.material
         //  Then m = material()
+        [Test]
+        public void ShouldHaveDefaultMaterial()
+        {
+            var s = new Sphere();
+            AssertActualEqualToExpected(s.Material, new Material());
+        }
 
         //Scenario: A sphere may be assigned a material
         //  Given s ← sphere()
@@ -195,6 +247,13 @@ namespace RayTracer.Tests.SpecTests
         //    And m.ambient ← 1
         //  When s.material ← m
         //  Then s.material = m
+        [Test]
+        public void ShouldSupportAssigningMaterial()
+        {
+            var m = new Material { Ambient = 1 };
+            var s = new Sphere { Material = m };
+            AssertActualEqualToExpected(s.Material, m);
+        }
 
         //Scenario: A helper for producing a sphere with a glassy material
         //  Given s ← glass_sphere()

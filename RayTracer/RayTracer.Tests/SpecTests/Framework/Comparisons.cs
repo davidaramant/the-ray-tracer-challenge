@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using NUnit.Framework;
+using RayTracer.Core;
 using static RayTracer.Core.Tuples;
 
 namespace RayTracer.Tests.SpecTests.Framework
@@ -36,6 +37,15 @@ namespace RayTracer.Tests.SpecTests.Framework
             Assert.That(actual.M42, Is.EqualTo(expected.M42).Within(Tolerance), "Unexpected M42 value");
             Assert.That(actual.M43, Is.EqualTo(expected.M43).Within(Tolerance), "Unexpected M43 value");
             Assert.That(actual.M44, Is.EqualTo(expected.M44).Within(Tolerance), "Unexpected M44 value");
+        }
+
+        public static void AssertActualEqualToExpected(Material actual, Material expected)
+        {
+            AssertActualEqualToExpected(actual.Color, expected.Color);
+            Assert.That(actual.Ambient, Is.EqualTo(expected.Ambient).Within(Tolerance), "Unexpected ambient value");
+            Assert.That(actual.Diffuse, Is.EqualTo(expected.Diffuse).Within(Tolerance), "Unexpected diffuse value");
+            Assert.That(actual.Specular, Is.EqualTo(expected.Specular).Within(Tolerance), "Unexpected specular value");
+            Assert.That(actual.Shininess, Is.EqualTo(expected.Shininess).Within(Tolerance), "Unexpected shininess value");
         }
     }
 }

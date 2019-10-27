@@ -35,7 +35,11 @@ namespace RayTracer.Core.Utilities
         public void SetPixel(int x, int y, Vector4 color)
         {
             var index = y * Stride + x * _pixelSizeInBytes;
-            var actualColor = Color.FromArgb((int)(255 * color.X), (int)(255 * color.Y), (int)(255 * color.Z));
+            var clampedColor = Vector4.Clamp(color, Vector4.Zero, Vector4.One);
+            var actualColor = Color.FromArgb(
+                (int)(255 * clampedColor.X),
+                (int)(255 * clampedColor.Y),
+                (int)(255 * clampedColor.Z));
             SetPixelFromIndex(index, actualColor);
         }
 

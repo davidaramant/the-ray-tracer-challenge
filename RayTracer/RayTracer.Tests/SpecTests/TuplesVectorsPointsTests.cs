@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using static System.MathF;
 using static System.Numerics.Vector4;
 using static RayTracer.Core.Tuples;
@@ -287,11 +288,27 @@ namespace RayTracer.Tests.SpecTests
         //    And n ← vector(0, 1, 0)
         //  When r ← reflect(v, n)
         //  Then r = vector(1, 1, 0)
+        [Test]
+        public void ShouldReflectVectorAt45Degrees()
+        {
+            var v = CreateVector(1, -1, 0);
+            var n = CreateVector(0, 1, 0);
+            var r = Reflect(v, n);
+            AssertActualEqualToExpected(r, CreateVector(1, 1, 0));
+        }
 
         //Scenario: Reflecting a vector off a slanted surface
         //  Given v ← vector(0, -1, 0)
         //    And n ← vector(√2/2, √2/2, 0)
         //  When r ← reflect(v, n)
         //  Then r = vector(1, 0, 0)
+        [Test]
+        public void ShouldReflectVectorOffSlantedSurface()
+        {
+            var v = CreateVector(0, -1, 0);
+            var n = CreateVector(Sqrt(2) / 2, Sqrt(2) / 2, 0);
+            var r = Reflect(v, n);
+            AssertActualEqualToExpected(r, CreateVector(1, 0, 0));
+        }
     }
 }

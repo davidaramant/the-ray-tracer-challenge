@@ -24,6 +24,7 @@ namespace RayTracer.Core
         }
         public Vector4 Position { get; }
         public float Radius { get; }
+        public Material Material { get; set; } = new Material();
 
         public Sphere() : this(CreatePoint(0, 0, 0), 1)
         {
@@ -65,6 +66,15 @@ namespace RayTracer.Core
                     new Intersection((-b + Sqrt(discriminant)) / (2*a), this),
                 };
             }
+        }
+
+        public Vector4 GetNormalAt(Vector4 worldPoint)
+        {
+            var objectPoint = Transform(worldPoint, _inverseTransform);
+            var objectNormal = objectPoint - Position;
+            var worldNormal = Transform(objectNormal, Transpose(_inverseTransform));
+            worldNormal.W = 0;
+            return Normalize(worldNormal);
         }
     }
 }
