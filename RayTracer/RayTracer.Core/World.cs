@@ -12,6 +12,20 @@ namespace RayTracer.Core
         public List<IShape> Objects { get; } = new List<IShape>();
         public List<PointLight> Lights { get; } = new List<PointLight>();
 
+        public List<Intersection> Intersect(Ray ray)
+        {
+            var xs = new List<Intersection>();
+
+            foreach(var o in Objects)
+            {
+                xs.AddRange(o.Intersect(ray));
+            }
+
+            xs.Sort();
+
+            return xs;
+        }
+
         public static World CreateDefault() => new World
         {
             Lights = {new PointLight(CreatePoint(-10, 10, -10), CreateColor(1, 1, 1))},

@@ -72,6 +72,18 @@ namespace RayTracer.Tests.SpecTests
         //    And xs[1].t = 4.5
         //    And xs[2].t = 5.5
         //    And xs[3].t = 6
+        [Test]
+        public void ShouldIntersectWithRay()
+        {
+            var w = World.CreateDefault();
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var xs = w.Intersect(r);
+            Assert.That(xs, Has.Count.EqualTo(4));
+            Assert.That(xs[0].T, Is.EqualTo(4).Within(Tolerance));
+            Assert.That(xs[1].T, Is.EqualTo(4.5f).Within(Tolerance));
+            Assert.That(xs[2].T, Is.EqualTo(5.5f).Within(Tolerance));
+            Assert.That(xs[3].T, Is.EqualTo(6).Within(Tolerance));
+        }
 
         //Scenario: Shading an intersection
         //  Given w ← default_world()

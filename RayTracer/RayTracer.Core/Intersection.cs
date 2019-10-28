@@ -2,7 +2,7 @@
 
 namespace RayTracer.Core
 {
-    public sealed class Intersection : IEquatable<Intersection>
+    public sealed class Intersection : IEquatable<Intersection>, IComparable<Intersection>
     {
         public float T { get; }
         public IShape Shape { get; }
@@ -14,6 +14,13 @@ namespace RayTracer.Core
         }
 
         public override string ToString() => $"T:{T} {Shape}";
+
+        public int CompareTo(Intersection other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (ReferenceEquals(null, other)) return 1;
+            return T.CompareTo(other.T);
+        }
 
         #region Equality
 
@@ -48,5 +55,6 @@ namespace RayTracer.Core
         }
 
         #endregion
+
     }
 }
