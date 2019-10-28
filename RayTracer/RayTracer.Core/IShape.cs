@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace RayTracer.Core
 {
-    public interface IShape
+    public interface IShape : IEquatable<IShape>
     {
         Matrix4x4 Transform { get; set; }
         Material Material { get; set; }

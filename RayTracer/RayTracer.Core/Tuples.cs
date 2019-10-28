@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace RayTracer.Core
 {
@@ -6,10 +7,20 @@ namespace RayTracer.Core
     {
         public const float Tolerance = 0.00001f;
 
-        public static bool EquivalentTo(this float a, float b) => System.MathF.Abs(a - b) < Tolerance;
+        public static float Truncate(this float f) => MathF.Round(f, 5);
 
-        public static bool IsPoint(this Vector4 tuple) => tuple.W.EquivalentTo(1);
-        public static bool IsVector(this Vector4 tuple) => tuple.W.EquivalentTo(0);
+        public static bool IsEquivalentTo(this float a, float b) => System.MathF.Abs(a - b) < Tolerance;
+
+        public static bool IsEquivalentTo(this Vector4 a, Vector4 b) =>
+            a.X.IsEquivalentTo(b.X) &&
+            a.Y.IsEquivalentTo(b.Y) &&
+            a.Z.IsEquivalentTo(b.Z) &&
+            a.W.IsEquivalentTo(b.W);
+
+        public static Vector4 Truncate(this Vector4 a) => new Vector4(a.X.Truncate(), a.Y.Truncate(), a.Z.Truncate(), a.W.Truncate());
+
+        public static bool IsPoint(this Vector4 tuple) => tuple.W.IsEquivalentTo(1);
+        public static bool IsVector(this Vector4 tuple) => tuple.W.IsEquivalentTo(0);
 
         public static Vector4 CreatePoint(float x, float y, float z) => new Vector4(x, y, z, 1);
         public static Vector4 CreateVector(float x, float y, float z) => new Vector4(x, y, z, 0);

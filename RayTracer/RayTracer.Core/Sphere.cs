@@ -22,6 +22,7 @@ namespace RayTracer.Core
                 Invert(value, out _inverseTransform);
             }
         }
+
         public Vector4 Position { get; }
         public float Radius { get; }
         public Material Material { get; set; } = new Material();
@@ -76,5 +77,46 @@ namespace RayTracer.Core
             worldNormal.W = 0;
             return Normalize(worldNormal);
         }
+
+        #region Equality
+        public bool Equals(IShape other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return 
+                other is Sphere o &&
+                _transform.Equals(o._transform) && 
+                Material.Equals(o.Material) && 
+                Position.IsEquivalentTo(o.Position) && 
+                Radius.IsEquivalentTo(o.Radius);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is Sphere other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = _transform.GetHashCode();
+                hashCode = (hashCode * 397) ^ Material.GetHashCode();
+                hashCode = (hashCode * 397) ^ Position.Truncate().GetHashCode();
+                hashCode = (hashCode * 397) ^ Radius.Truncate().GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Sphere left, Sphere right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Sphere left, Sphere right)
+        {
+            return !Equals(left, right);
+        }
+        #endregion
     }
 }

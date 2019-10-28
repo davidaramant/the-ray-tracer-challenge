@@ -7,7 +7,7 @@ using static System.MathF;
 
 namespace RayTracer.Core
 {
-    public sealed class Material
+    public sealed class Material : IEquatable<Material>
     {
         public Vector4 Color { get; set; } = CreateColor(1, 1, 1);
         public float Ambient { get; set; } = 0.1f;
@@ -60,5 +60,47 @@ namespace RayTracer.Core
 
             return ambientContribution + diffuseContribution + specularContribution;
         }
+
+        #region Equality
+        public bool Equals(Material other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return 
+                Ambient.IsEquivalentTo(other.Ambient) && 
+                Color.IsEquivalentTo(other.Color) && 
+                Diffuse.IsEquivalentTo(other.Diffuse) && 
+                Shininess.IsEquivalentTo(other.Shininess) && 
+                Specular.IsEquivalentTo(other.Specular);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is Material other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = Ambient.GetHashCode();
+                hashCode = (hashCode * 397) ^ Color.Truncate().GetHashCode();
+                hashCode = (hashCode * 397) ^ Diffuse.Truncate().GetHashCode();
+                hashCode = (hashCode * 397) ^ Shininess.Truncate().GetHashCode();
+                hashCode = (hashCode * 397) ^ Specular.Truncate().GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(Material left, Material right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(Material left, Material right)
+        {
+            return !Equals(left, right);
+        }
+        #endregion
     }
 }

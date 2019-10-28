@@ -9,7 +9,7 @@ namespace RayTracer.Core
         public static Vector4 CreateColor(float r, float g, float b) => new Vector4(r, g, b, 0);
 
         public static bool IsColor(this Vector4 tuple) => 
-            tuple.W.EquivalentTo(0);
+            tuple.W.IsEquivalentTo(0);
 
     }
 }

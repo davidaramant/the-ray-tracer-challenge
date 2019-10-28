@@ -21,7 +21,7 @@ namespace RayTracer.Core
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Shape, other.Shape) && T.EquivalentTo(other.T);
+            return Equals(Shape, other.Shape) && T.IsEquivalentTo(other.T);
         }
 
         public override bool Equals(object obj)
@@ -33,7 +33,7 @@ namespace RayTracer.Core
         {
             unchecked
             {
-                return ((Shape != null ? Shape.GetHashCode() : 0) * 397) ^ MathF.Round(T,5).GetHashCode();
+                return ((Shape != null ? Shape.GetHashCode() : 0) * 397) ^ T.Truncate().GetHashCode();
             }
         }
 
