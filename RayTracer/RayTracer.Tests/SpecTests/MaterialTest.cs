@@ -25,7 +25,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldHaveExpectedValuesForDefaultMaterial()
         {
             var m = new Material();
-            AssertActualEqualToExpected(m.Color, VColor.Create(1, 1, 1));
+            AssertActualEqualToExpected(m.Color, VColor.White);
             Assert.That(m.Ambient, Is.EqualTo(0.1f).Within(Tolerance));
             Assert.That(m.Diffuse, Is.EqualTo(0.9f).Within(Tolerance));
             Assert.That(m.Specular, Is.EqualTo(0.9f).Within(Tolerance));
@@ -54,7 +54,7 @@ namespace RayTracer.Tests.SpecTests
             var p = CreatePoint(0, 0, 0);
             var eye = CreateVector(0, 0, -1);
             var normalY = CreateVector(0, 0, -1);
-            var light = new PointLight(CreatePoint(0, 0, -10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.Create(1.9f, 1.9f, 1.9f));
@@ -73,10 +73,10 @@ namespace RayTracer.Tests.SpecTests
             var p = CreatePoint(0, 0, 0);
             var eye = CreateVector(0, Sqrt(2) / 2, Sqrt(2) / 2);
             var normalY = CreateVector(0, 0, -1);
-            var light = new PointLight(CreatePoint(0, 0, -10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
-            AssertActualEqualToExpected(result, VColor.Create(1, 1, 1));
+            AssertActualEqualToExpected(result, VColor.White);
         }
 
         //Scenario: Lighting with eye opposite surface, light offset 45°
@@ -92,7 +92,7 @@ namespace RayTracer.Tests.SpecTests
             var p = CreatePoint(0, 0, 0);
             var eye = CreateVector(0, 0, -1);
             var normalY = CreateVector(0, 0, -1);
-            var light = new PointLight(CreatePoint(0, 10, -10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.Create(0.7364f, 0.7364f, 0.7364f));
@@ -111,7 +111,7 @@ namespace RayTracer.Tests.SpecTests
             var p = CreatePoint(0, 0, 0);
             var eye = CreateVector(0, -Sqrt(2)/2, -Sqrt(2)/2);
             var normalY = CreateVector(0, 0, -1);
-            var light = new PointLight(CreatePoint(0, 10, -10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.Create(1.6364f, 1.6364f, 1.6364f));
@@ -130,7 +130,7 @@ namespace RayTracer.Tests.SpecTests
             var p = CreatePoint(0, 0, 0);
             var eye = CreateVector(0, 0, -1);
             var normalY = CreateVector(0, 0, -1);
-            var light = new PointLight(CreatePoint(0, 0, 10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(0, 0, 10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.Create(0.1f, 0.1f, 0.1f));

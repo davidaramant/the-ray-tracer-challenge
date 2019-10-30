@@ -30,7 +30,7 @@ namespace RayTracer.Core
 
         public static World CreateDefault() => new World
         {
-            Lights = { new PointLight(CreatePoint(-10, 10, -10), VColor.Create(1, 1, 1)) },
+            Lights = { new PointLight(CreatePoint(-10, 10, -10), VColor.White) },
             Objects =
             {
                 new Sphere

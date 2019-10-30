@@ -8,7 +8,7 @@ namespace RayTracer.Core
 {
     public sealed class Material : IEquatable<Material>
     {
-        public Vector4 Color { get; set; } = VColor.Create(1, 1, 1);
+        public Vector4 Color { get; set; } = VColor.White;
         public float Ambient { get; set; } = 0.1f;
         public float Diffuse { get; set; } = 0.9f;
         public float Specular { get; set; } = 0.9f;

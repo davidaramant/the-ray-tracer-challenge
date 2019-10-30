@@ -23,7 +23,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldHavePositionAndIntensityOnPointLight()
         {
-            var intensity = VColor.Create(1, 1, 1);
+            var intensity = VColor.White;
             var position = CreatePoint(0, 0, 0);
             var light = new PointLight(position, intensity);
             Assert.That(light.Position, Is.EqualTo(position));

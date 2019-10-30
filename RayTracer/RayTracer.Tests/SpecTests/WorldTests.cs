@@ -42,7 +42,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCreateDefaultWorld()
         {
-            var light = new PointLight(CreatePoint(-10, 10, -10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(-10, 10, -10), VColor.White);
             var s1 = new Sphere
             {
                 Material =
@@ -118,7 +118,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldShadeIntersectionFromTheInside()
         {
             var w = World.CreateDefault();
-            w.Lights[0] = new PointLight(CreatePoint(0, 0.25f, 0), VColor.Create(1, 1, 1));
+            w.Lights[0] = new PointLight(CreatePoint(0, 0.25f, 0), VColor.White);
             var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 0, 1));
             var shape = w.Objects[1];
             var i = new Intersection(0.5f, shape);

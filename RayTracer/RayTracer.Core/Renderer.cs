@@ -30,7 +30,7 @@ namespace RayTracer.Core
                 Transform = CreateShear(0, 0, 0.75f, 0, 0, 0)
             };
 
-            var light = new PointLight(CreatePoint(-10, 10, -10), VColor.Create(1, 1, 1));
+            var light = new PointLight(CreatePoint(-10, 10, -10), VColor.White);
 
             return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, y =>
             {
