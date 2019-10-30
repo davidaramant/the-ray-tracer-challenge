@@ -129,7 +129,7 @@ namespace RayTracer.Tests.SpecTests
             var s = new Sphere();
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
-            var xs = new IntersectionList { i1, i2 };
+            var xs = new List<Intersection> { i1, i2 };
             Assert.That(xs, Has.Count.EqualTo(2));
             Assert.That(xs, Is.EqualTo(new[] { i1, i2 }));
         }
@@ -147,8 +147,8 @@ namespace RayTracer.Tests.SpecTests
             var s = new Sphere();
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
-            var xs = new IntersectionList { i1, i2 };
-            Assert.That(xs.Hit(), Is.EqualTo(i1));
+            var xs = new List<Intersection> { i1, i2 };
+            Assert.That(xs.TryGetHit(), Is.EqualTo(i1));
         }
 
         //Scenario: The hit, when some intersections have negative t
@@ -164,8 +164,8 @@ namespace RayTracer.Tests.SpecTests
             var s = new Sphere();
             var i1 = new Intersection(-1, s);
             var i2 = new Intersection(1, s);
-            var xs = new IntersectionList { i1, i2 };
-            Assert.That(xs.Hit(), Is.EqualTo(i2));
+            var xs = new List<Intersection> { i1, i2 };
+            Assert.That(xs.TryGetHit(), Is.EqualTo(i2));
         }
 
         //Scenario: The hit, when all intersections have negative t
@@ -181,8 +181,8 @@ namespace RayTracer.Tests.SpecTests
             var s = new Sphere();
             var i1 = new Intersection(-2, s);
             var i2 = new Intersection(-1, s);
-            var xs = new IntersectionList { i1, i2 };
-            Assert.That(xs.Hit(), Is.Null);
+            var xs = new List<Intersection> { i1, i2 };
+            Assert.That(xs.TryGetHit(), Is.Null);
         }
 
         //Scenario: The hit is always the lowest nonnegative intersection
@@ -202,8 +202,8 @@ namespace RayTracer.Tests.SpecTests
             var i2 = new Intersection(7, s);
             var i3 = new Intersection(-3, s);
             var i4 = new Intersection(2, s);
-            var xs = new IntersectionList { i1, i2, i3, i4 };
-            Assert.That(xs.Hit(), Is.EqualTo(i4));
+            var xs = new List<Intersection> { i1, i2, i3, i4 };
+            Assert.That(xs.TryGetHit(), Is.EqualTo(i4));
         }
 
         //Scenario Outline: Finding n1 and n2 at various intersections

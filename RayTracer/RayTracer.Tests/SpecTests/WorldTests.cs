@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using RayTracer.Core;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
-using static RayTracer.Core.Graphics;
 using static RayTracer.Core.Tuples;
 using static RayTracer.Tests.SpecTests.Framework.Comparisons;
 
@@ -42,12 +42,12 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCreateDefaultWorld()
         {
-            var light = new PointLight(CreatePoint(-10, 10, -10), CreateColor(1, 1, 1));
+            var light = new PointLight(CreatePoint(-10, 10, -10), VColor.Create(1, 1, 1));
             var s1 = new Sphere
             {
                 Material =
                 {
-                    Color = CreateColor(0.8f,1,0.6f),
+                    Color = VColor.Create(0.8f,1,0.6f),
                     Diffuse = 0.7f,
                     Specular = 0.2f,
                 }
@@ -93,6 +93,17 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And c ← shade_hit(w, comps)
         //  Then c = color(0.38066, 0.47583, 0.2855)
+        [Test]
+        public void ShouldShadeIntersection()
+        {
+            var w = World.CreateDefault();
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var shape = w.Objects.First();
+            var i = new Intersection(4, shape);
+            var comps = Computations.Prepare(i, r);
+            var c = w.ShadeHit(comps);
+            AssertActualEqualToExpected(c, VColor.Create(0.38066f, 0.47583f, 0.2855f));
+        }
 
         //Scenario: Shading an intersection from the inside
         //  Given w ← default_world()
@@ -103,18 +114,46 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And c ← shade_hit(w, comps)
         //  Then c = color(0.90498, 0.90498, 0.90498)
+        [Test]
+        public void ShouldShadeIntersectionFromTheInside()
+        {
+            var w = World.CreateDefault();
+            w.Lights[0] = new PointLight(CreatePoint(0, 0.25f, 0), VColor.Create(1, 1, 1));
+            var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 0, 1));
+            var shape = w.Objects[1];
+            var i = new Intersection(0.5f, shape);
+            var comps = Computations.Prepare(i, r);
+            var c = w.ShadeHit(comps);
+            AssertActualEqualToExpected(c, VColor.Create(0.90498f, 0.90498f, 0.90498f));
+        }
 
         //Scenario: The color when a ray misses
         //  Given w ← default_world()
         //    And r ← ray(point(0, 0, -5), vector(0, 1, 0))
         //  When c ← color_at(w, r)
         //  Then c = color(0, 0, 0)
+        [Test]
+        public void ShouldComputeColorWhenRayMisses()
+        {
+            var w = World.CreateDefault();
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 1, 0));
+            var c = w.ComputeColor(r);
+            AssertActualEqualToExpected(c, VColor.Black);
+        }
 
         //Scenario: The color when a ray hits
         //  Given w ← default_world()
         //    And r ← ray(point(0, 0, -5), vector(0, 0, 1))
         //  When c ← color_at(w, r)
         //  Then c = color(0.38066, 0.47583, 0.2855)
+        [Test]
+        public void ShouldComputeColorWhenRayHits()
+        {
+            var w = World.CreateDefault();
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var c = w.ComputeColor(r);
+            AssertActualEqualToExpected(c, VColor.Create(0.38066f, 0.47583f, 0.2855f));
+        }
 
         //Scenario: The color with an intersection behind the ray
         //  Given w ← default_world()
@@ -125,6 +164,18 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray(point(0, 0, 0.75), vector(0, 0, -1))
         //  When c ← color_at(w, r)
         //  Then c = inner.material.color
+        [Test]
+        public void ShouldComputeColorWhenIntersectionIsBehindRay()
+        {
+            var w = World.CreateDefault();
+            var outer = w.Objects.First();
+            outer.Material.Ambient = 1;
+            var inner = w.Objects[1];
+            inner.Material.Ambient = 1;
+            var r = CreateRay(CreatePoint(0, 0, 0.75f), CreateVector(0, 0, -1));
+            var c = w.ComputeColor(r);
+            AssertActualEqualToExpected(c, inner.Material.Color);
+        }
 
         //Scenario: There is no shadow when nothing is collinear with point and light
         //  Given w ← default_world()

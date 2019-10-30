@@ -18,15 +18,15 @@ namespace RayTracer.Core
             Object = o;
             Point = point;
             EyeV = eyeV;
-            NormalV = normalV;
             if (Dot(normalV, eyeV) < 0)
             {
                 Inside = true;
-                NormalV = -NormalV;
+                NormalV = -normalV;
             }
             else
             {
                 Inside = false;
+                NormalV = normalV;
             }
         }
 

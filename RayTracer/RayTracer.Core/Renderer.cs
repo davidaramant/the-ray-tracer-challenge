@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using static System.Numerics.Vector4;
 using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
-using static RayTracer.Core.Graphics;
 
 namespace RayTracer.Core
 {
@@ -26,12 +25,12 @@ namespace RayTracer.Core
             {
                 Material =
                 {
-                    Color = CreateColor(1,0.2f,1)
+                    Color = VColor.Create(1,0.2f,1)
                 },
                 Transform = CreateShear(0, 0, 0.75f, 0, 0, 0)
             };
 
-            var light = new PointLight(CreatePoint(-10, 10, -10), CreateColor(1, 1, 1));
+            var light = new PointLight(CreatePoint(-10, 10, -10), VColor.Create(1, 1, 1));
 
             return Task.Factory.StartNew(() => Parallel.For(0, canvasSize.Height, y =>
             {
@@ -53,7 +52,7 @@ namespace RayTracer.Core
                         var normal = hit.Shape.GetNormalAt(hitPoint);
                         var eyeVector = -ray.Direction;
 
-                        var color = hit.Shape.Material.GetLight(light, hitPoint, eyeVector, normal);
+                        var color = hit.Shape.Material.ComputeColor(light, hitPoint, eyeVector, normal);
 
                         drawPixel(x, y, color);
                     }

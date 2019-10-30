@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using static RayTracer.Core.Graphics;
 using static RayTracer.Core.Tuples;
 using static System.Numerics.Vector4;
 using static System.MathF;
@@ -9,13 +8,12 @@ namespace RayTracer.Core
 {
     public sealed class Material : IEquatable<Material>
     {
-        public Vector4 Color { get; set; } = CreateColor(1, 1, 1);
+        public Vector4 Color { get; set; } = VColor.Create(1, 1, 1);
         public float Ambient { get; set; } = 0.1f;
         public float Diffuse { get; set; } = 0.9f;
         public float Specular { get; set; } = 0.9f;
         public float Shininess { get; set; } = 200;
 
-        // TODO: Embed this in properties for debug mode
         public void Validate()
         {
             if (!Color.IsColor())
@@ -30,9 +28,10 @@ namespace RayTracer.Core
                 throw new ArgumentOutOfRangeException(nameof(Shininess));
         }
 
-        public Vector4 GetLight(PointLight light, Vector4 position, Vector4 eyeVector, Vector4 normal)
+        public Vector4 ComputeColor(PointLight light, Vector4 position, Vector4 eyeVector, Vector4 normal)
         {
 #if DEBUG
+            Validate();
             if (!position.IsPoint()) throw new ArgumentException("Position must be point", nameof(position));
             if (!eyeVector.IsVector()) throw new ArgumentException("Eye must be vector", nameof(eyeVector));
             if (!normal.IsVector()) throw new ArgumentException("Normal must be vector", nameof(normal));
@@ -41,8 +40,8 @@ namespace RayTracer.Core
             var effectiveColor = Color * light.Intensity;
             var lightVector = Normalize(light.Position - position);
             var ambientContribution = effectiveColor * Ambient;
-            var diffuseContribution = CreateColor(0, 0, 0);
-            var specularContribution = CreateColor(0, 0, 0);
+            var diffuseContribution = VColor.Create(0, 0, 0);
+            var specularContribution = VColor.Create(0, 0, 0);
 
             var lightDotNormal = Dot(lightVector, normal);
             if (lightDotNormal > 0)

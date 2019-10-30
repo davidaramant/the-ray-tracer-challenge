@@ -3,7 +3,6 @@ using RayTracer.Core;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
-using static RayTracer.Core.Graphics;
 using static RayTracer.Core.Tuples;
 using static RayTracer.Tests.SpecTests.Framework.Comparisons;
 
@@ -24,7 +23,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldHavePositionAndIntensityOnPointLight()
         {
-            var intensity = CreateColor(1, 1, 1);
+            var intensity = VColor.Create(1, 1, 1);
             var position = CreatePoint(0, 0, 0);
             var light = new PointLight(position, intensity);
             Assert.That(light.Position, Is.EqualTo(position));
