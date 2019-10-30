@@ -34,6 +34,19 @@ namespace RayTracer.Tests.SpecTests
         //    And comps.point = point(0, 0, -1)
         //    And comps.eyev = vector(0, 0, -1)
         //    And comps.normalv = vector(0, 0, -1)
+        [Test]
+        public void ShouldPrecomputeStateOfIntersection()
+        {
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var shape = new Sphere();
+            var i = new Intersection(4, shape);
+
+            var comps = Computations.Prepare(i, r);
+            Assert.That(comps.Object, Is.EqualTo(shape));
+            AssertActualEqualToExpected(comps.Point, CreatePoint(0, 0, -1));
+            AssertActualEqualToExpected(comps.EyeV, CreateVector(0, 0, -1));
+            AssertActualEqualToExpected(comps.NormalV, CreateVector(0, 0, -1));
+        }
 
         //Scenario: Precomputing the reflection vector
         //  Given shape ← plane()
@@ -48,6 +61,16 @@ namespace RayTracer.Tests.SpecTests
         //    And i ← intersection(4, shape)
         //  When comps ← prepare_computations(i, r)
         //  Then comps.inside = false
+        [Test]
+        public void ShouldIndicateWhenIntersectionOccursOnTheOutside()
+        {
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var shape = new Sphere();
+            var i = new Intersection(4, shape);
+
+            var comps = Computations.Prepare(i, r);
+            Assert.That(comps.Inside, Is.False);
+        }
 
         //Scenario: The hit, when an intersection occurs on the inside
         //  Given r ← ray(point(0, 0, 0), vector(0, 0, 1))
@@ -59,6 +82,19 @@ namespace RayTracer.Tests.SpecTests
         //    And comps.inside = true
         //      # normal would have been (0, 0, 1), but is inverted!
         //    And comps.normalv = vector(0, 0, -1)
+        [Test]
+        public void ShouldIndicateWhenIntersectionOccursOnTheInside()
+        {
+            var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 0, 1));
+            var shape = new Sphere();
+            var i = new Intersection(1, shape);
+
+            var comps = Computations.Prepare(i, r);
+            AssertActualEqualToExpected(comps.Point, CreatePoint(0, 0, 1));
+            AssertActualEqualToExpected(comps.EyeV, CreateVector(0, 0, -1));
+            Assert.That(comps.Inside, Is.True);
+            AssertActualEqualToExpected(comps.NormalV, CreateVector(0, 0, -1));
+        }
 
         //Scenario: The hit should offset the point
         //  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
