@@ -28,7 +28,7 @@ Not sure if these SIMD types like `Vector4` really benefit from being passed as 
 
 ### Chapter 4 - Matrix Transformations
 
-With regards to the previous chapter, _of course_ there is a method to multiple a `Matrix4x4` and a `Vector4` (`Vector4.Transform`); it's just that it's based around `Vector4` being a row vector and not a column vector.  Ran into this headache when trying to make a method to construct a shear matrix since there didn't seem to be one.  Hopefully this won't cause too much confusion for later chapters.  **Really** glad the book includes tests for everything!
+With regards to the previous chapter, _of course_ there is a method to multiply a `Matrix4x4` and a `Vector4` (`Vector4.Transform`); it's just that it's based around `Vector4` being a row vector and not a column vector.  Ran into this headache when trying to make a method to construct a shear matrix since there didn't seem to be one.  Hopefully this won't cause too much confusion for later chapters.  **Really** glad the book includes tests for everything!
 
 ### Chapter 5 - Ray-Sphere Intersections
 
@@ -51,5 +51,6 @@ Pretty long chapter!
 * Ran into a few hiccups that thankfully were due to a transcription error on my part as well as forgetting some of the things I've already implemented.  Once I remembered that, oh yeah, there was a special type for intersections that the book had me make, it went a bit smoother.  I ended up deleting that type in favor of a single extension method which I'm not sure was a good idea or not... It certainly cuts down on boilerplate code (since it was just a `List` with a single method) but I feel like all these static methods everywhere aren't quite as discoverable.
 * I really dislike the name of the "`Computations`" class but I'm not sure I can come up with a better name.  
 * I had to write a bunch of boilerplate equality code for things like shapes that probably wasn't worth it.  Equality is definitely a sore spot in C# that feels pretty archaic - should it really require like four methods to really _really_ define equality?
+* The `Matrix4x4` did have a `CreateLookAt` method that mostly does the same thing as `CreateViewTransform` but the book threw in some tweaks that later chapters probably depend on so I ended up keeping the custom one.  The .NET one looks to be a bit faster but this method won't be called very often so who cares.
 * Still pretty happy with the speed of the rendering.
 * I _could_ at this point hook up the camera to movement controls in the GUI app, but I don't have the energy right now.
