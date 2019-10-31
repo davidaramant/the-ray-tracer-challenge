@@ -43,3 +43,13 @@ I don't remember too many surprises from this chapter.
 I was severely tempted to hook up the key bindings again to be able to move the sphere around on screen, but I figure I'll wait until the book introduces a real camera.
 
 I included [Colourful](https://github.com/tompazourek/Colourful) to support the conversion from linear RGB (which, I suspect, is what the book is really using) to sRGB.  I learned about this from a wonderful [talk at Strange Loop 2019](https://www.youtube.com/watch?v=AS1OHMW873s).  Messing with CIELAB would be interesting too, but my understanding is that would drastically change all the math done on colors throughout the ray tracer and I would probably get lost from diverging from the book too much.
+
+### Chapter 7 - Making a Scene
+
+Pretty long chapter!
+
+* Ran into a few hiccups that thankfully were due to a transcription error on my part as well as forgetting some of the things I've already implemented.  Once I remembered that, oh yeah, there was a special type for intersections that the book had me make, it went a bit smoother.  I ended up deleting that type in favor of a single extension method which I'm not sure was a good idea or not... It certainly cuts down on boilerplate code (since it was just a `List` with a single method) but I feel like all these static methods everywhere aren't quite as discoverable.
+* I really dislike the name of the "`Computations`" class but I'm not sure I can come up with a better name.  
+* I had to write a bunch of boilerplate equality code for things like shapes that probably wasn't worth it.  Equality is definitely a sore spot in C# that feels pretty archaic - should it really require like four methods to really _really_ define equality?
+* Still pretty happy with the speed of the rendering.
+* I _could_ at this point hook up the camera to movement controls in the GUI app, but I don't have the energy right now.
