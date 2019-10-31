@@ -112,7 +112,12 @@ namespace RayTracer.Core
             return new World
             {
                 Objects = { floor, leftWall, rightWall, middle, right, left, },
-                Lights = { new PointLight(CreatePoint(-10, 10, -10), VColor.White) },
+                Lights =
+                {
+                    new PointLight(CreatePoint(-10, 10, -10), VColor.Blue),
+                    new PointLight(CreatePoint(0, 10, -10), VColor.Red),
+                    new PointLight(CreatePoint(10, 10, -10), VColor.Green),
+                },
             };
         }
 
