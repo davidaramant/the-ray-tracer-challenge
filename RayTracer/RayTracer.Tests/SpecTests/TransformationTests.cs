@@ -295,6 +295,15 @@ namespace RayTracer.Tests.SpecTests
         //    And up ← vector(0, 1, 0)
         //  When t ← view_transform(from, to, up)
         //  Then t = identity_matrix
+        [Test]
+        public void ShouldMakeViewMatrixForDefaultOrientation()
+        {
+            var from = CreatePoint(0, 0, 0);
+            var to = CreatePoint(0, 0, -1);
+            var up = CreateVector(0, 1, 0);
+            var t = CreateViewTransform(from, to, up);
+            AssertActualEqualToExpected(t, Identity);
+        }
 
         //Scenario: A view transformation matrix looking in positive z direction
         //  Given from ← point(0, 0, 0)
@@ -302,6 +311,15 @@ namespace RayTracer.Tests.SpecTests
         //    And up ← vector(0, 1, 0)
         //  When t ← view_transform(from, to, up)
         //  Then t = scaling(-1, 1, -1)
+        [Test]
+        public void ShouldMakeViewMatrixLookingInPositiveZDirection()
+        {
+            var from = CreatePoint(0, 0, 0);
+            var to = CreatePoint(0, 0, 1);
+            var up = CreateVector(0, 1, 0);
+            var t = CreateViewTransform(from, to, up);
+            AssertActualEqualToExpected(t, CreateScale(-1, 1, -1));
+        }
 
         //Scenario: The view transformation moves the world
         //  Given from ← point(0, 0, 8)
@@ -309,6 +327,15 @@ namespace RayTracer.Tests.SpecTests
         //    And up ← vector(0, 1, 0)
         //  When t ← view_transform(from, to, up)
         //  Then t = translation(0, 0, -8)
+        [Test]
+        public void ShouldMoveTheWorldWithViewTransformation()
+        {
+            var from = CreatePoint(0, 0, 8);
+            var to = CreatePoint(0, 0, 0);
+            var up = CreateVector(0, 1, 0);
+            var t = CreateViewTransform(from, to, up);
+            AssertActualEqualToExpected(t, CreateTranslation(0, 0, -8));
+        }
 
         //Scenario: An arbitrary view transformation
         //  Given from ← point(1, 3, 2)
@@ -320,6 +347,22 @@ namespace RayTracer.Tests.SpecTests
         //      |  0.76772 | 0.60609 |  0.12122 | -2.82843 |
         //      | -0.35857 | 0.59761 | -0.71714 |  0.00000 |
         //      |  0.00000 | 0.00000 |  0.00000 |  1.00000 |
+        [Test]
+        public void ShouldCreateArbitraryViewTransformation()
+        {
+            var from = CreatePoint(1, 3, 2);
+            var to = CreatePoint(4, -2, 8);
+            var up = CreateVector(1, 1, 0);
+            var t = CreateViewTransform(from, to, up);
+
+            var expected = Transpose(new Matrix4x4(
+                -0.50709f, 0.50709f, 0.67612f, -2.36643f,
+                0.76772f, 0.60609f, 0.12122f, -2.82843f,
+                -0.35857f, 0.59761f, -0.71714f, 0.00000f,
+                0.00000f, 0.00000f, 0.00000f, 1.00000f));
+
+            AssertActualEqualToExpected(t, expected);
+        }
 
     }
 }

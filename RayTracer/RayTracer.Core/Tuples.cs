@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using static System.Numerics.Vector4;
 
 namespace RayTracer.Core
 {
@@ -59,5 +60,21 @@ namespace RayTracer.Core
 
         public static Vector4 Reflect(Vector4 direction, Vector4 normal) =>
             direction - normal * 2 * Vector4.Dot(direction, normal);
+
+        public static Matrix4x4 CreateViewTransform(Vector4 from, Vector4 to, Vector4 up)
+        {
+            var forward = Normalize(to - from);
+            var upNormal = Normalize(up);
+            var left = Cross(ref forward, ref upNormal);
+            var trueUp = Cross(ref left, ref forward);
+
+            var orientation = new Matrix4x4(
+                left.X, trueUp.X, -forward.X, 0,
+                left.Y, trueUp.Y, -forward.Y, 0,
+                left.Z, trueUp.Z, -forward.Z, 0,
+                0, 0, 0, 1);
+
+            return Matrix4x4.CreateTranslation(-from.X, -from.Y, -from.Z) * orientation;
+        }
     }
 }
