@@ -4,6 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using RayTracer.Core;
 using RayTracer.Core.Utilities;
+using static RayTracer.Core.Tuples;
 
 namespace RayTracer.WpfGui
 {
@@ -11,6 +12,8 @@ namespace RayTracer.WpfGui
     {
         private readonly FastImage _canvas;
         private readonly WriteableBitmap _guiCanvas;
+        private readonly World _world = World.CreateTestWorld();
+        private readonly Camera _camera;
 
         public MainWindow()
         {
@@ -38,6 +41,14 @@ namespace RayTracer.WpfGui
 
             _guiCanvas.Clear(Colors.Black);
 
+            _camera = new Camera(width, height, MathF.PI / 3)
+            {
+                Transform = CreateViewTransform(
+                    from: CreatePoint(0, 1.5f, -5),
+                    to: CreatePoint(0, 1, 0),
+                    up: CreateVector(0, 1, 0)),
+            };
+
             CompositionTarget.Rendering += GameLoop;
 
             this.Loaded += MainWindow_Loaded;
@@ -45,7 +56,7 @@ namespace RayTracer.WpfGui
 
         private async void MainWindow_Loaded(object sender, EventArgs e)
         {
-            await Renderer.TraceScene(_canvas.Dimensions, _canvas.SetPixel);
+            await Renderer.TraceScene(_camera, _world, _canvas.SetPixel);
         }
 
         void GameLoop(object sender, EventArgs e)

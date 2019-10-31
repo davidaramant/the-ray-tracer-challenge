@@ -49,6 +49,73 @@ namespace RayTracer.Core
             },
         };
 
+        public static World CreateTestWorld()
+        {
+            var floor = new Sphere
+            {
+                Transform = CreateScale(10, 0.01f, 10),
+                Material =
+                {
+                    Color = VColor.Create(1, 0.9f, 0.9f),
+                    Specular = 0,
+                },
+            };
+            var leftWall = new Sphere
+            {
+                Transform = CreateScale(10, 0.01f, 10) *
+                            CreateRotationZ(PI / 2) *
+                            CreateRotationY(-PI / 4) *
+                            CreateTranslation(0, 0, 5),
+                Material = floor.Material,
+            };
+            var rightWall = new Sphere
+            {
+                Transform = CreateScale(10, 0.01f, 10) *
+                            CreateRotationX(PI / 2) *
+                            CreateRotationY(-PI / 4) *
+                            CreateTranslation(0, 0, 5),
+                Material = floor.Material,
+            };
+            var middle = new Sphere
+            {
+                Transform = CreateTranslation(-0.5f, 1, 0.5f),
+                Material =
+                {
+                    Color = VColor.Create(0.1f,1,0.5f),
+                    Diffuse = 0.7f,
+                    Specular = 0.3f,
+                }
+            };
+            var right = new Sphere
+            {
+                Transform = CreateScale(0.5f, 0.5f, 0.5f) *
+                            CreateTranslation(1.5f, 0.5f, -0.5f),
+                Material =
+                {
+                    Color = VColor.Create(0.5f,1,0.1f),
+                    Diffuse = 0.7f,
+                    Specular = 0.3f,
+                }
+            };
+            var left = new Sphere
+            {
+                Transform = CreateScale(0.33f, 0.33f, 0.33f) *
+                            CreateTranslation(-1.5f, 0.33f, -0.75f),
+                Material =
+                {
+                    Color = VColor.Create(1,0.8f,0.1f),
+                    Diffuse = 0.7f,
+                    Specular = 0.3f,
+                }
+            };
+
+            return new World
+            {
+                Objects = { floor, leftWall, rightWall, middle, right, left, },
+                Lights = { new PointLight(CreatePoint(-10, 10, -10), VColor.White) },
+            };
+        }
+
         public Vector4 ShadeHit(Computations comp) =>
             Lights.Select(light =>
                 comp.Object.Material.ComputeColor(light, comp.Point, comp.EyeV, comp.NormalV))
