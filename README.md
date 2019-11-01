@@ -54,3 +54,9 @@ Pretty long chapter!
 * The `Matrix4x4` did have a `CreateLookAt` method that mostly does the same thing as `CreateViewTransform` but the book threw in some tweaks that later chapters probably depend on so I ended up keeping the custom one.  The .NET one looks to be a bit faster but this method won't be called very often so who cares.
 * Still pretty happy with the speed of the rendering.
 * I _could_ at this point hook up the camera to movement controls in the GUI app, but I don't have the energy right now.
+
+### Chapter 8 - Shadows
+
+Big problem here; the tests pass but the output looks horrible.  I've narrowed it down to the `OverPoint` calculation in `Computations`.  Using the shifted amount that the book uses, the large "spheres" that act as the walls of the scene have tons of visual artifacts.  If that distance is made a lot larger they diminish.  Not sure what on earth that's about.
+
+I don't know how to reason about why this is happening, so hopefully when planes are implemented in the next chapter the issue will magically go away...
