@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -51,8 +51,8 @@ namespace RayTracer.Core
 
         public Vector4 ShadeHit(Computations comp) =>
             Lights.Select(light =>
-                comp.Object.Material.ComputeColor(light, comp.Point, comp.EyeV, comp.NormalV))
-            .Aggregate(VColor.Black, (finalColor, color) => finalColor + color);
+                comp.Object.Material.ComputeColor(light, comp.OverPoint, comp.EyeV, comp.NormalV, inShadow: IsShadowed(light, comp.OverPoint)))
+                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color);
 
         public Vector4 ComputeColor(Ray ray)
         {
@@ -67,6 +67,18 @@ namespace RayTracer.Core
             var comp = Computations.Prepare(hit, ray);
 
             return ShadeHit(comp);
+        }
+
+        public bool IsShadowed(PointLight light, Vector4 point)
+        {
+            var v = light.Position - point;
+            var distance = v.Length();
+            var direction = Normalize(v);
+
+            var r = CreateRay(point, direction);
+            var xs = Intersect(r);
+            var hit = xs.TryGetHit();
+            return hit?.T < distance;
         }
     }
 }

@@ -181,21 +181,31 @@ namespace RayTracer.Tests.SpecTests
         //  Given w ← default_world()
         //    And p ← point(0, 10, 0)
         //   Then is_shadowed(w, p) is false
-
+        //
         //Scenario: The shadow when an object is between the point and the light
         //  Given w ← default_world()
         //    And p ← point(10, -10, 10)
         //   Then is_shadowed(w, p) is true
-
+        //
         //Scenario: There is no shadow when an object is behind the light
         //  Given w ← default_world()
         //    And p ← point(-20, 20, -20)
         //   Then is_shadowed(w, p) is false
-
+        //
         //Scenario: There is no shadow when an object is behind the point
         //  Given w ← default_world()
         //    And p ← point(-2, 2, -2)
         //   Then is_shadowed(w, p) is false
+        [TestCase(0, 10, 0, false)]
+        [TestCase(10, -10, 10, true)]
+        [TestCase(-20, 20, -20, false)]
+        [TestCase(-2, 2, -2, false)]
+        public void ShouldDetermineIfPointIsInShadowOfLight(float x, float y, float z, bool expectedInShadow)
+        {
+            var w = World.CreateDefault();
+            var p = CreatePoint(x, y, z);
+            Assert.That(w.IsShadowed(w.Lights.First(), p), Is.EqualTo(expectedInShadow));
+        }
 
         //Scenario: shade_hit() is given an intersection in shadow
         //  Given w ← world()
@@ -210,6 +220,27 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And c ← shade_hit(w, comps)
         //  Then c = color(0.1, 0.1, 0.1)
+        [Test]
+        public void ShouldShowShadeIntersectionInShadow()
+        {
+            var w = new World
+            {
+                Lights = { new PointLight(CreatePoint(0, 0, -10), VColor.White) },
+                Objects =
+                {
+                    new Sphere(),
+                    new Sphere
+                    {
+                        Transform = CreateTranslation(0,0,10)
+                    },
+                }
+            };
+            var r = CreateRay(CreatePoint(0, 0, 5), CreateVector(0, 0, 1));
+            var i = new Intersection(4, w.Objects[1]);
+            var comps = Computations.Prepare(i, r);
+            var c = w.ShadeHit(comps);
+            AssertActualEqualToExpected(c, VColor.LinearRGB(0.1f, 0.1f, 0.1f));
+        }
 
         //Scenario: The reflected color for a nonreflective material
         //  Given w ← default_world()

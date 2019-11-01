@@ -104,6 +104,17 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //  Then comps.over_point.z < -EPSILON/2
         //    And comps.point.z > comps.over_point.z
+        [Test]
+        public void ShouldOffsetPointInHit()
+        {
+            var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var shape = new Sphere { Transform = CreateTranslation(0, 0, 1) };
+            var i = new Intersection(5, shape);
+
+            var comps = Computations.Prepare(i, r);
+            Assert.That(comps.OverPoint.Z, Is.LessThan(-Tolerance / 2));
+            Assert.That(comps.Point.Z, Is.GreaterThan(comps.OverPoint.Z));
+        }
 
         //Scenario: The under point is offset below the surface
         //  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))

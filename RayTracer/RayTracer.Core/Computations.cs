@@ -8,6 +8,7 @@ namespace RayTracer.Core
         public float T { get; }
         public IShape Object { get; }
         public Vector4 Point { get; }
+        public Vector4 OverPoint { get; }
         public Vector4 EyeV { get; }
         public Vector4 NormalV { get; }
         public bool Inside { get; }
@@ -28,6 +29,7 @@ namespace RayTracer.Core
                 Inside = false;
                 NormalV = normalV;
             }
+            OverPoint = point + NormalV * Tuples.Tolerance;
         }
 
         public static Computations Prepare(Intersection i, Ray ray)
