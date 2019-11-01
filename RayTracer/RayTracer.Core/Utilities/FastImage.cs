@@ -24,6 +24,7 @@ namespace RayTracer.Core.Utilities
         public const PixelFormat Format = PixelFormat.Format32bppRgb;
         readonly int _pixelSizeInBytes = Image.GetPixelFormatSize(Format) / 8;
         readonly byte[] _pixelBuffer;
+        readonly ColourfulConverter _converter = new ColourfulConverter { TargetRGBWorkingSpace = RGBWorkingSpaces.sRGB };
 
         public int Width { get; }
         public int Height { get; }
@@ -51,8 +52,8 @@ namespace RayTracer.Core.Utilities
             var clampedColor = Vector4.Clamp(color, Vector4.Zero, Vector4.One);
 
             var linearRgbColor = new LinearRGBColor(clampedColor.X, clampedColor.Y, clampedColor.Z);
-            var converter = new ColourfulConverter { TargetRGBWorkingSpace = RGBWorkingSpaces.sRGB };
-            var sRgbColor = converter.ToRGB(linearRgbColor);
+            
+            var sRgbColor = _converter.ToRGB(linearRgbColor);
 
             var r = (byte)Math.Round(sRgbColor.R * 255).CropRange(0, 255);
             var g = (byte)Math.Round(sRgbColor.G * 255).CropRange(0, 255);

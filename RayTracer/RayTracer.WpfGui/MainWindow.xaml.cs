@@ -12,7 +12,7 @@ namespace RayTracer.WpfGui
     {
         private readonly FastImage _canvas;
         private readonly WriteableBitmap _guiCanvas;
-        private readonly World _world = World.CreateTestWorld();
+        private readonly World _world = TestScene.CreateTestWorld();
         private readonly Camera _camera;
 
         public MainWindow()
@@ -41,13 +41,7 @@ namespace RayTracer.WpfGui
 
             _guiCanvas.Clear(Colors.Black);
 
-            _camera = new Camera(width, height, MathF.PI / 3)
-            {
-                Transform = CreateViewTransform(
-                    from: CreatePoint(0, 1.5f, -5),
-                    to: CreatePoint(0, 1, 0),
-                    up: CreateVector(0, 1, 0)),
-            };
+            _camera = TestScene.CreateCamera(_canvas.Dimensions);
 
             CompositionTarget.Rendering += GameLoop;
 

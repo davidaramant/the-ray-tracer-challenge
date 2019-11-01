@@ -40,8 +40,8 @@ namespace RayTracer.Core
             var effectiveColor = Color * light.Intensity;
             var lightVector = Normalize(light.Position - position);
             var ambientContribution = effectiveColor * Ambient;
-            var diffuseContribution = VColor.Create(0, 0, 0);
-            var specularContribution = VColor.Create(0, 0, 0);
+            var diffuseContribution = VColor.LinearRGB(0, 0, 0);
+            var specularContribution = VColor.LinearRGB(0, 0, 0);
 
             var lightDotNormal = Dot(lightVector, normal);
             if (lightDotNormal > 0)

@@ -57,7 +57,7 @@ namespace RayTracer.Tests.SpecTests
             var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
-            AssertActualEqualToExpected(result, VColor.Create(1.9f, 1.9f, 1.9f));
+            AssertActualEqualToExpected(result, VColor.LinearRGB(1.9f, 1.9f, 1.9f));
         }
 
         //Scenario: Lighting with the eye between light and surface, eye offset 45°
@@ -95,7 +95,7 @@ namespace RayTracer.Tests.SpecTests
             var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
-            AssertActualEqualToExpected(result, VColor.Create(0.7364f, 0.7364f, 0.7364f));
+            AssertActualEqualToExpected(result, VColor.LinearRGB(0.7364f, 0.7364f, 0.7364f));
         }
 
         //Scenario: Lighting with eye in the path of the reflection vector
@@ -114,7 +114,7 @@ namespace RayTracer.Tests.SpecTests
             var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
-            AssertActualEqualToExpected(result, VColor.Create(1.6364f, 1.6364f, 1.6364f));
+            AssertActualEqualToExpected(result, VColor.LinearRGB(1.6364f, 1.6364f, 1.6364f));
         }
 
         //Scenario: Lighting with the light behind the surface
@@ -133,7 +133,7 @@ namespace RayTracer.Tests.SpecTests
             var light = new PointLight(CreatePoint(0, 0, 10), VColor.White);
 
             var result = m.ComputeColor(light, p, eye, normalY);
-            AssertActualEqualToExpected(result, VColor.Create(0.1f, 0.1f, 0.1f));
+            AssertActualEqualToExpected(result, VColor.LinearRGB(0.1f, 0.1f, 0.1f));
         }
 
         //Scenario: Lighting with the surface in shadow

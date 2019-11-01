@@ -47,7 +47,7 @@ namespace RayTracer.Tests.SpecTests
             {
                 Material =
                 {
-                    Color = VColor.Create(0.8f,1,0.6f),
+                    Color = VColor.LinearRGB(0.8f,1,0.6f),
                     Diffuse = 0.7f,
                     Specular = 0.2f,
                 }
@@ -102,7 +102,7 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(4, shape);
             var comps = Computations.Prepare(i, r);
             var c = w.ShadeHit(comps);
-            AssertActualEqualToExpected(c, VColor.Create(0.38066f, 0.47583f, 0.2855f));
+            AssertActualEqualToExpected(c, VColor.LinearRGB(0.38066f, 0.47583f, 0.2855f));
         }
 
         //Scenario: Shading an intersection from the inside
@@ -124,7 +124,7 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(0.5f, shape);
             var comps = Computations.Prepare(i, r);
             var c = w.ShadeHit(comps);
-            AssertActualEqualToExpected(c, VColor.Create(0.90498f, 0.90498f, 0.90498f));
+            AssertActualEqualToExpected(c, VColor.LinearRGB(0.90498f, 0.90498f, 0.90498f));
         }
 
         //Scenario: The color when a ray misses
@@ -152,7 +152,7 @@ namespace RayTracer.Tests.SpecTests
             var w = World.CreateDefault();
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
             var c = w.ComputeColor(r);
-            AssertActualEqualToExpected(c, VColor.Create(0.38066f, 0.47583f, 0.2855f));
+            AssertActualEqualToExpected(c, VColor.LinearRGB(0.38066f, 0.47583f, 0.2855f));
         }
 
         //Scenario: The color with an intersection behind the ray
