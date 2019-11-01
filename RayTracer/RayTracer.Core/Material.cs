@@ -28,7 +28,7 @@ namespace RayTracer.Core
                 throw new ArgumentOutOfRangeException(nameof(Shininess));
         }
 
-        public Vector4 ComputeColor(PointLight light, Vector4 position, Vector4 eyeVector, Vector4 normal)
+        public Vector4 ComputeColor(PointLight light, Vector4 position, Vector4 eyeVector, Vector4 normal, bool inShadow = false)
         {
 #if DEBUG
             Validate();
@@ -43,17 +43,20 @@ namespace RayTracer.Core
             var diffuseContribution = VColor.LinearRGB(0, 0, 0);
             var specularContribution = VColor.LinearRGB(0, 0, 0);
 
-            var lightDotNormal = Dot(lightVector, normal);
-            if (lightDotNormal > 0)
+            if (!inShadow)
             {
-                diffuseContribution = effectiveColor * Diffuse * lightDotNormal;
-                var reflectVector = Reflect(-lightVector, normal);
-                var reflectDotEye = Dot(reflectVector, eyeVector);
-
-                if (reflectDotEye > 0)
+                var lightDotNormal = Dot(lightVector, normal);
+                if (lightDotNormal > 0)
                 {
-                    var factor = Pow(reflectDotEye, Shininess);
-                    specularContribution = light.Intensity * Specular * factor;
+                    diffuseContribution = effectiveColor * Diffuse * lightDotNormal;
+                    var reflectVector = Reflect(-lightVector, normal);
+                    var reflectDotEye = Dot(reflectVector, eyeVector);
+
+                    if (reflectDotEye > 0)
+                    {
+                        var factor = Pow(reflectDotEye, Shininess);
+                        specularContribution = light.Intensity * Specular * factor;
+                    }
                 }
             }
 
@@ -65,11 +68,11 @@ namespace RayTracer.Core
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return 
-                Ambient.IsEquivalentTo(other.Ambient) && 
-                Color.IsEquivalentTo(other.Color) && 
-                Diffuse.IsEquivalentTo(other.Diffuse) && 
-                Shininess.IsEquivalentTo(other.Shininess) && 
+            return
+                Ambient.IsEquivalentTo(other.Ambient) &&
+                Color.IsEquivalentTo(other.Color) &&
+                Diffuse.IsEquivalentTo(other.Diffuse) &&
+                Shininess.IsEquivalentTo(other.Shininess) &&
                 Specular.IsEquivalentTo(other.Specular);
         }
 

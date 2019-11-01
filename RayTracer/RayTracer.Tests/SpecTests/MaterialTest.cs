@@ -109,7 +109,7 @@ namespace RayTracer.Tests.SpecTests
         {
             var m = new Material();
             var p = CreatePoint(0, 0, 0);
-            var eye = CreateVector(0, -Sqrt(2)/2, -Sqrt(2)/2);
+            var eye = CreateVector(0, -Sqrt(2) / 2, -Sqrt(2) / 2);
             var normalY = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
@@ -143,6 +143,18 @@ namespace RayTracer.Tests.SpecTests
         //    And in_shadow ← true
         //  When result ← lighting(m, light, position, eyev, normalv, in_shadow)
         //  Then result = color(0.1, 0.1, 0.1)
+        [Test]
+        public void ShouldComputeLightingWithSurfaceInShadow()
+        {
+            var m = new Material();
+            var p = CreatePoint(0, 0, 0);
+            var eye = CreateVector(0, 0, -1);
+            var normalY = CreateVector(0, 0, -1);
+            var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
+
+            var result = m.ComputeColor(light, p, eye, normalY, inShadow: true);
+            AssertActualEqualToExpected(result, VColor.LinearRGB(0.1f, 0.1f, 0.1f));
+        }
 
         //Scenario: Lighting with a pattern applied
         //  Given m.pattern ← stripe_pattern(color(1, 1, 1), color(0, 0, 0))
