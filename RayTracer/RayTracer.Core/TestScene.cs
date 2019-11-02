@@ -9,33 +9,30 @@ namespace RayTracer.Core
     {
         public static World CreateTestWorld()
         {
-            var floor = new Sphere("floor")
+            var floor = new XZPlane("floor")
             {
-                Transform = CreateScale(10, 0.01f, 10),
                 Material =
                 {
                     Color = VColor.Red,
                     Specular = 0,
                 },
             };
-            var leftWall = new Sphere("right wall")
+            var rightWall = new XZPlane("right wall")
             {
-                Transform = CreateScale(10, 0.01f, 10) *
-                            CreateRotationZ(MathF.PI / 2) *
-                            CreateRotationY(-MathF.PI / 4) *
-                            CreateTranslation(0, 0, 5),
+                Transform = 
+                    CreateRotationZ(-MathF.PI / 2) *
+                    CreateTranslation(5, 0, 0),
                 Material =
                 {
                     Color = VColor.Green,
                     Specular = 0,
                 },
             };
-            var rightWall = new Sphere("left wall")
+            var leftWall = new XZPlane("left wall")
             {
-                Transform = CreateScale(10, 0.01f, 10) *
-                            CreateRotationX(MathF.PI / 2) *
-                            CreateRotationY(-MathF.PI / 4) *
-                            CreateTranslation(0, 0, 5),
+                Transform = 
+                        CreateRotationX(MathF.PI / 2) *
+                        CreateTranslation(0, 0, 5),
                 Material =
                 {
                     Color = VColor.Blue,
@@ -77,12 +74,12 @@ namespace RayTracer.Core
 
             return new World
             {
-                Objects = { floor, leftWall, rightWall, middle, right, left, },
+                Objects = { floor, rightWall, leftWall, middle, right, left, },
                 Lights =
                 {
                     new PointLight(CreatePoint(-10, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
                     new PointLight(CreatePoint(0, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
-                    new PointLight(CreatePoint(10, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
+                    new PointLight(CreatePoint(3, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
                 },
             };
         }
@@ -90,7 +87,7 @@ namespace RayTracer.Core
         public static Camera CreateCamera(IOutputBuffer output) => new Camera(output, MathF.PI / 3)
             {
                 Transform = CreateViewTransform(
-                    from: CreatePoint(0, 1.5f, -5),
+                    from: CreatePoint(-5, 3, -5),
                     to: CreatePoint(0, 1, 0),
                     up: CreateVector(0, 1, 0)),
             };
