@@ -10,7 +10,7 @@ namespace RayTracer.WpfGui
 {
     public partial class MainWindow : Window
     {
-        private readonly FastImage _canvas;
+        private readonly ImageBuffer _canvas;
         private readonly WriteableBitmap _guiCanvas;
         private readonly World _world = TestScene.CreateTestWorld();
         private readonly Camera _camera;
@@ -31,7 +31,7 @@ namespace RayTracer.WpfGui
                 96,
                 PixelFormats.Bgr32,
                 null);
-            _canvas = new FastImage(width, height);
+            _canvas = new ImageBuffer(width, height);
 
             OutputImage.Source = _guiCanvas;
 

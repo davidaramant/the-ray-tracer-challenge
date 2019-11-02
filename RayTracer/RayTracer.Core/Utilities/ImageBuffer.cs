@@ -18,7 +18,7 @@ namespace RayTracer.Core.Utilities
         }
     }
 
-    public sealed class FastImage
+    public sealed class ImageBuffer
     {
 
         public const PixelFormat Format = PixelFormat.Format32bppRgb;
@@ -32,11 +32,11 @@ namespace RayTracer.Core.Utilities
         public int PixelCount => Width * Height;
         public int Stride { get; }
 
-        public FastImage(Size resolution) : this(resolution.Width, resolution.Height)
+        public ImageBuffer(Size resolution) : this(resolution.Width, resolution.Height)
         {
         }
 
-        public FastImage(int width, int height)
+        public ImageBuffer(int width, int height)
         {
             Width = width;
             Height = height;

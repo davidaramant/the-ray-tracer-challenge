@@ -9,7 +9,7 @@ namespace RayTracer.ConsoleRunner
     {
         static async Task Main(string[] args)
         {
-            var image = new FastImage(100, 100);
+            var image = new ImageBuffer(100, 100);
 
             using (var progress = new ProgressBar(image.Height, "Tracing image..."))
             {
