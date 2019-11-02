@@ -31,7 +31,7 @@ namespace RayTracer.WpfGui
                 96,
                 PixelFormats.Bgr32,
                 null);
-            _canvas = new ScaledImageBuffer(width, height, RenderScale.Eighth);
+            _canvas = new ScaledImageBuffer(width, height, RenderScale.Normal);
 
             OutputImage.Source = _guiCanvas;
 

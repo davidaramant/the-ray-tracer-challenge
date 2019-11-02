@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+using System;
 using RayTracer.Core.Utilities;
 using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
@@ -10,32 +9,40 @@ namespace RayTracer.Core
     {
         public static World CreateTestWorld()
         {
-            var floor = new Sphere
+            var floor = new Sphere("floor")
             {
                 Transform = CreateScale(10, 0.01f, 10),
                 Material =
                 {
-                    Color = VColor.SRGB(1, 0.9f, 0.9f),
+                    Color = VColor.Red,
                     Specular = 0,
                 },
             };
-            var leftWall = new Sphere
+            var leftWall = new Sphere("right wall")
             {
                 Transform = CreateScale(10, 0.01f, 10) *
                             CreateRotationZ(MathF.PI / 2) *
                             CreateRotationY(-MathF.PI / 4) *
                             CreateTranslation(0, 0, 5),
-                Material = floor.Material,
+                Material =
+                {
+                    Color = VColor.Green,
+                    Specular = 0,
+                },
             };
-            var rightWall = new Sphere
+            var rightWall = new Sphere("left wall")
             {
                 Transform = CreateScale(10, 0.01f, 10) *
                             CreateRotationX(MathF.PI / 2) *
                             CreateRotationY(-MathF.PI / 4) *
                             CreateTranslation(0, 0, 5),
-                Material = floor.Material,
+                Material =
+                {
+                    Color = VColor.Blue,
+                    Specular = 0,
+                },
             };
-            var middle = new Sphere
+            var middle = new Sphere("middle")
             {
                 Transform = CreateTranslation(-0.5f, 1, 0.5f),
                 Material =
@@ -45,24 +52,24 @@ namespace RayTracer.Core
                     Specular = 0.3f,
                 }
             };
-            var right = new Sphere
+            var right = new Sphere("right")
             {
                 Transform = CreateScale(0.5f, 0.5f, 0.5f) *
                             CreateTranslation(1.5f, 0.5f, -0.5f),
                 Material =
                 {
-                    Color = VColor.SRGB(0.5f,1,0.1f),
+                    Color = VColor.Black,
                     Diffuse = 0.7f,
                     Specular = 0.3f,
                 }
             };
-            var left = new Sphere
+            var left = new Sphere("left")
             {
                 Transform = CreateScale(0.33f, 0.33f, 0.33f) *
                             CreateTranslation(-1.5f, 0.33f, -0.75f),
                 Material =
                 {
-                    Color = VColor.SRGB(1,0.8f,0.1f),
+                    Color = VColor.White,
                     Diffuse = 0.7f,
                     Specular = 0.3f,
                 }
@@ -73,9 +80,9 @@ namespace RayTracer.Core
                 Objects = { floor, leftWall, rightWall, middle, right, left, },
                 Lights =
                 {
-                    new PointLight(CreatePoint(-10, 10, -10), VColor.Blue),
-                    new PointLight(CreatePoint(0, 10, -10), VColor.Red),
-                    new PointLight(CreatePoint(10, 10, -10), VColor.Green),
+                    new PointLight(CreatePoint(-10, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
+                    new PointLight(CreatePoint(0, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
+                    new PointLight(CreatePoint(10, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
                 },
             };
         }
