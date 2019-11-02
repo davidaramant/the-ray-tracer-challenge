@@ -23,26 +23,17 @@ namespace RayTracer.Core
             }
         }
 
-        public Vector4 Position { get; }
-        public float Radius { get; }
+        public string Name { get; }
+        public Vector4 Position { get; } = CreatePoint(0, 0, 0);
         public Material Material { get; set; } = new Material();
 
-        public Sphere() : this(CreatePoint(0, 0, 0), 1)
+        public Sphere(string name = null)
         {
+            Name = name ?? "Sphere";
         }
 
-        public Sphere(Vector4 position, float radius)
-        {
-#if DEBUG
-            if (!position.IsPoint()) throw new ArgumentException("Position is not point", nameof(position));
-            if (radius < 0) throw new ArgumentOutOfRangeException(nameof(radius), "Radius was negative");
-#endif
 
-            Position = position;
-            Radius = radius;
-        }
-
-        public override string ToString() => "Sphere";
+        public override string ToString() => Name;
 
         public List<Intersection> Intersect(Ray ray)
         {
@@ -87,8 +78,7 @@ namespace RayTracer.Core
                 other is Sphere o &&
                 _transform.Equals(o._transform) && 
                 Material.Equals(o.Material) && 
-                Position.IsEquivalentTo(o.Position) && 
-                Radius.IsEquivalentTo(o.Radius);
+                Position.IsEquivalentTo(o.Position);
         }
 
         public override bool Equals(object obj)
@@ -103,7 +93,6 @@ namespace RayTracer.Core
                 var hashCode = _transform.GetHashCode();
                 hashCode = (hashCode * 397) ^ Material.GetHashCode();
                 hashCode = (hashCode * 397) ^ Position.Truncate().GetHashCode();
-                hashCode = (hashCode * 397) ^ Radius.Truncate().GetHashCode();
                 return hashCode;
             }
         }
