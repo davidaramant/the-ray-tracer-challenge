@@ -60,3 +60,9 @@ Pretty long chapter!
 Big problem here; the tests pass but the output looks horrible.  I've narrowed it down to the `OverPoint` calculation in `Computations`.  Using the shifted amount that the book uses, the large "spheres" that act as the walls of the scene have tons of visual artifacts.  If that distance is made a lot larger they diminish.  Not sure what on earth that's about.
 
 I don't know how to reason about why this is happening, so hopefully when planes are implemented in the next chapter the issue will magically go away...
+
+### Chapter 9 - Planes
+
+* No real surprises in the content of the chapter.  I had to name the plane `XZPlane` since `System.Numerics.Plane` already exists and it would have been tedious to specify which one to use in every file.
+* I implemented the concept of rendering at a lower resolution and started down the path of making everything dynamically react to changes in the output resolution.  Being able to move the camera around and change rendering quality at run time will be a bit tricky since the current rendering has to be interrupted.  Updating the variables used in the current rendering pass would cause severe problems.
+* Spent some time trying to debug the visual artifacts from the previous chapter.  I'm not sure where the resolution of a `float` is causing an issue but I refuse to change to `double` on both pragmatic and philosophical grounds (no fast ray tracer has to resort to `double`s).  Switching the walls from incredibly distorted spheres to actual planes did clear it up, but when I moved the camera around a bit I did see them come back...
