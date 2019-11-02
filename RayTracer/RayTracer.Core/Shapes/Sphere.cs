@@ -3,7 +3,7 @@ using System.Numerics;
 using static System.MathF;
 using static System.Numerics.Vector4;
 
-namespace RayTracer.Core
+namespace RayTracer.Core.Shapes
 {
     public sealed class Sphere : Shape
     {

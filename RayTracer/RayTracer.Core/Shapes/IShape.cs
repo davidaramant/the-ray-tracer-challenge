@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 
-namespace RayTracer.Core
+namespace RayTracer.Core.Shapes
 {
     public interface IShape
     {

@@ -2,7 +2,7 @@
 using System.Numerics;
 using static RayTracer.Core.Tuples;
 
-namespace RayTracer.Core
+namespace RayTracer.Core.Shapes
 {
     public sealed class XZPlane : Shape
     {

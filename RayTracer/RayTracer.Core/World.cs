@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using RayTracer.Core.Shapes;
 using static RayTracer.Core.Tuples;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;

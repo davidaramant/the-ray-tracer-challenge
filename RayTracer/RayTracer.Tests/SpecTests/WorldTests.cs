@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using RayTracer.Core;
+using RayTracer.Core.Shapes;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;

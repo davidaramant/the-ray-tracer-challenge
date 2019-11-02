@@ -3,7 +3,7 @@ using System.Numerics;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
 
-namespace RayTracer.Core
+namespace RayTracer.Core.Shapes
 {
     public abstract class Shape : IShape
     {

@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using RayTracer.Core.Shapes;
 using static System.Numerics.Vector4;
 
 namespace RayTracer.Core

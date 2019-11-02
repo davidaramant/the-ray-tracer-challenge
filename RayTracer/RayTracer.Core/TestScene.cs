@@ -1,4 +1,5 @@
 using System;
+using RayTracer.Core.Shapes;
 using RayTracer.Core.Utilities;
 using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
