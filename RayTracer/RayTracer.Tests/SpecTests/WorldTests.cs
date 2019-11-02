@@ -59,8 +59,11 @@ namespace RayTracer.Tests.SpecTests
 
             var w = World.CreateDefault();
             Assert.That(w.Lights, Has.Member(light));
-            Assert.That(w.Objects, Has.Member(s1));
-            Assert.That(w.Objects, Has.Member(s2));
+            Assert.That(w.Objects, Has.Count.EqualTo(2));
+            Assert.That(w.Objects[0].Material, Is.EqualTo(s1.Material));
+            Assert.That(w.Objects[0].Transform, Is.EqualTo(s1.Transform));
+            Assert.That(w.Objects[1].Material, Is.EqualTo(s2.Material));
+            Assert.That(w.Objects[1].Transform, Is.EqualTo(s2.Transform));
         }
 
         //Scenario: Intersect a world with a ray
