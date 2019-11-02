@@ -14,7 +14,7 @@ namespace RayTracer.ConsoleRunner
             using (var progress = new ProgressBar(image.Height, "Tracing image..."))
             {
                 await Renderer.TraceScene(
-                    TestScene.CreateCamera(image.Dimensions), 
+                    TestScene.CreateCamera(image), 
                     TestScene.CreateTestWorld(), 
                     image.SetPixel, 
                     () => progress.Tick());

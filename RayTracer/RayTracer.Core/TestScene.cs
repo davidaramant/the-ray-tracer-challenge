@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using RayTracer.Core.Utilities;
 using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
 
@@ -79,7 +80,7 @@ namespace RayTracer.Core
             };
         }
 
-        public static Camera CreateCamera(Size dimensions) => new Camera(dimensions, MathF.PI / 3)
+        public static Camera CreateCamera(IOutputBuffer output) => new Camera(output, MathF.PI / 3)
             {
                 Transform = CreateViewTransform(
                     from: CreatePoint(0, 1.5f, -5),

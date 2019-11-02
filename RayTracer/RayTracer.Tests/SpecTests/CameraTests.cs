@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Drawing;
+using Moq;
 using NUnit.Framework;
 using RayTracer.Core;
+using RayTracer.Core.Utilities;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -15,6 +18,13 @@ namespace RayTracer.Tests.SpecTests
     [TestFixture]
     public class CameraTests
     {
+        private static IOutputBuffer CreateMockBuffer(int width, int height)
+        {
+            var mockBuffer = new Mock<IOutputBuffer>();
+            mockBuffer.Setup(b => b.Dimensions).Returns(new Size(width, height));
+            return mockBuffer.Object;
+        }
+
         //Scenario: Constructing a camera
         //  Given hsize ← 160
         //    And vsize ← 120
@@ -30,7 +40,7 @@ namespace RayTracer.Tests.SpecTests
             var hSize = 160;
             var vSize = 120;
             var fieldOfView = PI / 2;
-            var c = new Camera(hSize, vSize, fieldOfView);
+            var c = new Camera(CreateMockBuffer(hSize, vSize), fieldOfView);
             Assert.That(c.Dimensions.Width, Is.EqualTo(hSize));
             Assert.That(c.Dimensions.Height, Is.EqualTo(vSize));
             Assert.That(c.FieldOfView, Is.EqualTo(fieldOfView).Within(Tolerance));
@@ -43,7 +53,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCalculatePixelSizeForHorizontalCanvas()
         {
-            var c = new Camera(200, 125, PI / 2);
+            var c = new Camera(CreateMockBuffer(200, 125), PI / 2);
             Assert.That(c.PixelSize, Is.EqualTo(0.01f).Within(Tolerance));
         }
 
@@ -53,7 +63,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCalculatePixelSizeForVerticalCanvas()
         {
-            var c = new Camera(125, 200, PI / 2);
+            var c = new Camera(CreateMockBuffer(125, 200), PI / 2);
             Assert.That(c.PixelSize, Is.EqualTo(0.01f).Within(Tolerance));
         }
 
@@ -65,7 +75,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCreateRayThroughCenterOfCanvas()
         {
-            var c = new Camera(201, 101, PI / 2);
+            var c = new Camera(CreateMockBuffer(201, 101), PI / 2);
             var r = c.CreateRayForPixel(100, 50);
             AssertActualEqualToExpected(r.Origin, CreatePoint(0, 0, 0));
             AssertActualEqualToExpected(r.Direction, CreateVector(0, 0, -1));
@@ -79,7 +89,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCreateRayThroughCornerOfCanvas()
         {
-            var c = new Camera(201, 101, PI / 2);
+            var c = new Camera(CreateMockBuffer(201, 101), PI / 2);
             var r = c.CreateRayForPixel(0, 0);
             AssertActualEqualToExpected(r.Origin, CreatePoint(0, 0, 0));
             AssertActualEqualToExpected(r.Direction, CreateVector(0.66519f, 0.33259f, -0.66851f));
@@ -94,7 +104,7 @@ namespace RayTracer.Tests.SpecTests
         [Test]
         public void ShouldCreateRayWhenCameraIsTransformed()
         {
-            var c = new Camera(201, 101, PI / 2)
+            var c = new Camera(CreateMockBuffer(201, 101), PI / 2)
             {
                 Transform = CreateTranslation(0, -2, 5) * CreateRotationY(PI / 4),
             };
@@ -112,7 +122,7 @@ namespace RayTracer.Tests.SpecTests
         //    And c.transform ← view_transform(from, to, up)
         //  When image ← render(c, w)
         //  Then pixel_at(image, 5, 5) = color(0.38066, 0.47583, 0.2855)
-        
+
         // Naw, I'm not writing this test.  My framework differs too much from the book
     }
 }

@@ -10,7 +10,7 @@ namespace RayTracer.WpfGui
 {
     public partial class MainWindow : Window
     {
-        private readonly ImageBuffer _canvas;
+        private readonly ScaledImageBuffer _canvas;
         private readonly WriteableBitmap _guiCanvas;
         private readonly World _world = TestScene.CreateTestWorld();
         private readonly Camera _camera;
@@ -31,7 +31,7 @@ namespace RayTracer.WpfGui
                 96,
                 PixelFormats.Bgr32,
                 null);
-            _canvas = new ImageBuffer(width, height);
+            _canvas = new ScaledImageBuffer(width, height, RenderScale.Eighth);
 
             OutputImage.Source = _guiCanvas;
 
@@ -41,7 +41,7 @@ namespace RayTracer.WpfGui
 
             _guiCanvas.Clear(Colors.Black);
 
-            _camera = TestScene.CreateCamera(_canvas.Dimensions);
+            _camera = TestScene.CreateCamera(_canvas);
 
             CompositionTarget.Rendering += GameLoop;
 
@@ -55,7 +55,9 @@ namespace RayTracer.WpfGui
 
         void GameLoop(object sender, EventArgs e)
         {
-            _guiCanvas.WritePixels(new Int32Rect(0, 0, _canvas.Width, _canvas.Height), _canvas.GetBuffer(), _canvas.Stride, 0);
+            _guiCanvas.WritePixels(new Int32Rect(0, 0, _canvas.ActualDimensions.Width, _canvas.ActualDimensions.Height), 
+                _canvas.GetBuffer(), 
+                _canvas.Stride, 0);
         }
     }
 }

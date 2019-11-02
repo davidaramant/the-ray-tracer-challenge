@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
+using RayTracer.Core.Utilities;
 using static System.MathF;
 using static RayTracer.Core.Tuples;
 using static System.Numerics.Matrix4x4;
@@ -11,7 +12,8 @@ namespace RayTracer.Core
 {
     public sealed class Camera
     {
-        public Size Dimensions { get; }
+        private readonly IOutputBuffer _output;
+        public Size Dimensions => _output.Dimensions;
         public float FieldOfView { get; }
         private Matrix4x4 _transform = Identity;
         private Matrix4x4 _inverseTransform = Identity;
@@ -25,22 +27,23 @@ namespace RayTracer.Core
             }
         }
 
-        public float PixelSize { get; }
+        public float PixelSize { get; private set; }
 
         private float _halfWidth;
         private float _halfHeight;
 
-        public Camera(int width, int height, float fieldOfView) : this(new Size(width, height), fieldOfView)
+        public Camera(IOutputBuffer output, float fieldOfView)
         {
+            FieldOfView = fieldOfView;
+            _output = output;
+            _output.DimensionsUpdated += (s, e) => OutputDimensionsUpdated();
+            OutputDimensionsUpdated();
         }
 
-        public Camera(Size dimensions, float fieldOfView)
+        private void OutputDimensionsUpdated()
         {
-            Dimensions = dimensions;
-            FieldOfView = fieldOfView;
-
-            var halfView = Tan(fieldOfView / 2);
-            var aspectRatio = (float)dimensions.Width / dimensions.Height;
+            var halfView = Tan(FieldOfView / 2);
+            var aspectRatio = (float)Dimensions.Width / Dimensions.Height;
 
             if (aspectRatio >= 1)
             {

@@ -18,9 +18,8 @@ namespace RayTracer.Core.Utilities
         }
     }
 
-    public sealed class ImageBuffer
+    public sealed class ImageBuffer : IOutputBuffer
     {
-
         public const PixelFormat Format = PixelFormat.Format32bppRgb;
         readonly int _pixelSizeInBytes = Image.GetPixelFormatSize(Format) / 8;
         readonly byte[] _pixelBuffer;
@@ -31,6 +30,8 @@ namespace RayTracer.Core.Utilities
         public Size Dimensions => new Size(Width, Height);
         public int PixelCount => Width * Height;
         public int Stride { get; }
+
+        public event EventHandler DimensionsUpdated;
 
         public ImageBuffer(Size resolution) : this(resolution.Width, resolution.Height)
         {
