@@ -8,6 +8,8 @@ namespace RayTracer.Core
     {
         public const float Tolerance = 0.00001f;
 
+        public static bool IsZero(this float f) => MathF.Abs(f) < Tolerance;
+
         public static float Truncate(this float f) => MathF.Round(f, 5);
 
         public static bool IsEquivalentTo(this float a, float b) => System.MathF.Abs(a - b) < Tolerance;

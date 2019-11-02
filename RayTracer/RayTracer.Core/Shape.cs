@@ -28,7 +28,7 @@ namespace RayTracer.Core
             return LocalIntersect(localRay);
         }
 
-        protected abstract List<Intersection> LocalIntersect(Ray localRay);
+        public abstract List<Intersection> LocalIntersect(Ray localRay);
 
         public Vector4 GetNormalAt(Vector4 worldPoint)
         {
@@ -39,6 +39,6 @@ namespace RayTracer.Core
             return Normalize(worldNormal);
         }
 
-        protected abstract Vector4 GetLocalNormalAt(Vector4 localPoint);
+        public abstract Vector4 GetLocalNormalAt(Vector4 localPoint);
     }
 }

@@ -16,7 +16,7 @@ namespace RayTracer.Core
 
         public override string ToString() => Name;
 
-        protected override List<Intersection> LocalIntersect(Ray localRay)
+        public override List<Intersection> LocalIntersect(Ray localRay)
         {
             var sphereToRay = localRay.Origin;
             sphereToRay.W = 0;
@@ -41,7 +41,7 @@ namespace RayTracer.Core
             }
         }
 
-        protected override Vector4 GetLocalNormalAt(Vector4 localPoint)
+        public override Vector4 GetLocalNormalAt(Vector4 localPoint)
         {
             var localNormal = localPoint;
             localNormal.W = 0;
