@@ -10,5 +10,6 @@ namespace RayTracer.Core.Shapes
 
         Vector4 GetNormalAt(Vector4 worldPoint);
         List<Intersection> Intersect(Ray ray);
+        Vector4 GetPatternColorAt(Vector4 worldPoint);
     }
 }

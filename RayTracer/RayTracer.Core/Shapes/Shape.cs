@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -8,7 +10,7 @@ namespace RayTracer.Core.Shapes
     public abstract class Shape : IShape
     {
         private Matrix4x4 _transform = Identity;
-        protected Matrix4x4 _inverseTransform = Identity;
+        protected Matrix4x4 InverseTransform = Identity;
 
         public Matrix4x4 Transform
         {
@@ -16,15 +18,26 @@ namespace RayTracer.Core.Shapes
             set
             {
                 _transform = value;
-                Invert(value, out _inverseTransform);
+                var result = Invert(value, out InverseTransform);
+#if DEBUG
+                if (!result) throw new InvalidOperationException("Could not invert shape transform");
+#endif
+
             }
         }
 
         public Material Material { get; set; } = new Material();
 
+        public Vector4 GetPatternColorAt(Vector4 worldPoint)
+        {
+            var objectPoint = Transform(worldPoint, InverseTransform);
+            var patternPoint = Transform(objectPoint, Material.Pattern.InverseTransform);
+            return Material.Pattern.GetColorAt(patternPoint);
+        }
+
         public List<Intersection> Intersect(Ray ray)
         {
-            var localRay = ray.Transform(ref _inverseTransform);
+            var localRay = ray.Transform(ref InverseTransform);
             return LocalIntersect(localRay);
         }
 
@@ -32,9 +45,9 @@ namespace RayTracer.Core.Shapes
 
         public Vector4 GetNormalAt(Vector4 worldPoint)
         {
-            var localPoint = Transform(worldPoint, _inverseTransform);
+            var localPoint = Transform(worldPoint, InverseTransform);
             var localNormal = GetLocalNormalAt(localPoint);
-            var worldNormal = Transform(localNormal, Transpose(_inverseTransform));
+            var worldNormal = Transform(localNormal, Transpose(InverseTransform));
             worldNormal.W = 0;
             return Normalize(worldNormal);
         }

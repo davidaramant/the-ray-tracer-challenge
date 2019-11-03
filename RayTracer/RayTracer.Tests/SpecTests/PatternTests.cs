@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RayTracer.Core;
 using RayTracer.Core.Patterns;
+using RayTracer.Core.Shapes;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -80,6 +81,21 @@ namespace RayTracer.Tests.SpecTests
         //    And pattern ← stripe_pattern(white, black)
         //  When c ← stripe_at_object(pattern, object, point(1.5, 0, 0))
         //  Then c = white
+        [Test]
+        public void ShouldUsePatternWithObjectTransformation()
+        {
+            var shape = new Sphere
+            {
+                Transform = CreateScale(2, 2, 2),
+                Material =
+                {
+                    Pattern = new StripePattern(VColor.White, VColor.Black),
+                }
+            };
+
+            var c = shape.GetPatternColorAt(CreatePoint(1.5f, 0, 0));
+            AssertActualEqualToExpected(c, VColor.White);
+        }
 
         //Scenario: Stripes with a pattern transformation
         //  Given object ← sphere()
@@ -87,6 +103,23 @@ namespace RayTracer.Tests.SpecTests
         //    And set_pattern_transform(pattern, scaling(2, 2, 2))
         //  When c ← stripe_at_object(pattern, object, point(1.5, 0, 0))
         //  Then c = white
+        [Test]
+        public void ShouldUsePatternWithPatternTransformation()
+        {
+            var shape = new Sphere
+            {
+                Material =
+                {
+                    Pattern = new StripePattern(VColor.White, VColor.Black)
+                    {
+                        Transform = CreateScale(2,2,2)
+                    },
+                }
+            };
+
+            var c = shape.GetPatternColorAt(CreatePoint(1.5f, 0, 0));
+            AssertActualEqualToExpected(c, VColor.White);
+        }
 
         //Scenario: Stripes with both an object and a pattern transformation
         //  Given object ← sphere()
@@ -95,6 +128,24 @@ namespace RayTracer.Tests.SpecTests
         //    And set_pattern_transform(pattern, translation(0.5, 0, 0))
         //  When c ← stripe_at_object(pattern, object, point(2.5, 0, 0))
         //  Then c = white
+        [Test]
+        public void ShouldUsePatternWithShapeAndPatternTransformation()
+        {
+            var shape = new Sphere
+            {
+                Transform = CreateScale(2, 2, 2),
+                Material =
+                {
+                    Pattern = new StripePattern(VColor.White, VColor.Black)
+                    {
+                        Transform = CreateTranslation(0.5f,0,0)
+                    },
+                }
+            };
+
+            var c = shape.GetPatternColorAt(CreatePoint(2.5f, 0, 0));
+            AssertActualEqualToExpected(c, VColor.White);
+        }
 
         //Scenario: The default pattern transformation
         //  Given pattern ← test_pattern()

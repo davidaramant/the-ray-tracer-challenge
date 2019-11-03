@@ -23,7 +23,7 @@ namespace RayTracer.Core
         public static Vector4 Truncate(this Vector4 a) => new Vector4(a.X.Truncate(), a.Y.Truncate(), a.Z.Truncate(), a.W.Truncate());
 
         public static bool IsPoint(this Vector4 tuple) => tuple.W.IsEquivalentTo(1);
-        public static bool IsVector(this Vector4 tuple) => tuple.W.IsEquivalentTo(0);
+        public static bool IsVector(this Vector4 tuple) => tuple.W.IsZero();
 
         public static Vector4 CreatePoint(float x, float y, float z) => new Vector4(x, y, z, 1);
         public static Vector4 CreateVector(float x, float y, float z) => new Vector4(x, y, z, 0);
