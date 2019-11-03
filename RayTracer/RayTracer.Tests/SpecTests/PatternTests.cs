@@ -217,17 +217,32 @@ namespace RayTracer.Tests.SpecTests
         //  Then pattern_at(pattern, point(0, 0, 0)) = white
         //    And pattern_at(pattern, point(0.99, 0, 0)) = white
         //    And pattern_at(pattern, point(1.01, 0, 0)) = black
-
+        //
         //Scenario: Checkers should repeat in y
         //  Given pattern ← checkers_pattern(white, black)
         //  Then pattern_at(pattern, point(0, 0, 0)) = white
         //    And pattern_at(pattern, point(0, 0.99, 0)) = white
         //    And pattern_at(pattern, point(0, 1.01, 0)) = black
-
+        //
         //Scenario: Checkers should repeat in z
         //  Given pattern ← checkers_pattern(white, black)
         //  Then pattern_at(pattern, point(0, 0, 0)) = white
         //    And pattern_at(pattern, point(0, 0, 0.99)) = white
         //    And pattern_at(pattern, point(0, 0, 1.01)) = black
+        [TestCase(0, 0, 0, true)]
+        [TestCase(0.99f, 0, 0, true)]
+        [TestCase(1.01f, 0, 0, false)]
+        [TestCase(0, 0.99f, 0, true)]
+        [TestCase(0, 1.01f, 0, false)]
+        [TestCase(0, 0, 0.99f, true)]
+        [TestCase(0, 0, 1.01f, false)]
+        public void ShouldRepeatInEachDirectionForCheckersPattern(float x, float y, float z, bool expectingWhite)
+        {
+            var pattern = new CheckerPattern(VColor.White, VColor.Black);
+            AssertActualEqualToExpected(
+                pattern.GetColorAt(CreatePoint(x, y, z)),
+                expectingWhite ? VColor.White : VColor.Black);
+
+        }
     }
 }

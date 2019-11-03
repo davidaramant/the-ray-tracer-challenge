@@ -15,7 +15,10 @@ namespace RayTracer.Core
             {
                 Material =
                 {
-                    Color = VColor.Red,
+                    Pattern = new CheckerPattern(VColor.LinearRGB(1,0.5f,0.5f), VColor.Red)
+                    {
+                        Transform = CreateScale(2,2,2) * CreateShear(0,1,0,0,0,0)
+                    },
                     Specular = 0,
                 },
             };
@@ -37,7 +40,7 @@ namespace RayTracer.Core
                         CreateTranslation(0, 0, 5),
                 Material =
                 {
-                    Pattern = new StripePattern(VColor.Blue, VColor.White),
+                    Pattern = new StripePattern(VColor.Blue, VColor.LinearRGB(0.5f,0.5f,1)),
                     Specular = 0,
                 },
             };
@@ -48,7 +51,7 @@ namespace RayTracer.Core
                 {
                     Pattern = new GradientPattern(VColor.LinearRGB(0.1f,1,0.5f), VColor.SRGB(1,0.5f,0))
                     {
-                        Transform = 
+                        Transform =
                             CreateScale(2,1,1) *
                             CreateTranslation(1,0,0),
                     },
