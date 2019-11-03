@@ -66,3 +66,10 @@ I don't know how to reason about why this is happening, so hopefully when planes
 * No real surprises in the content of the chapter.  I had to name the plane `XZPlane` since `System.Numerics.Plane` already exists and it would have been tedious to specify which one to use in every file.
 * I implemented the concept of rendering at a lower resolution and started down the path of making everything dynamically react to changes in the output resolution.  Being able to move the camera around and change rendering quality at run time will be a bit tricky since the current rendering has to be interrupted.  Updating the variables used in the current rendering pass would cause severe problems.
 * Spent some time trying to debug the visual artifacts from the previous chapter.  I'm not sure where the resolution of a `float` is causing an issue but I refuse to change to `double` on both pragmatic and philosophical grounds (no fast ray tracer has to resort to `double`s).  Switching the walls from incredibly distorted spheres to actual planes did clear it up, but when I moved the camera around a bit I did see them come back...
+
+### Chapter 10 - Patterns
+
+* Another fairly straightforward chapter.  Just like with shapes I didn't bother implementing the generic tests.
+* Shoving the pattern shading method on `IShape` _works_ but feels a bit clunky... I wonder if I'm just sticking to OO patterns because that's what I'm used to.  I suppose there's nothing preventing me from moving them out to free standing static functions in the future.
+* Didn't bother trying to do pattern combinations quite yet.
+* I did some work on a hack to get around that horrible `float` issue.  I made a new `FarOverPoint` on `Computation` that's shifted farther out and that's what's used for determining if a point is in shadow.
