@@ -1,4 +1,5 @@
 using System;
+using RayTracer.Core.Patterns;
 using RayTracer.Core.Shapes;
 using RayTracer.Core.Utilities;
 using static System.Numerics.Matrix4x4;
@@ -20,7 +21,7 @@ namespace RayTracer.Core
             };
             var rightWall = new XZPlane("right wall")
             {
-                Transform = 
+                Transform =
                     CreateRotationZ(-MathF.PI / 2) *
                     CreateTranslation(5, 0, 0),
                 Material =
@@ -31,12 +32,12 @@ namespace RayTracer.Core
             };
             var leftWall = new XZPlane("left wall")
             {
-                Transform = 
+                Transform =
                         CreateRotationX(MathF.PI / 2) *
                         CreateTranslation(0, 0, 5),
                 Material =
                 {
-                    Color = VColor.Blue,
+                    Pattern = new StripePattern(VColor.Blue, VColor.White),
                     Specular = 0,
                 },
             };
@@ -45,7 +46,7 @@ namespace RayTracer.Core
                 Transform = CreateTranslation(-0.5f, 1, 0.5f),
                 Material =
                 {
-                    Color = VColor.LinearRGB(0.1f,1,0.5f),
+                    Pattern = new StripePattern(VColor.LinearRGB(0.1f,1,0.5f), VColor.SRGB(1,0.5f,0)),
                     Diffuse = 0.7f,
                     Specular = 0.3f,
                 }
@@ -86,11 +87,11 @@ namespace RayTracer.Core
         }
 
         public static Camera CreateCamera(IOutputBuffer output) => new Camera(output, MathF.PI / 3)
-            {
-                Transform = CreateViewTransform(
+        {
+            Transform = CreateViewTransform(
                     from: CreatePoint(-5, 3, -5),
                     to: CreatePoint(0, 1, 0),
                     up: CreateVector(0, 1, 0)),
-            };
+        };
     }
 }
