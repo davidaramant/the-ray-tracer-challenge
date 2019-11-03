@@ -188,7 +188,9 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldLinearlyInterpolateColorsInGradientPattern([Values(0, 0.25f, 0.5f, 0.75f)] float x)
         {
             var pattern = new GradientPattern(VColor.White, VColor.Black);
-            AssertActualEqualToExpected(pattern.GetColorAt(CreatePoint(x, 0, 0)), VColor.LinearRGB(1 - x, 1 - x, 1 - x));
+            AssertActualEqualToExpected(
+                pattern.GetColorAt(CreatePoint(x, 0, 0)),
+                VColor.LinearRGB(1 - x, 1 - x, 1 - x));
         }
 
         //Scenario: A ring should extend in both x and z
@@ -198,6 +200,17 @@ namespace RayTracer.Tests.SpecTests
         //    And pattern_at(pattern, point(0, 0, 1)) = black
         //    # 0.708 = just slightly more than √2/2
         //    And pattern_at(pattern, point(0.708, 0, 0.708)) = black
+        [TestCase(0, 0, 0, true)]
+        [TestCase(1, 0, 0, false)]
+        [TestCase(0, 0, 1, false)]
+        [TestCase(0.708f, 0, 0.708f, false)]
+        public void ShouldExtendInBothXAndZInRingPattern(float x, float y, float z, bool expectingWhite)
+        {
+            var pattern = new RingPattern(VColor.White, VColor.Black);
+            AssertActualEqualToExpected(
+                pattern.GetColorAt(CreatePoint(x, y, z)),
+                expectingWhite ? VColor.White : VColor.Black);
+        }
 
         //Scenario: Checkers should repeat in x
         //  Given pattern ← checkers_pattern(white, black)

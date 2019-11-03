@@ -26,7 +26,7 @@ namespace RayTracer.Core
                     CreateTranslation(5, 0, 0),
                 Material =
                 {
-                    Color = VColor.Green,
+                    Pattern = new RingPattern(VColor.Green, VColor.White),
                     Specular = 0,
                 },
             };
