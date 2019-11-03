@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using RayTracer.Core.Patterns;
 using static RayTracer.Core.Tuples;
 using static System.Numerics.Vector4;
 using static System.MathF;
@@ -13,6 +14,7 @@ namespace RayTracer.Core
         public float Diffuse { get; set; } = 0.9f;
         public float Specular { get; set; } = 0.9f;
         public float Shininess { get; set; } = 200;
+        public IPattern Pattern { get; set; } = EmptyPattern.Instance;
 
         public void Validate()
         {
@@ -36,8 +38,9 @@ namespace RayTracer.Core
             if (!eyeVector.IsVector()) throw new ArgumentException("Eye must be vector", nameof(eyeVector));
             if (!normal.IsVector()) throw new ArgumentException("Normal must be vector", nameof(normal));
 #endif
+            var color = Pattern == EmptyPattern.Instance ? Color : Pattern.GetColorAt(position);
 
-            var effectiveColor = Color * light.Intensity;
+            var effectiveColor = color * light.Intensity;
             var lightVector = Normalize(light.Position - position);
             var ambientContribution = effectiveColor * Ambient;
             var diffuseContribution = VColor.LinearRGB(0, 0, 0);

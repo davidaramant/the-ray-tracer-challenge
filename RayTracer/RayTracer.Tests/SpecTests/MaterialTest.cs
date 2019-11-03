@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RayTracer.Core;
+using RayTracer.Core.Patterns;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -149,10 +150,10 @@ namespace RayTracer.Tests.SpecTests
             var m = new Material();
             var p = CreatePoint(0, 0, 0);
             var eye = CreateVector(0, 0, -1);
-            var normalY = CreateVector(0, 0, -1);
+            var normal = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normalY, inShadow: true);
+            var result = m.ComputeColor(light, p, eye, normal, inShadow: true);
             AssertActualEqualToExpected(result, VColor.LinearRGB(0.1f, 0.1f, 0.1f));
         }
 
@@ -168,5 +169,25 @@ namespace RayTracer.Tests.SpecTests
         //    And c2 ← lighting(m, light, point(1.1, 0, 0), eyev, normalv, false)
         //  Then c1 = color(1, 1, 1)
         //    And c2 = color(0, 0, 0)
+        [Test]
+        public void ShouldComputeLightingWithPatternApplied()
+        {
+            var m = new Material
+            {
+                Pattern = new StripePattern(VColor.White, VColor.Black),
+                Ambient = 1,
+                Diffuse = 0,
+                Specular = 0,
+            };
+            var eye = CreateVector(0, 0, -1);
+            var normal = CreateVector(0, 0, -1);
+            var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
+
+            var c1 = m.ComputeColor(light, CreatePoint(0.9f,0,0), eye, normal, inShadow: true);
+            AssertActualEqualToExpected(c1, VColor.White);
+
+            var c2 = m.ComputeColor(light, CreatePoint(1.1f,0,0), eye, normal, inShadow: true);
+            AssertActualEqualToExpected(c2, VColor.Black);
+        }
     }
 }
