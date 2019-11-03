@@ -6,7 +6,7 @@ namespace RayTracer.Core
 {
     public static class Tuples
     {
-        public const float Tolerance = 0.0001f;
+        public const float Tolerance = 0.00001f;
 
         public static bool IsZero(this float f) => MathF.Abs(f) < Tolerance;
 

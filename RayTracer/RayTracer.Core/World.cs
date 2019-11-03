@@ -52,7 +52,12 @@ namespace RayTracer.Core
 
         public Vector4 ShadeHit(Computations comp) =>
             Lights.Select(light =>
-                comp.Object.Material.ComputeColor(light, comp.OverPoint, comp.EyeV, comp.NormalV, inShadow: IsShadowed(light, comp.OverPoint)))
+                comp.Object.Material.ComputeColor(
+                    light, 
+                    comp.OverPoint, 
+                    comp.EyeV, 
+                    comp.NormalV, 
+                    inShadow: IsShadowed(light, comp.FarOverPoint)))
                 .Aggregate(VColor.Black, (finalColor, color) => finalColor + color);
 
         public Vector4 ComputeColor(Ray ray)

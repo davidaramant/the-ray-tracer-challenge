@@ -10,6 +10,7 @@ namespace RayTracer.Core
         public IShape Object { get; }
         public Vector4 Point { get; }
         public Vector4 OverPoint { get; }
+        public Vector4 FarOverPoint { get; }
         public Vector4 EyeV { get; }
         public Vector4 NormalV { get; }
         public bool Inside { get; }
@@ -31,6 +32,8 @@ namespace RayTracer.Core
                 NormalV = normalV;
             }
             OverPoint = point + NormalV * Tuples.Tolerance;
+            // HACK: Move the point pretty far for use in IsShadowed.  Some floating point error somewhere causes issues otherwise
+            FarOverPoint = point + NormalV * 0.001f;
         }
 
         public static Computations Prepare(Intersection i, Ray ray)
