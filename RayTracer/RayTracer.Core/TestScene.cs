@@ -46,7 +46,12 @@ namespace RayTracer.Core
                 Transform = CreateTranslation(-0.5f, 1, 0.5f),
                 Material =
                 {
-                    Pattern = new StripePattern(VColor.LinearRGB(0.1f,1,0.5f), VColor.SRGB(1,0.5f,0)),
+                    Pattern = new GradientPattern(VColor.LinearRGB(0.1f,1,0.5f), VColor.SRGB(1,0.5f,0))
+                    {
+                        Transform = 
+                            CreateScale(2,1,1) *
+                            CreateTranslation(1,0,0),
+                    },
                     Diffuse = 0.7f,
                     Specular = 0.3f,
                 }
