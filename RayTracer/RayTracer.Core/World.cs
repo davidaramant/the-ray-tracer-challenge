@@ -53,7 +53,8 @@ namespace RayTracer.Core
         public Vector4 ShadeHit(Computations comp) =>
             Lights.Select(light =>
                 comp.Object.Material.ComputeColor(
-                    light, 
+                    light,
+                    comp.Object,
                     comp.OverPoint, 
                     comp.EyeV, 
                     comp.NormalV, 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using RayTracer.Core.Patterns;
+using RayTracer.Core.Shapes;
 using static RayTracer.Core.Tuples;
 using static System.Numerics.Vector4;
 using static System.MathF;
@@ -30,7 +31,7 @@ namespace RayTracer.Core
                 throw new ArgumentOutOfRangeException(nameof(Shininess));
         }
 
-        public Vector4 ComputeColor(PointLight light, Vector4 position, Vector4 eyeVector, Vector4 normal, bool inShadow = false)
+        public Vector4 ComputeColor(PointLight light, IShape shape, Vector4 position, Vector4 eyeVector, Vector4 normal, bool inShadow = false)
         {
 #if DEBUG
             Validate();
@@ -38,7 +39,7 @@ namespace RayTracer.Core
             if (!eyeVector.IsVector()) throw new ArgumentException("Eye must be vector", nameof(eyeVector));
             if (!normal.IsVector()) throw new ArgumentException("Normal must be vector", nameof(normal));
 #endif
-            var color = Pattern == EmptyPattern.Instance ? Color : Pattern.GetColorAt(position);
+            var color = Pattern == EmptyPattern.Instance ? Color : shape.GetPatternColorAt(position);
 
             var effectiveColor = color * light.Intensity;
             var lightVector = Normalize(light.Position - position);

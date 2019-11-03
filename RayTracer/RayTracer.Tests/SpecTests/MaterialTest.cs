@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using RayTracer.Core;
 using RayTracer.Core.Patterns;
+using RayTracer.Core.Shapes;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -57,7 +58,7 @@ namespace RayTracer.Tests.SpecTests
             var normalY = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normalY);
+            var result = m.ComputeColor(light, new Sphere(), p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.LinearRGB(1.9f, 1.9f, 1.9f));
         }
 
@@ -76,7 +77,7 @@ namespace RayTracer.Tests.SpecTests
             var normalY = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normalY);
+            var result = m.ComputeColor(light, new Sphere(), p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.White);
         }
 
@@ -95,7 +96,7 @@ namespace RayTracer.Tests.SpecTests
             var normalY = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normalY);
+            var result = m.ComputeColor(light, new Sphere(), p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.LinearRGB(0.7364f, 0.7364f, 0.7364f));
         }
 
@@ -114,7 +115,7 @@ namespace RayTracer.Tests.SpecTests
             var normalY = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 10, -10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normalY);
+            var result = m.ComputeColor(light, new Sphere(), p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.LinearRGB(1.6364f, 1.6364f, 1.6364f));
         }
 
@@ -133,7 +134,7 @@ namespace RayTracer.Tests.SpecTests
             var normalY = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 0, 10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normalY);
+            var result = m.ComputeColor(light, new Sphere(), p, eye, normalY);
             AssertActualEqualToExpected(result, VColor.LinearRGB(0.1f, 0.1f, 0.1f));
         }
 
@@ -153,7 +154,7 @@ namespace RayTracer.Tests.SpecTests
             var normal = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
-            var result = m.ComputeColor(light, p, eye, normal, inShadow: true);
+            var result = m.ComputeColor(light, new Sphere(), p, eye, normal, inShadow: true);
             AssertActualEqualToExpected(result, VColor.LinearRGB(0.1f, 0.1f, 0.1f));
         }
 
@@ -183,10 +184,10 @@ namespace RayTracer.Tests.SpecTests
             var normal = CreateVector(0, 0, -1);
             var light = new PointLight(CreatePoint(0, 0, -10), VColor.White);
 
-            var c1 = m.ComputeColor(light, CreatePoint(0.9f,0,0), eye, normal, inShadow: true);
+            var c1 = m.ComputeColor(light, new Sphere { Material = m }, CreatePoint(0.9f, 0, 0), eye, normal, inShadow: true);
             AssertActualEqualToExpected(c1, VColor.White);
 
-            var c2 = m.ComputeColor(light, CreatePoint(1.1f,0,0), eye, normal, inShadow: true);
+            var c2 = m.ComputeColor(light, new Sphere { Material = m }, CreatePoint(1.1f, 0, 0), eye, normal, inShadow: true);
             AssertActualEqualToExpected(c2, VColor.Black);
         }
     }
