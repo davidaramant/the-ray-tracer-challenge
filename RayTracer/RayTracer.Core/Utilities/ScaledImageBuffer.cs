@@ -61,18 +61,18 @@ namespace RayTracer.Core.Utilities
 
         public void DecreaseQuality()
         {
-            if (Scale != RenderScale.Eighth)
+            if (!Scale.IsMinimumQuality())
             {
-                Scale = (RenderScale)((int)Scale * 2);
+                Scale = Scale.DecreaseQuality();
                 UpdateRenderingDimensions();
             }
         }
 
         public void IncreaseQuality()
         {
-            if (Scale != RenderScale.Normal)
+            if (!Scale.IsMaximumQuality())
             {
-                Scale = (RenderScale)((int)Scale / 2);
+                Scale = Scale.IncreaseQuality();
                 UpdateRenderingDimensions();
             }
         }

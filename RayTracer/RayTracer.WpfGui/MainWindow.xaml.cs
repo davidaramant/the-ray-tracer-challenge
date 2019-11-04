@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using RayTracer.Core;
 using RayTracer.Core.Utilities;
-using static RayTracer.Core.Tuples;
 
 namespace RayTracer.WpfGui
 {
@@ -14,6 +16,8 @@ namespace RayTracer.WpfGui
         private readonly WriteableBitmap _guiCanvas;
         private readonly World _world = TestScene.CreateTestWorld();
         private readonly Camera _camera;
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private Task _renderingTask;
 
         public MainWindow()
         {
@@ -31,7 +35,7 @@ namespace RayTracer.WpfGui
                 96,
                 PixelFormats.Bgr32,
                 null);
-            _canvas = new ScaledImageBuffer(width, height, RenderScale.Normal);
+            _canvas = new ScaledImageBuffer(width, height);
 
             OutputImage.Source = _guiCanvas;
 
@@ -44,13 +48,47 @@ namespace RayTracer.WpfGui
             _camera = TestScene.CreateCamera(_canvas);
 
             CompositionTarget.Rendering += GameLoop;
+            KeyDown += MainWindow_KeyDown;
 
-            this.Loaded += MainWindow_Loaded;
+            this.Loaded += (s,e) => StartRenderingScene();
         }
 
-        private async void MainWindow_Loaded(object sender, EventArgs e)
+        private async void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            await Renderer.TraceScene(_camera, _world, _canvas.SetPixel);
+            if (e.Key == Key.OemOpenBrackets && !_canvas.Scale.IsMinimumQuality())
+            {
+                await CancelRendering();
+                _canvas.DecreaseQuality();
+                StartRenderingScene();
+            }
+            else if (e.Key == Key.OemCloseBrackets && !_canvas.Scale.IsMaximumQuality())
+            {
+                await CancelRendering();
+                _canvas.IncreaseQuality();
+                StartRenderingScene();
+            }
+        }
+
+        private async Task CancelRendering()
+        {
+            if (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                _cancellationTokenSource.Cancel();
+            }
+
+            await _renderingTask;
+        }
+
+        private void StartRenderingScene()
+        {
+            _renderingTask = RenderSceneAsync();
+        }
+
+        private async Task RenderSceneAsync()
+        {
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource();
+            await Renderer.TraceScene(_camera, _world, _canvas.SetPixel, _cancellationTokenSource.Token);
         }
 
         void GameLoop(object sender, EventArgs e)
