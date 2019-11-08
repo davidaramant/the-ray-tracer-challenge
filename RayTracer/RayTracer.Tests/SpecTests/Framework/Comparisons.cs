@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
-using NUnit.Framework;
 using RayTracer.Core;
+using Shouldly;
 using static RayTracer.Core.Tuples;
 
 namespace RayTracer.Tests.SpecTests.Framework
@@ -10,42 +10,42 @@ namespace RayTracer.Tests.SpecTests.Framework
     {
         public static void AssertActualEqualToExpected(Vector4 actual, Vector4 expected)
         {
-            Assert.That(actual.X, Is.EqualTo(expected.X).Within(Tolerance), "Unexpected X value");
-            Assert.That(actual.Y, Is.EqualTo(expected.Y).Within(Tolerance), "Unexpected Y value");
-            Assert.That(actual.Z, Is.EqualTo(expected.Z).Within(Tolerance), "Unexpected Z value");
-            Assert.That(actual.W, Is.EqualTo(expected.W).Within(Tolerance), "Unexpected W value");
+            actual.X.ShouldBe(expected.X, Tolerance);
+            actual.Y.ShouldBe(expected.Y, Tolerance);
+            actual.Z.ShouldBe(expected.Z, Tolerance);
+            actual.W.ShouldBe(expected.W, Tolerance);
         }
 
         public static void AssertActualEqualToExpected(Matrix4x4 actual, Matrix4x4 expected)
         {
-            Assert.That(actual.M11, Is.EqualTo(expected.M11).Within(Tolerance), "Unexpected M11 value");
-            Assert.That(actual.M12, Is.EqualTo(expected.M12).Within(Tolerance), "Unexpected M12 value");
-            Assert.That(actual.M13, Is.EqualTo(expected.M13).Within(Tolerance), "Unexpected M13 value");
-            Assert.That(actual.M14, Is.EqualTo(expected.M14).Within(Tolerance), "Unexpected M14 value");
+            actual.M11.ShouldBe(expected.M11, Tolerance);
+            actual.M12.ShouldBe(expected.M12, Tolerance);
+            actual.M13.ShouldBe(expected.M13, Tolerance);
+            actual.M14.ShouldBe(expected.M14, Tolerance);
 
-            Assert.That(actual.M21, Is.EqualTo(expected.M21).Within(Tolerance), "Unexpected M21 value");
-            Assert.That(actual.M22, Is.EqualTo(expected.M22).Within(Tolerance), "Unexpected M22 value");
-            Assert.That(actual.M23, Is.EqualTo(expected.M23).Within(Tolerance), "Unexpected M23 value");
-            Assert.That(actual.M24, Is.EqualTo(expected.M24).Within(Tolerance), "Unexpected M24 value");
+            actual.M21.ShouldBe(expected.M21, Tolerance);
+            actual.M22.ShouldBe(expected.M22, Tolerance);
+            actual.M23.ShouldBe(expected.M23, Tolerance);
+            actual.M24.ShouldBe(expected.M24, Tolerance);
 
-            Assert.That(actual.M31, Is.EqualTo(expected.M31).Within(Tolerance), "Unexpected M31 value");
-            Assert.That(actual.M32, Is.EqualTo(expected.M32).Within(Tolerance), "Unexpected M32 value");
-            Assert.That(actual.M33, Is.EqualTo(expected.M33).Within(Tolerance), "Unexpected M33 value");
-            Assert.That(actual.M34, Is.EqualTo(expected.M34).Within(Tolerance), "Unexpected M34 value");
+            actual.M31.ShouldBe(expected.M31, Tolerance);
+            actual.M32.ShouldBe(expected.M32, Tolerance);
+            actual.M33.ShouldBe(expected.M33, Tolerance);
+            actual.M34.ShouldBe(expected.M34, Tolerance);
 
-            Assert.That(actual.M41, Is.EqualTo(expected.M41).Within(Tolerance), "Unexpected M41 value");
-            Assert.That(actual.M42, Is.EqualTo(expected.M42).Within(Tolerance), "Unexpected M42 value");
-            Assert.That(actual.M43, Is.EqualTo(expected.M43).Within(Tolerance), "Unexpected M43 value");
-            Assert.That(actual.M44, Is.EqualTo(expected.M44).Within(Tolerance), "Unexpected M44 value");
+            actual.M41.ShouldBe(expected.M41, Tolerance);
+            actual.M42.ShouldBe(expected.M42, Tolerance);
+            actual.M43.ShouldBe(expected.M43, Tolerance);
+            actual.M44.ShouldBe(expected.M44, Tolerance);
         }
 
         public static void AssertActualEqualToExpected(Material actual, Material expected)
         {
             AssertActualEqualToExpected(actual.Color, expected.Color);
-            Assert.That(actual.Ambient, Is.EqualTo(expected.Ambient).Within(Tolerance), "Unexpected ambient value");
-            Assert.That(actual.Diffuse, Is.EqualTo(expected.Diffuse).Within(Tolerance), "Unexpected diffuse value");
-            Assert.That(actual.Specular, Is.EqualTo(expected.Specular).Within(Tolerance), "Unexpected specular value");
-            Assert.That(actual.Shininess, Is.EqualTo(expected.Shininess).Within(Tolerance), "Unexpected shininess value");
+            actual.Ambient.ShouldBe(expected.Ambient, Tolerance);
+            actual.Diffuse.ShouldBe(expected.Diffuse, Tolerance);
+            actual.Specular.ShouldBe(expected.Specular, Tolerance);
+            actual.Shininess.ShouldBe(expected.Shininess, Tolerance);
         }
     }
 }

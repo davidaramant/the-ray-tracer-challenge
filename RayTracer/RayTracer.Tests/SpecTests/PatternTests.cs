@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using RayTracer.Core;
+﻿using RayTracer.Core;
 using RayTracer.Core.Patterns;
 using RayTracer.Core.Shapes;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -13,14 +13,13 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// patterns.feature
     /// </summary>
-    [TestFixture]
-    public sealed class PatternTests
+        public sealed class PatternTests
     {
         //Scenario: Creating a stripe pattern
         //  Given pattern ← stripe_pattern(white, black)
         //  Then pattern.a = white
         //    And pattern.b = black
-        [Test]
+        [Fact]
         public void ShouldCreateStripePattern()
         {
             var pattern = new StripePattern(VColor.White, VColor.Black);
@@ -33,8 +32,11 @@ namespace RayTracer.Tests.SpecTests
         //  Then stripe_at(pattern, point(0, 0, 0)) = white
         //    And stripe_at(pattern, point(0, 1, 0)) = white
         //    And stripe_at(pattern, point(0, 2, 0)) = white
-        [Test]
-        public void StripePatternShouldBeConstantInY([Values(0, 1, 2)] float y)
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void StripePatternShouldBeConstantInY(float y)
         {
             var pattern = new StripePattern(VColor.White, VColor.Black);
             AssertActualEqualToExpected(pattern.GetColorAt(CreatePoint(0, y, 0)), VColor.White);
@@ -45,8 +47,11 @@ namespace RayTracer.Tests.SpecTests
         //  Then stripe_at(pattern, point(0, 0, 0)) = white
         //    And stripe_at(pattern, point(0, 0, 1)) = white
         //    And stripe_at(pattern, point(0, 0, 2)) = white
-        [Test]
-        public void StripePatternShouldBeConstantInZ([Values(0, 1, 2)] float z)
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        public void StripePatternShouldBeConstantInZ(float z)
         {
             var pattern = new StripePattern(VColor.White, VColor.Black);
             AssertActualEqualToExpected(pattern.GetColorAt(CreatePoint(0, 0, z)), VColor.White);
@@ -60,13 +65,14 @@ namespace RayTracer.Tests.SpecTests
         //    And stripe_at(pattern, point(-0.1, 0, 0)) = black
         //    And stripe_at(pattern, point(-1, 0, 0)) = black
         //    And stripe_at(pattern, point(-1.1, 0, 0)) = white
-        [TestCase(0, true)]
-        [TestCase(0.9f, true)]
-        [TestCase(1, false)]
-        [TestCase(1.1f, false)]
-        [TestCase(-0.1f, false)]
-        [TestCase(-1, false)]
-        [TestCase(-1.1f, true)]
+        [Theory]
+        [InlineData(0, true)]
+        [InlineData(0.9f, true)]
+        [InlineData(1, false)]
+        [InlineData(1.1f, false)]
+        [InlineData(-0.1f, false)]
+        [InlineData(-1, false)]
+        [InlineData(-1.1f, true)]
         public void StripePatternShouldAlternateInX(float x, bool shouldBeWhite)
         {
             var pattern = new StripePattern(VColor.White, VColor.Black);
@@ -81,7 +87,7 @@ namespace RayTracer.Tests.SpecTests
         //    And pattern ← stripe_pattern(white, black)
         //  When c ← stripe_at_object(pattern, object, point(1.5, 0, 0))
         //  Then c = white
-        [Test]
+        [Fact]
         public void ShouldUsePatternWithObjectTransformation()
         {
             var shape = new Sphere
@@ -103,7 +109,7 @@ namespace RayTracer.Tests.SpecTests
         //    And set_pattern_transform(pattern, scaling(2, 2, 2))
         //  When c ← stripe_at_object(pattern, object, point(1.5, 0, 0))
         //  Then c = white
-        [Test]
+        [Fact]
         public void ShouldUsePatternWithPatternTransformation()
         {
             var shape = new Sphere
@@ -128,7 +134,7 @@ namespace RayTracer.Tests.SpecTests
         //    And set_pattern_transform(pattern, translation(0.5, 0, 0))
         //  When c ← stripe_at_object(pattern, object, point(2.5, 0, 0))
         //  Then c = white
-        [Test]
+        [Fact]
         public void ShouldUsePatternWithShapeAndPatternTransformation()
         {
             var shape = new Sphere
@@ -184,8 +190,12 @@ namespace RayTracer.Tests.SpecTests
         //    And pattern_at(pattern, point(0.25, 0, 0)) = color(0.75, 0.75, 0.75)
         //    And pattern_at(pattern, point(0.5, 0, 0)) = color(0.5, 0.5, 0.5)
         //    And pattern_at(pattern, point(0.75, 0, 0)) = color(0.25, 0.25, 0.25)
-        [Test]
-        public void ShouldLinearlyInterpolateColorsInGradientPattern([Values(0, 0.25f, 0.5f, 0.75f)] float x)
+        [Theory]
+        [InlineData(0)]
+        [InlineData(0.25f)]
+        [InlineData(0.5f)]
+        [InlineData(0.75f)]
+        public void ShouldLinearlyInterpolateColorsInGradientPattern(float x)
         {
             var pattern = new GradientPattern(VColor.White, VColor.Black);
             AssertActualEqualToExpected(
@@ -200,10 +210,11 @@ namespace RayTracer.Tests.SpecTests
         //    And pattern_at(pattern, point(0, 0, 1)) = black
         //    # 0.708 = just slightly more than √2/2
         //    And pattern_at(pattern, point(0.708, 0, 0.708)) = black
-        [TestCase(0, 0, 0, true)]
-        [TestCase(1, 0, 0, false)]
-        [TestCase(0, 0, 1, false)]
-        [TestCase(0.708f, 0, 0.708f, false)]
+        [Theory]
+        [InlineData(0, 0, 0, true)]
+        [InlineData(1, 0, 0, false)]
+        [InlineData(0, 0, 1, false)]
+        [InlineData(0.708f, 0, 0.708f, false)]
         public void ShouldExtendInBothXAndZInRingPattern(float x, float y, float z, bool expectingWhite)
         {
             var pattern = new RingPattern(VColor.White, VColor.Black);
@@ -229,13 +240,14 @@ namespace RayTracer.Tests.SpecTests
         //  Then pattern_at(pattern, point(0, 0, 0)) = white
         //    And pattern_at(pattern, point(0, 0, 0.99)) = white
         //    And pattern_at(pattern, point(0, 0, 1.01)) = black
-        [TestCase(0, 0, 0, true)]
-        [TestCase(0.99f, 0, 0, true)]
-        [TestCase(1.01f, 0, 0, false)]
-        [TestCase(0, 0.99f, 0, true)]
-        [TestCase(0, 1.01f, 0, false)]
-        [TestCase(0, 0, 0.99f, true)]
-        [TestCase(0, 0, 1.01f, false)]
+        [Theory]
+        [InlineData(0, 0, 0, true)]
+        [InlineData(0.99f, 0, 0, true)]
+        [InlineData(1.01f, 0, 0, false)]
+        [InlineData(0, 0.99f, 0, true)]
+        [InlineData(0, 1.01f, 0, false)]
+        [InlineData(0, 0, 0.99f, true)]
+        [InlineData(0, 0, 1.01f, false)]
         public void ShouldRepeatInEachDirectionForCheckersPattern(float x, float y, float z, bool expectingWhite)
         {
             var pattern = new CheckerPattern(VColor.White, VColor.Black);

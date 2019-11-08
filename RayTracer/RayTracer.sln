@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.Tests", "RayTrace
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.WpfGui", "RayTracer.WpfGui\RayTracer.WpfGui.csproj", "{2A64590E-F4C9-48D9-8952-C12B6D6A26D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RayTracer.ConsoleRunner", "RayTracer.ConsoleRunner\RayTracer.ConsoleRunner.csproj", "{196684DA-26D1-4AC9-8479-68A221EB9EC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.ConsoleRunner", "RayTracer.ConsoleRunner\RayTracer.ConsoleRunner.csproj", "{196684DA-26D1-4AC9-8479-68A221EB9EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

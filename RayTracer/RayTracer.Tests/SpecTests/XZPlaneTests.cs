@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Numerics;
-using NUnit.Framework;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
+using Shouldly;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -14,8 +15,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// planes.feature
     /// </summary>
-    [TestFixture]
-    public class XZPlaneTests
+        public class XZPlaneTests
     {
         //Scenario: The normal of a plane is constant everywhere
         //  Given p ← plane()
@@ -25,9 +25,10 @@ namespace RayTracer.Tests.SpecTests
         //  Then n1 = vector(0, 1, 0)
         //    And n2 = vector(0, 1, 0)
         //    And n3 = vector(0, 1, 0)
-        [TestCase(0, 0, 0)]
-        [TestCase(10, 0, -10)]
-        [TestCase(-5, 0, 150)]
+        [Theory]
+        [InlineData(0, 0, 0)]
+        [InlineData(10, 0, -10)]
+        [InlineData(-5, 0, 150)]
         public void ShouldHaveConstantNormal(float x, float y, float z)
         {
             var p = new XZPlane();
@@ -46,14 +47,15 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray(point(0, 0, 0), vector(0, 0, 1))
         //  When xs ← local_intersect(p, r)
         //  Then xs is empty
-        [TestCase(0, 10, 0)]
-        [TestCase(0, 0, 0)]
+        [Theory]
+        [InlineData(0, 10, 0)]
+        [InlineData(0, 0, 0)]
         public void ShouldNotIntersectWithParallelRay(float x, float y, float z)
         {
             var p = new XZPlane();
             var r = CreateRay(CreatePoint(x, y, z), CreateVector(0, 0, 1));
             var xs = p.LocalIntersect(r);
-            Assert.That(xs, Is.Empty);
+            xs.ShouldBeEmpty();
         }
 
         //Scenario: A ray intersecting a plane from above
@@ -71,17 +73,16 @@ namespace RayTracer.Tests.SpecTests
         //  Then xs.count = 1
         //    And xs[0].t = 1
         //    And xs[0].object = p
-        [TestCase(0, 1, 0, 0, -1, 0)]
-        [TestCase(0, -1, 0, 0, 1, 0)]
+        [Theory]
+        [InlineData(0, 1, 0, 0, -1, 0)]
+        [InlineData(0, -1, 0, 0, 1, 0)]
         public void ShouldIntersectWithPerpendicularRay(float px, float py, float pz, float vx, float vy, float vz)
         {
             var p = new XZPlane();
             var r = CreateRay(CreatePoint(px, py, pz), CreateVector(vx, vy, vz));
             var xs = p.LocalIntersect(r);
-            Assert.That(xs, Has.Count.EqualTo(1));
-            Assert.That(xs.First().T, Is.EqualTo(1).Within(Tolerance));
-            Assert.That(xs.First().Shape, Is.EqualTo(p));
+            xs.ShouldHaveSingleItem().T.ShouldBe(1);
+            xs.First().Shape.ShouldBe(p);
         }
-
     }
 }

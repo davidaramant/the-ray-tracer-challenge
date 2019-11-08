@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using Moq;
-using NUnit.Framework;
 using RayTracer.Core;
 using RayTracer.Core.Utilities;
+using Shouldly;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -15,8 +16,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// camera.feature
     /// </summary>
-    [TestFixture]
-    public class CameraTests
+        public class CameraTests
     {
         private static IOutputBuffer CreateMockBuffer(int width, int height)
         {
@@ -34,37 +34,37 @@ namespace RayTracer.Tests.SpecTests
         //    And c.vsize = 120
         //    And c.field_of_view = π/2
         //    And c.transform = identity_matrix
-        [Test]
+        [Fact]
         public void ShouldConstructCamera()
         {
             var hSize = 160;
             var vSize = 120;
             var fieldOfView = PI / 2;
             var c = new Camera(CreateMockBuffer(hSize, vSize), fieldOfView);
-            Assert.That(c.Dimensions.Width, Is.EqualTo(hSize));
-            Assert.That(c.Dimensions.Height, Is.EqualTo(vSize));
-            Assert.That(c.FieldOfView, Is.EqualTo(fieldOfView).Within(Tolerance));
+            c.Dimensions.Width.ShouldBe(hSize);
+            c.Dimensions.Height.ShouldBe(vSize);
+            c.FieldOfView.ShouldBe(fieldOfView, Tolerance);
             AssertActualEqualToExpected(c.Transform, Identity);
         }
 
         //Scenario: The pixel size for a horizontal canvas
         //  Given c ← camera(200, 125, π/2)
         //  Then c.pixel_size = 0.01
-        [Test]
+        [Fact]
         public void ShouldCalculatePixelSizeForHorizontalCanvas()
         {
             var c = new Camera(CreateMockBuffer(200, 125), PI / 2);
-            Assert.That(c.PixelSize, Is.EqualTo(0.01f).Within(Tolerance));
+            c.PixelSize.ShouldBe(0.01f, Tolerance);
         }
 
         //Scenario: The pixel size for a vertical canvas
         //  Given c ← camera(125, 200, π/2)
         //  Then c.pixel_size = 0.01
-        [Test]
+        [Fact]
         public void ShouldCalculatePixelSizeForVerticalCanvas()
         {
             var c = new Camera(CreateMockBuffer(125, 200), PI / 2);
-            Assert.That(c.PixelSize, Is.EqualTo(0.01f).Within(Tolerance));
+            c.PixelSize.ShouldBe(0.01f, Tolerance);
         }
 
         //Scenario: Constructing a ray through the center of the canvas
@@ -72,7 +72,7 @@ namespace RayTracer.Tests.SpecTests
         //  When r ← ray_for_pixel(c, 100, 50)
         //  Then r.origin = point(0, 0, 0)
         //    And r.direction = vector(0, 0, -1)
-        [Test]
+        [Fact]
         public void ShouldCreateRayThroughCenterOfCanvas()
         {
             var c = new Camera(CreateMockBuffer(201, 101), PI / 2);
@@ -86,7 +86,7 @@ namespace RayTracer.Tests.SpecTests
         //  When r ← ray_for_pixel(c, 0, 0)
         //  Then r.origin = point(0, 0, 0)
         //    And r.direction = vector(0.66519, 0.33259, -0.66851)
-        [Test]
+        [Fact]
         public void ShouldCreateRayThroughCornerOfCanvas()
         {
             var c = new Camera(CreateMockBuffer(201, 101), PI / 2);
@@ -101,7 +101,7 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray_for_pixel(c, 100, 50)
         //  Then r.origin = point(0, 2, -5)
         //    And r.direction = vector(√2/2, 0, -√2/2)
-        [Test]
+        [Fact]
         public void ShouldCreateRayWhenCameraIsTransformed()
         {
             var c = new Camera(CreateMockBuffer(201, 101), PI / 2)

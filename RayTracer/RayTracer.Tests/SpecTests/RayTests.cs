@@ -1,7 +1,8 @@
 ﻿using System;
-using NUnit.Framework;
 using System.Numerics;
 using RayTracer.Core;
+using Shouldly;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -13,8 +14,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// rays.feature
     /// </summary>
-    [TestFixture]
-    public class RayTests
+        public class RayTests
     {
         //Scenario: Creating and querying a ray
         //  Given origin ← point(1, 2, 3)
@@ -22,22 +22,22 @@ namespace RayTracer.Tests.SpecTests
         //  When r ← ray(origin, direction)
         //  Then r.origin = origin
         //    And r.direction = direction
-        [Test]
+        [Fact]
         public void ShouldCreateRay()
         {
             var origin = CreatePoint(1, 2, 3);
             var direction = CreateVector(4, 5, 6);
             var r = new Ray(origin, direction);
-            Assert.That(r.Origin, Is.EqualTo(origin));
-            Assert.That(r.Direction, Is.EqualTo(direction));
+            r.Origin.ShouldBe(origin);
+            r.Direction.ShouldBe(direction);
         }
 
 #if DEBUG
-        [Test]
+        [Fact]
         public void ShouldVerifyRayOriginIsPoint() =>
             Assert.Throws<ArgumentException>(() => CreateRay(CreateVector(1, 2, 3), CreateVector(1, 2, 3)));
 
-        [Test]
+        [Fact]
         public void ShouldVerifyRayDirectionIsVector() =>
             Assert.Throws<ArgumentException>(() => CreateRay(CreatePoint(1, 2, 3), CreatePoint(1, 2, 3)));
 #endif
@@ -48,10 +48,11 @@ namespace RayTracer.Tests.SpecTests
         //    And position(r, 1) = point(3, 3, 4)
         //    And position(r, -1) = point(1, 3, 4)
         //    And position(r, 2.5) = point(4.5, 3, 4)
-        [TestCase(0, 2)]
-        [TestCase(1, 3)]
-        [TestCase(-1, 1)]
-        [TestCase(2.5f, 4.5f)]
+        [Theory]
+        [InlineData(0, 2)]
+        [InlineData(1, 3)]
+        [InlineData(-1, 1)]
+        [InlineData(2.5f, 4.5f)]
         public void ShouldComputePointFromDistance(float distance, float expectedX)
         {
             var r = CreateRay(CreatePoint(2, 3, 4), CreateVector(1, 0, 0));
@@ -64,7 +65,7 @@ namespace RayTracer.Tests.SpecTests
         //  When r2 ← transform(r, m)
         //  Then r2.origin = point(4, 6, 8)
         //    And r2.direction = vector(0, 1, 0)
-        [Test]
+        [Fact]
         public void ShouldTranslateRay()
         {
             var r = CreateRay(CreatePoint(1, 2, 3), CreateVector(0, 1, 0));
@@ -80,7 +81,7 @@ namespace RayTracer.Tests.SpecTests
         //  When r2 ← transform(r, m)
         //  Then r2.origin = point(2, 6, 12)
         //    And r2.direction = vector(0, 3, 0)
-        [Test]
+        [Fact]
         public void ShouldScakeRay()
         {
             var r = CreateRay(CreatePoint(1, 2, 3), CreateVector(0, 1, 0));

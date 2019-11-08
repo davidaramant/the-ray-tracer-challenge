@@ -1,7 +1,8 @@
 ﻿using System.Linq;
-using NUnit.Framework;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
+using Shouldly;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -13,19 +14,18 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// world.feature
     /// </summary>
-    [TestFixture]
-    public class WorldTests
+        public class WorldTests
     {
         //Scenario: Creating a world
         //  Given w ← world()
         //  Then w contains no objects
         //    And w has no light source
-        [Test]
+        [Fact]
         public void ShouldCreateEmptyWorld()
         {
             var w = new World();
-            Assert.That(w.Objects, Is.Empty);
-            Assert.That(w.Lights, Is.Empty);
+            w.Objects.ShouldBeEmpty();
+            w.Lights.ShouldBeEmpty();
         }
 
         //Scenario: The default world
@@ -40,7 +40,7 @@ namespace RayTracer.Tests.SpecTests
         //  Then w.light = light
         //    And w contains s1
         //    And w contains s2
-        [Test]
+        [Fact]
         public void ShouldCreateDefaultWorld()
         {
             var light = new PointLight(CreatePoint(-10, 10, -10), VColor.White);
@@ -59,12 +59,12 @@ namespace RayTracer.Tests.SpecTests
             };
 
             var w = World.CreateDefault();
-            Assert.That(w.Lights, Has.Member(light));
-            Assert.That(w.Objects, Has.Count.EqualTo(2));
-            Assert.That(w.Objects[0].Material, Is.EqualTo(s1.Material));
-            Assert.That(w.Objects[0].Transform, Is.EqualTo(s1.Transform));
-            Assert.That(w.Objects[1].Material, Is.EqualTo(s2.Material));
-            Assert.That(w.Objects[1].Transform, Is.EqualTo(s2.Transform));
+            w.Lights.ShouldContain(light);
+            w.Objects.Count.ShouldBe(2);
+            w.Objects[0].Material.ShouldBe(s1.Material);
+            w.Objects[0].Transform.ShouldBe(s1.Transform);
+            w.Objects[1].Material.ShouldBe(s2.Material);
+            w.Objects[1].Transform.ShouldBe(s2.Transform);
         }
 
         //Scenario: Intersect a world with a ray
@@ -76,17 +76,17 @@ namespace RayTracer.Tests.SpecTests
         //    And xs[1].t = 4.5
         //    And xs[2].t = 5.5
         //    And xs[3].t = 6
-        [Test]
+        [Fact]
         public void ShouldIntersectWithRay()
         {
             var w = World.CreateDefault();
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
             var xs = w.Intersect(r);
-            Assert.That(xs, Has.Count.EqualTo(4));
-            Assert.That(xs[0].T, Is.EqualTo(4).Within(Tolerance));
-            Assert.That(xs[1].T, Is.EqualTo(4.5f).Within(Tolerance));
-            Assert.That(xs[2].T, Is.EqualTo(5.5f).Within(Tolerance));
-            Assert.That(xs[3].T, Is.EqualTo(6).Within(Tolerance));
+            xs.Count.ShouldBe(4);
+            xs[0].T.ShouldBe(4, Tolerance);
+            xs[1].T.ShouldBe(4.5f, Tolerance);
+            xs[2].T.ShouldBe(5.5f, Tolerance);
+            xs[3].T.ShouldBe(6, Tolerance);
         }
 
         //Scenario: Shading an intersection
@@ -97,7 +97,7 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And c ← shade_hit(w, comps)
         //  Then c = color(0.38066, 0.47583, 0.2855)
-        [Test]
+        [Fact]
         public void ShouldShadeIntersection()
         {
             var w = World.CreateDefault();
@@ -118,7 +118,7 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And c ← shade_hit(w, comps)
         //  Then c = color(0.90498, 0.90498, 0.90498)
-        [Test]
+        [Fact]
         public void ShouldShadeIntersectionFromTheInside()
         {
             var w = World.CreateDefault();
@@ -136,7 +136,7 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray(point(0, 0, -5), vector(0, 1, 0))
         //  When c ← color_at(w, r)
         //  Then c = color(0, 0, 0)
-        [Test]
+        [Fact]
         public void ShouldComputeColorWhenRayMisses()
         {
             var w = World.CreateDefault();
@@ -150,7 +150,7 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray(point(0, 0, -5), vector(0, 0, 1))
         //  When c ← color_at(w, r)
         //  Then c = color(0.38066, 0.47583, 0.2855)
-        [Test]
+        [Fact]
         public void ShouldComputeColorWhenRayHits()
         {
             var w = World.CreateDefault();
@@ -168,7 +168,7 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray(point(0, 0, 0.75), vector(0, 0, -1))
         //  When c ← color_at(w, r)
         //  Then c = inner.material.color
-        [Test]
+        [Fact]
         public void ShouldComputeColorWhenIntersectionIsBehindRay()
         {
             var w = World.CreateDefault();
@@ -200,15 +200,16 @@ namespace RayTracer.Tests.SpecTests
         //  Given w ← default_world()
         //    And p ← point(-2, 2, -2)
         //   Then is_shadowed(w, p) is false
-        [TestCase(0, 10, 0, false)]
-        [TestCase(10, -10, 10, true)]
-        [TestCase(-20, 20, -20, false)]
-        [TestCase(-2, 2, -2, false)]
+        [Theory]
+        [InlineData(0, 10, 0, false)]
+        [InlineData(10, -10, 10, true)]
+        [InlineData(-20, 20, -20, false)]
+        [InlineData(-2, 2, -2, false)]
         public void ShouldDetermineIfPointIsInShadowOfLight(float x, float y, float z, bool expectedInShadow)
         {
             var w = World.CreateDefault();
             var p = CreatePoint(x, y, z);
-            Assert.That(w.IsShadowed(w.Lights.First(), p), Is.EqualTo(expectedInShadow));
+            w.IsShadowed(w.Lights.First(), p).ShouldBe(expectedInShadow);
         }
 
         //Scenario: shade_hit() is given an intersection in shadow
@@ -224,7 +225,7 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And c ← shade_hit(w, comps)
         //  Then c = color(0.1, 0.1, 0.1)
-        [Test]
+        [Fact]
         public void ShouldShowShadeIntersectionInShadow()
         {
             var w = new World

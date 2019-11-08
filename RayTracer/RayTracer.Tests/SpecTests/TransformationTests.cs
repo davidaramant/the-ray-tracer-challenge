@@ -1,6 +1,6 @@
 ﻿using System;
-using NUnit.Framework;
 using System.Numerics;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -12,14 +12,13 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// transformations.feature
     /// </summary>
-    [TestFixture]
-    public class TransformationTests
+        public class TransformationTests
     {
         //Scenario: Multiplying by a translation matrix
         //  Given transform ← translation(5, -3, 2)
         //    And p ← point(-3, 4, 5)
         //   Then transform * p = point(2, 1, 7)
-        [Test]
+        [Fact]
         public void ShouldTranslatePoint()
         {
             var translation = CreateTranslation(5, -3, 2);
@@ -32,7 +31,7 @@ namespace RayTracer.Tests.SpecTests
         //    And inv ← inverse(transform)
         //    And p ← point(-3, 4, 5)
         //   Then inv * p = point(-8, 7, 3)
-        [Test]
+        [Fact]
         public void ShouldTranslateByInverseMatrix()
         {
             var translation = CreateTranslation(5, -3, 2);
@@ -45,7 +44,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← translation(5, -3, 2)
         //    And v ← vector(-3, 4, 5)
         //   Then transform * v = v
-        [Test]
+        [Fact]
         public void ShouldNotTranslateVector()
         {
             var translation = CreateTranslation(5, -3, 2);
@@ -57,7 +56,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← scaling(2, 3, 4)
         //    And p ← point(-4, 6, 8)
         //   Then transform * p = point(-8, 18, 32)
-        [Test]
+        [Fact]
         public void ShouldScaleAPoint()
         {
             var scaling = CreateScale(2, 3, 4);
@@ -69,7 +68,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← scaling(2, 3, 4)
         //    And v ← vector(-4, 6, 8)
         //   Then transform * v = vector(-8, 18, 32)
-        [Test]
+        [Fact]
         public void ShouldScaleAVector()
         {
             var scaling = CreateScale(2, 3, 4);
@@ -82,7 +81,7 @@ namespace RayTracer.Tests.SpecTests
         //    And inv ← inverse(transform)
         //    And v ← vector(-4, 6, 8)
         //   Then inv * v = vector(-2, 2, 2)
-        [Test]
+        [Fact]
         public void ShouldScaleVectorByInverse()
         {
             var scaling = CreateScale(2, 3, 4);
@@ -95,7 +94,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← scaling(-1, 1, 1)
         //    And p ← point(2, 3, 4)
         //   Then transform * p = point(-2, 3, 4)
-        [Test]
+        [Fact]
         public void ShouldReflectPoint()
         {
             var scaling = CreateScale(-1, 1, 1);
@@ -109,7 +108,7 @@ namespace RayTracer.Tests.SpecTests
         //    And full_quarter ← rotation_x(π / 2)
         //  Then half_quarter * p = point(0, √2/2, √2/2)
         //    And full_quarter * p = point(0, 0, 1)
-        [Test]
+        [Fact]
         public void ShouldRotatePointAroundXAxis()
         {
             var p = CreatePoint(0, 1, 0);
@@ -124,7 +123,7 @@ namespace RayTracer.Tests.SpecTests
         //    And half_quarter ← rotation_x(π / 4)
         //    And inv ← inverse(half_quarter)
         //  Then inv * p = point(0, √2/2, -√2/2)
-        [Test]
+        [Fact]
         public void ShouldRotatePointAroundInverseOfXAxis()
         {
             var p = CreatePoint(0, 1, 0);
@@ -139,7 +138,7 @@ namespace RayTracer.Tests.SpecTests
         //    And full_quarter ← rotation_y(π / 2)
         //  Then half_quarter * p = point(√2/2, 0, √2/2)
         //    And full_quarter * p = point(1, 0, 0)
-        [Test]
+        [Fact]
         public void ShouldRotatePointAroundYAxis()
         {
             var p = CreatePoint(0, 0, 1);
@@ -155,7 +154,7 @@ namespace RayTracer.Tests.SpecTests
         //    And full_quarter ← rotation_z(π / 2)
         //  Then half_quarter * p = point(-√2/2, √2/2, 0)
         //    And full_quarter * p = point(-1, 0, 0)
-        [Test]
+        [Fact]
         public void ShouldRotatePointAroundZAxis()
         {
             var p = CreatePoint(0, 1, 0);
@@ -169,7 +168,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← shearing(1, 0, 0, 0, 0, 0)
         //    And p ← point(2, 3, 4)
         //  Then transform * p = point(5, 3, 4)
-        [Test]
+        [Fact]
         public void ShouldShearXInProportionToY()
         {
             var transform = CreateShear(1, 0, 0, 0, 0, 0);
@@ -181,7 +180,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← shearing(0, 1, 0, 0, 0, 0)
         //    And p ← point(2, 3, 4)
         //  Then transform * p = point(6, 3, 4)
-        [Test]
+        [Fact]
         public void ShouldShearXInProportionToZ()
         {
             var transform = CreateShear(0, 1, 0, 0, 0, 0);
@@ -193,7 +192,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← shearing(0, 0, 1, 0, 0, 0)
         //    And p ← point(2, 3, 4)
         //  Then transform * p = point(2, 5, 4)
-        [Test]
+        [Fact]
         public void ShouldShearYInProportionToX()
         {
             var transform = CreateShear(0, 0, 1, 0, 0, 0);
@@ -205,7 +204,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← shearing(0, 0, 0, 1, 0, 0)
         //    And p ← point(2, 3, 4)
         //  Then transform * p = point(2, 7, 4)
-        [Test]
+        [Fact]
         public void ShouldShearYInProportionToZ()
         {
             var transform = CreateShear(0, 0, 0, 1, 0, 0);
@@ -217,7 +216,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← shearing(0, 0, 0, 0, 1, 0)
         //    And p ← point(2, 3, 4)
         //  Then transform * p = point(2, 3, 6)
-        [Test]
+        [Fact]
         public void ShouldShearZInProportionToX()
         {
             var transform = CreateShear(0, 0, 0, 0, 1, 0);
@@ -229,7 +228,7 @@ namespace RayTracer.Tests.SpecTests
         //  Given transform ← shearing(0, 0, 0, 0, 0, 1)
         //    And p ← point(2, 3, 4)
         //  Then transform * p = point(2, 3, 7)
-        [Test]
+        [Fact]
         public void ShouldShearZInProportionToY()
         {
             var transform = CreateShear(0, 0, 0, 0, 0, 1);
@@ -251,7 +250,7 @@ namespace RayTracer.Tests.SpecTests
         //  # then apply translation
         //  When p4 ← C * p3
         //  Then p4 = point(15, 0, 7)
-        [Test]
+        [Fact]
         public void ShouldApplyTransformationsInSequence()
         {
             var p = CreatePoint(1, 0, 1);
@@ -276,7 +275,7 @@ namespace RayTracer.Tests.SpecTests
         //    And C ← translation(10, 5, 7)
         //  When T ← C * B * A
         //  Then T * p = point(15, 0, 7)
-        [Test]
+        [Fact]
         public void ShouldApplyChainedTransformation()
         {
             var p = CreatePoint(1, 0, 1);
@@ -295,7 +294,7 @@ namespace RayTracer.Tests.SpecTests
         //    And up ← vector(0, 1, 0)
         //  When t ← view_transform(from, to, up)
         //  Then t = identity_matrix
-        [Test]
+        [Fact]
         public void ShouldMakeViewMatrixForDefaultOrientation()
         {
             var from = CreatePoint(0, 0, 0);
@@ -311,7 +310,7 @@ namespace RayTracer.Tests.SpecTests
         //    And up ← vector(0, 1, 0)
         //  When t ← view_transform(from, to, up)
         //  Then t = scaling(-1, 1, -1)
-        [Test]
+        [Fact]
         public void ShouldMakeViewMatrixLookingInPositiveZDirection()
         {
             var from = CreatePoint(0, 0, 0);
@@ -327,7 +326,7 @@ namespace RayTracer.Tests.SpecTests
         //    And up ← vector(0, 1, 0)
         //  When t ← view_transform(from, to, up)
         //  Then t = translation(0, 0, -8)
-        [Test]
+        [Fact]
         public void ShouldMoveTheWorldWithViewTransformation()
         {
             var from = CreatePoint(0, 0, 8);
@@ -347,7 +346,7 @@ namespace RayTracer.Tests.SpecTests
         //      |  0.76772 | 0.60609 |  0.12122 | -2.82843 |
         //      | -0.35857 | 0.59761 | -0.71714 |  0.00000 |
         //      |  0.00000 | 0.00000 |  0.00000 |  1.00000 |
-        [Test]
+        [Fact]
         public void ShouldCreateArbitraryViewTransformation()
         {
             var from = CreatePoint(1, 3, 2);

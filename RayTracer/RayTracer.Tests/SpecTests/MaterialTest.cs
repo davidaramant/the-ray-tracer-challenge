@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
-using RayTracer.Core;
+﻿using RayTracer.Core;
 using RayTracer.Core.Patterns;
 using RayTracer.Core.Shapes;
+using Shouldly;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -13,8 +14,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// materials.feature
     /// </summary>
-    [TestFixture]
-    public sealed class MaterialTest
+        public sealed class MaterialTest
     {
         //Scenario: The default material
         //  Given m ← material()
@@ -23,15 +23,15 @@ namespace RayTracer.Tests.SpecTests
         //    And m.diffuse = 0.9
         //    And m.specular = 0.9
         //    And m.shininess = 200.0
-        [Test]
+        [Fact]
         public void ShouldHaveExpectedValuesForDefaultMaterial()
         {
             var m = new Material();
             AssertActualEqualToExpected(m.Color, VColor.White);
-            Assert.That(m.Ambient, Is.EqualTo(0.1f).Within(Tolerance));
-            Assert.That(m.Diffuse, Is.EqualTo(0.9f).Within(Tolerance));
-            Assert.That(m.Specular, Is.EqualTo(0.9f).Within(Tolerance));
-            Assert.That(m.Shininess, Is.EqualTo(200).Within(Tolerance));
+            m.Ambient.ShouldBe(0.1f, Tolerance);
+            m.Diffuse.ShouldBe(0.9f, Tolerance);
+            m.Specular.ShouldBe(0.9f, Tolerance);
+            m.Shininess.ShouldBe(200, Tolerance);
         }
 
         //Scenario: Reflectivity for the default material
@@ -49,7 +49,7 @@ namespace RayTracer.Tests.SpecTests
         //    And light ← point_light(point(0, 0, -10), color(1, 1, 1))
         //  When result ← lighting(m, light, position, eyev, normalv)
         //  Then result = color(1.9, 1.9, 1.9)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithEyeBetweenLightAndSurface()
         {
             var m = new Material();
@@ -68,7 +68,7 @@ namespace RayTracer.Tests.SpecTests
         //    And light ← point_light(point(0, 0, -10), color(1, 1, 1))
         //  When result ← lighting(m, light, position, eyev, normalv)
         //  Then result = color(1.0, 1.0, 1.0)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithEyeBetweenLightAndSurfaceAndOffset45Degrees()
         {
             var m = new Material();
@@ -87,7 +87,7 @@ namespace RayTracer.Tests.SpecTests
         //    And light ← point_light(point(0, 10, -10), color(1, 1, 1))
         //  When result ← lighting(m, light, position, eyev, normalv)
         //  Then result = color(0.7364, 0.7364, 0.7364)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithEyeOppositeSurfaceWithLightOffset45Degrees()
         {
             var m = new Material();
@@ -106,7 +106,7 @@ namespace RayTracer.Tests.SpecTests
         //    And light ← point_light(point(0, 10, -10), color(1, 1, 1))
         //  When result ← lighting(m, light, position, eyev, normalv)
         //  Then result = color(1.6364, 1.6364, 1.6364)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithEyeInPathOfReflectionVector()
         {
             var m = new Material();
@@ -125,7 +125,7 @@ namespace RayTracer.Tests.SpecTests
         //    And light ← point_light(point(0, 0, 10), color(1, 1, 1))
         //  When result ← lighting(m, light, position, eyev, normalv)
         //  Then result = color(0.1, 0.1, 0.1)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithLightBehindSurface()
         {
             var m = new Material();
@@ -145,7 +145,7 @@ namespace RayTracer.Tests.SpecTests
         //    And in_shadow ← true
         //  When result ← lighting(m, light, position, eyev, normalv, in_shadow)
         //  Then result = color(0.1, 0.1, 0.1)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithSurfaceInShadow()
         {
             var m = new Material();
@@ -170,7 +170,7 @@ namespace RayTracer.Tests.SpecTests
         //    And c2 ← lighting(m, light, point(1.1, 0, 0), eyev, normalv, false)
         //  Then c1 = color(1, 1, 1)
         //    And c2 = color(0, 0, 0)
-        [Test]
+        [Fact]
         public void ShouldComputeLightingWithPatternApplied()
         {
             var m = new Material

@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
-using System.Numerics;
+﻿using System.Numerics;
 using RayTracer.Core;
+using Shouldly;
+using Xunit;
 using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
 using static RayTracer.Tests.SpecTests.Framework.Comparisons;
@@ -10,8 +11,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// matrices.feature
     /// </summary>
-    [TestFixture]
-    public class MatricesTests
+        public class MatricesTests
     {
         //Scenario: Constructing and inspecting a 4x4 matrix
         //  Given the following 4x4 matrix M:
@@ -26,7 +26,7 @@ namespace RayTracer.Tests.SpecTests
         //    And M[2,2] = 11
         //    And M[3,0] = 13.5
         //    And M[3,2] = 15.5
-        [Test]
+        [Fact]
         public void ShouldConstruct4x4Matrix()
         {
             var m = new Matrix4x4(
@@ -35,13 +35,13 @@ namespace RayTracer.Tests.SpecTests
                 9, 10, 11, 12,
                 13.5f, 14.5f, 15.5f, 16.5f);
 
-            Assert.That(m.M11, Is.EqualTo(1));
-            Assert.That(m.M14, Is.EqualTo(4));
-            Assert.That(m.M21, Is.EqualTo(5.5f));
-            Assert.That(m.M23, Is.EqualTo(7.5f));
-            Assert.That(m.M33, Is.EqualTo(11f));
-            Assert.That(m.M41, Is.EqualTo(13.5f));
-            Assert.That(m.M43, Is.EqualTo(15.5f));
+            m.M11.ShouldBe(1);
+            m.M14.ShouldBe(4);
+            m.M21.ShouldBe(5.5f);
+            m.M23.ShouldBe(7.5f);
+            m.M33.ShouldBe(11f);
+            m.M41.ShouldBe(13.5f);
+            m.M43.ShouldBe(15.5f);
         }
 
         //Scenario: A 2x2 matrix ought to be representable
@@ -52,15 +52,15 @@ namespace RayTracer.Tests.SpecTests
         //    And M[0,1] = 5
         //    And M[1,0] = 1
         //    And M[1,1] = -2
-        [Test]
+        [Fact]
         public void ShouldConstruct2x2Matrix()
         {
             var m = new Matrix2x2(-3, 5, 1, -2);
 
-            Assert.That(m.M11, Is.EqualTo(-3));
-            Assert.That(m.M12, Is.EqualTo(5));
-            Assert.That(m.M21, Is.EqualTo(1));
-            Assert.That(m.M22, Is.EqualTo(-2));
+            m.M11.ShouldBe(-3);
+            m.M12.ShouldBe(5);
+            m.M21.ShouldBe(1);
+            m.M22.ShouldBe(-2);
         }
 
         //Scenario: A 3x3 matrix ought to be representable
@@ -71,7 +71,7 @@ namespace RayTracer.Tests.SpecTests
         //  Then M[0,0] = -3
         //    And M[1,1] = -2
         //    And M[2,2] = 1
-        [Test]
+        [Fact]
         public void ShouldConstruct3x3Matrix()
         {
             var m = new Matrix3x3(
@@ -79,9 +79,9 @@ namespace RayTracer.Tests.SpecTests
                  1, -2, -7,
                  0, 1, 1);
 
-            Assert.That(m.M11, Is.EqualTo(-3));
-            Assert.That(m.M22, Is.EqualTo(-2));
-            Assert.That(m.M33, Is.EqualTo(1));
+            m.M11.ShouldBe(-3);
+            m.M22.ShouldBe(-2);
+            m.M33.ShouldBe(1);
         }
 
         //Scenario: Matrix equality with identical matrices
@@ -96,7 +96,7 @@ namespace RayTracer.Tests.SpecTests
         //      | 9 | 8 | 7 | 6 |
         //      | 5 | 4 | 3 | 2 |
         //  Then A = B
-        [Test]
+        [Fact]
         public void ShouldDetermineWhen4x4MatricesAreEqual()
         {
             var a = new Matrix4x4(
@@ -110,7 +110,7 @@ namespace RayTracer.Tests.SpecTests
                 9, 8, 7, 6,
                 5, 4, 3, 2);
 
-            Assert.That(a, Is.EqualTo(b));
+            a.ShouldBe(b);
         }
 
         //Scenario: Matrix equality with different matrices
@@ -125,7 +125,7 @@ namespace RayTracer.Tests.SpecTests
         //      | 8 | 7 | 6 | 5 |
         //      | 4 | 3 | 2 | 1 |
         //  Then A != B
-        [Test]
+        [Fact]
         public void ShouldDetermineWhen4x4MatricesAreNotEqual()
         {
             var a = new Matrix4x4(
@@ -139,7 +139,7 @@ namespace RayTracer.Tests.SpecTests
                 8, 7, 6, 5,
                 4, 3, 2, 1);
 
-            Assert.That(a, Is.Not.EqualTo(b));
+            a.ShouldNotBe(b);
         }
 
         //Scenario: Multiplying two matrices
@@ -158,7 +158,7 @@ namespace RayTracer.Tests.SpecTests
         //      | 44|  54 | 114 | 108 |
         //      | 40|  58 | 110 | 102 |
         //      | 16|  26 |  46 |  42 |
-        [Test]
+        [Fact]
         public void ShouldMultiply4x4Matrices()
         {
             var a = new Matrix4x4(
@@ -177,7 +177,7 @@ namespace RayTracer.Tests.SpecTests
                 40, 58, 110, 102,
                 16, 26, 46, 42);
 
-            Assert.That(a * b, Is.EqualTo(expected));
+            (a * b).ShouldBe(expected);
         }
 
         //Scenario: A matrix multiplied by a tuple
@@ -188,7 +188,7 @@ namespace RayTracer.Tests.SpecTests
         //      | 0 | 0 | 0 | 1 |
         //    And b ← tuple(1, 2, 3, 1)
         //  Then A * b = tuple(18, 24, 33, 1)
-        [Test]
+        [Fact]
         public void ShouldMultiplyMatrixByTuple()
         {
             var a = new Matrix4x4(
@@ -200,7 +200,7 @@ namespace RayTracer.Tests.SpecTests
             var b = new Vector4(1, 2, 3, 1);
             var expected = new Vector4(18, 24, 33, 1);
 
-            Assert.That(Multiply(ref a, ref b), Is.EqualTo(expected));
+            Multiply(ref a, ref b).ShouldBe(expected);
         }
 
         //Scenario: Multiplying a matrix by the identity matrix
@@ -210,7 +210,7 @@ namespace RayTracer.Tests.SpecTests
         //    | 2 | 4 |  8 | 16 |
         //    | 4 | 8 | 16 | 32 |
         //  Then A * identity_matrix = A
-        [Test]
+        [Fact]
         public void ShouldMultiplyMatrixByIdentity()
         {
             var a = new Matrix4x4(
@@ -219,17 +219,17 @@ namespace RayTracer.Tests.SpecTests
                 2, 4, 8, 16,
                 4, 8, 16, 32);
 
-            Assert.That(a * Identity, Is.EqualTo(a));
+            (a * Identity).ShouldBe(a);
         }
 
         //Scenario: Multiplying the identity matrix by a tuple
         //  Given a ← tuple(1, 2, 3, 4)
         //  Then identity_matrix * a = a
-        [Test]
+        [Fact]
         public void ShouldMultiplyIdentityMatrixByTuple()
         {
             var a = new Vector4(1, 2, 3, 4);
-            Assert.That(Multiply(Identity, ref a), Is.EqualTo(a));
+            Multiply(Identity, ref a).ShouldBe(a);
         }
 
         //Scenario: Transposing a matrix
@@ -243,7 +243,7 @@ namespace RayTracer.Tests.SpecTests
         //    | 9 | 8 | 8 | 0 |
         //    | 3 | 0 | 5 | 5 |
         //    | 0 | 8 | 3 | 8 |
-        [Test]
+        [Fact]
         public void ShouldTransposeMatrix()
         {
             var a = new Matrix4x4(
@@ -257,16 +257,16 @@ namespace RayTracer.Tests.SpecTests
                 3, 0, 5, 5,
                 0, 8, 3, 8);
 
-            Assert.That(Transpose(a), Is.EqualTo(expected));
+            Transpose(a).ShouldBe(expected);
         }
 
         //Scenario: Transposing the identity matrix
         //  Given A ← transpose(identity_matrix)
         //  Then A = identity_matrix
-        [Test]
+        [Fact]
         public void ShouldTransposeIdentityMatrix()
         {
-            Assert.That(Transpose(Identity), Is.EqualTo(Identity));
+            Transpose(Identity).ShouldBe(Identity);
         }
 
         //Scenario: Calculating the determinant of a 2x2 matrix
@@ -336,7 +336,7 @@ namespace RayTracer.Tests.SpecTests
         //    And cofactor(A, 0, 2) = 210
         //    And cofactor(A, 0, 3) = 51
         //    And determinant(A) = -4071
-        [Test]
+        [Fact]
         public void ShouldComputeDeterminantOf4x4Matrix()
         {
             var a = new Matrix4x4(
@@ -345,7 +345,7 @@ namespace RayTracer.Tests.SpecTests
                 1, 2, -9, 6,
                 -6, 7, 7, -9);
 
-            Assert.That(a.GetDeterminant(), Is.EqualTo(-4071));
+            a.GetDeterminant().ShouldBe(-4071);
         }
 
         //Scenario: Testing an invertible matrix for invertibility
@@ -356,7 +356,7 @@ namespace RayTracer.Tests.SpecTests
         //    |  9 |  1 |  7 | -6 |
         //  Then determinant(A) = -2120
         //    And A is invertible
-        [Test]
+        [Fact]
         public void ShouldDetermineIfMatrixIsInvertible()
         {
             var a = new Matrix4x4(
@@ -364,7 +364,7 @@ namespace RayTracer.Tests.SpecTests
                 5, 5, 7, 6,
                 4, -9, 3, -7,
                 9, 1, 7, -6);
-            Assert.That(Invert(a, out _), Is.True);
+            Invert(a, out _).ShouldBe(true);
         }
 
         //Scenario: Testing a noninvertible matrix for invertibility
@@ -375,7 +375,7 @@ namespace RayTracer.Tests.SpecTests
         //    |  0 |  0 |  0 |  0 |
         //  Then determinant(A) = 0
         //    And A is not invertible
-        [Test]
+        [Fact]
         public void ShouldDetermineIfMatrixIsNotInvertible()
         {
             var a = new Matrix4x4(
@@ -383,7 +383,7 @@ namespace RayTracer.Tests.SpecTests
                 9, 6, 2, 6,
                 0, -5, 1, -5,
                 0, 0, 0, 0);
-            Assert.That(Invert(a, out _), Is.False);
+            Invert(a, out _).ShouldBe(false);
         }
 
         //Scenario: Calculating the inverse of a matrix
@@ -403,7 +403,7 @@ namespace RayTracer.Tests.SpecTests
         //      | -0.80827 | -1.45677 | -0.44361 |  0.52068 |
         //      | -0.07895 | -0.22368 | -0.05263 |  0.19737 |
         //      | -0.52256 | -0.81391 | -0.30075 |  0.30639 |
-        [Test]
+        [Fact]
         public void ShouldCalculateInverseMatrix1()
         {
             var a = new Matrix4x4(
@@ -411,7 +411,7 @@ namespace RayTracer.Tests.SpecTests
                 1, -5, 1, 8,
                 7, 7, -6, -7,
                 1, -3, 7, 4);
-            Assert.That(Invert(a, out var b), Is.True);
+            Invert(a, out var b).ShouldBe(true);
 
             var expected = new Matrix4x4(
                 0.21805f, 0.45113f, 0.24060f, -0.04511f,
@@ -433,7 +433,7 @@ namespace RayTracer.Tests.SpecTests
         //    | -0.07692 |  0.12308 |  0.02564 |  0.03077 |
         //    |  0.35897 |  0.35897 |  0.43590 |  0.92308 |
         //    | -0.69231 | -0.69231 | -0.76923 | -1.92308 |
-        [Test]
+        [Fact]
         public void ShouldCalculateInverseMatrix2()
         {
             var a = new Matrix4x4(
@@ -441,7 +441,7 @@ namespace RayTracer.Tests.SpecTests
                 7, 5, 6, 1,
                 -6, 0, 9, 6,
                 -3, 0, -9, -4);
-            Assert.That(Invert(a, out var b), Is.True);
+            Invert(a, out var b).ShouldBe(true);
 
             var expected = new Matrix4x4(
                 -0.15385f, -0.15385f, -0.28205f, -0.53846f,
@@ -463,7 +463,7 @@ namespace RayTracer.Tests.SpecTests
         //    | -0.07778 |  0.03333 |  0.36667 | -0.33333 |
         //    | -0.02901 | -0.14630 | -0.10926 |  0.12963 |
         //    |  0.17778 |  0.06667 | -0.26667 |  0.33333 |
-        [Test]
+        [Fact]
         public void ShouldCalculateInverseMatrix3()
         {
             var a = new Matrix4x4(
@@ -471,7 +471,7 @@ namespace RayTracer.Tests.SpecTests
                 -5, -2, -6, -3,
                 -4, 9, 6, 4,
                 -7, 6, 6, 2);
-            Assert.That(Invert(a, out Matrix4x4 b), Is.True);
+            Invert(a, out Matrix4x4 b).ShouldBe(true);
 
             var expected = new Matrix4x4(
                 -0.04074f, -0.07778f, 0.14444f, -0.22222f,
@@ -495,7 +495,7 @@ namespace RayTracer.Tests.SpecTests
         //      |  6 | -2 |  0 |  5 |
         //    And C ← A * B
         //  Then C * inverse(B) = A
-        [Test]
+        [Fact]
         public void ShouldMultiplyProductMatrixByItsInverse()
         {
             var a = new Matrix4x4(

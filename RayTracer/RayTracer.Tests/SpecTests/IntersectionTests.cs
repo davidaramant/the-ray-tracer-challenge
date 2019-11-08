@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using System.Numerics;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
+using Shouldly;
+using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -16,8 +17,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// intersections.feature
     /// </summary>
-    [TestFixture]
-    public class IntersectionTests
+        public class IntersectionTests
     {
         //Scenario: An intersection encapsulates t and object
         //  Given s ← sphere()
@@ -35,7 +35,7 @@ namespace RayTracer.Tests.SpecTests
         //    And comps.point = point(0, 0, -1)
         //    And comps.eyev = vector(0, 0, -1)
         //    And comps.normalv = vector(0, 0, -1)
-        [Test]
+        [Fact]
         public void ShouldPrecomputeStateOfIntersection()
         {
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
@@ -43,7 +43,7 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(4, shape);
 
             var comps = Computations.Prepare(i, r);
-            Assert.That(comps.Object, Is.EqualTo(shape));
+            comps.Object.ShouldBe(shape);
             AssertActualEqualToExpected(comps.Point, CreatePoint(0, 0, -1));
             AssertActualEqualToExpected(comps.EyeV, CreateVector(0, 0, -1));
             AssertActualEqualToExpected(comps.NormalV, CreateVector(0, 0, -1));
@@ -62,7 +62,7 @@ namespace RayTracer.Tests.SpecTests
         //    And i ← intersection(4, shape)
         //  When comps ← prepare_computations(i, r)
         //  Then comps.inside = false
-        [Test]
+        [Fact]
         public void ShouldIndicateWhenIntersectionOccursOnTheOutside()
         {
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
@@ -70,7 +70,7 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(4, shape);
 
             var comps = Computations.Prepare(i, r);
-            Assert.That(comps.Inside, Is.False);
+            comps.Inside.ShouldBe(false);
         }
 
         //Scenario: The hit, when an intersection occurs on the inside
@@ -83,7 +83,7 @@ namespace RayTracer.Tests.SpecTests
         //    And comps.inside = true
         //      # normal would have been (0, 0, 1), but is inverted!
         //    And comps.normalv = vector(0, 0, -1)
-        [Test]
+        [Fact]
         public void ShouldIndicateWhenIntersectionOccursOnTheInside()
         {
             var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 0, 1));
@@ -93,7 +93,7 @@ namespace RayTracer.Tests.SpecTests
             var comps = Computations.Prepare(i, r);
             AssertActualEqualToExpected(comps.Point, CreatePoint(0, 0, 1));
             AssertActualEqualToExpected(comps.EyeV, CreateVector(0, 0, -1));
-            Assert.That(comps.Inside, Is.True);
+            comps.Inside.ShouldBe(true);
             AssertActualEqualToExpected(comps.NormalV, CreateVector(0, 0, -1));
         }
 
@@ -105,7 +105,7 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //  Then comps.over_point.z < -EPSILON/2
         //    And comps.point.z > comps.over_point.z
-        [Test]
+        [Fact]
         public void ShouldOffsetPointInHit()
         {
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
@@ -113,8 +113,8 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(5, shape);
 
             var comps = Computations.Prepare(i, r);
-            Assert.That(comps.OverPoint.Z, Is.LessThan(-Tolerance / 2));
-            Assert.That(comps.Point.Z, Is.GreaterThan(comps.OverPoint.Z));
+            comps.OverPoint.Z.ShouldBeLessThan(-Tolerance / 2);
+            comps.Point.Z.ShouldBeGreaterThan(comps.OverPoint.Z);
         }
 
         //Scenario: The under point is offset below the surface
@@ -135,15 +135,15 @@ namespace RayTracer.Tests.SpecTests
         //  Then xs.count = 2
         //    And xs[0].t = 1
         //    And xs[1].t = 2
-        [Test]
+        [Fact]
         public void ShouldAggregateIntersections()
         {
             var s = new Sphere();
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
             var xs = new List<Intersection> { i1, i2 };
-            Assert.That(xs, Has.Count.EqualTo(2));
-            Assert.That(xs, Is.EqualTo(new[] { i1, i2 }));
+            xs.Count.ShouldBe(2);
+            xs.ShouldBe(new[] { i1, i2 });
         }
 
         //Scenario: The hit, when all intersections have positive t
@@ -153,14 +153,14 @@ namespace RayTracer.Tests.SpecTests
         //    And xs ← intersections(i2, i1)
         //  When i ← hit(xs)
         //  Then i = i1
-        [Test]
+        [Fact]
         public void ShouldReturnHitWhenAllIntersectionsHavePositiveT()
         {
             var s = new Sphere();
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
             var xs = new List<Intersection> { i1, i2 };
-            Assert.That(xs.TryGetHit(), Is.EqualTo(i1));
+            xs.TryGetHit().ShouldBe(i1);
         }
 
         //Scenario: The hit, when some intersections have negative t
@@ -170,14 +170,14 @@ namespace RayTracer.Tests.SpecTests
         //    And xs ← intersections(i2, i1)
         //  When i ← hit(xs)
         //  Then i = i2
-        [Test]
+        [Fact]
         public void ShouldReturnHitWhenSomeIntersectionsHaveNegativeT()
         {
             var s = new Sphere();
             var i1 = new Intersection(-1, s);
             var i2 = new Intersection(1, s);
             var xs = new List<Intersection> { i1, i2 };
-            Assert.That(xs.TryGetHit(), Is.EqualTo(i2));
+            xs.TryGetHit().ShouldBe(i2);
         }
 
         //Scenario: The hit, when all intersections have negative t
@@ -187,14 +187,14 @@ namespace RayTracer.Tests.SpecTests
         //    And xs ← intersections(i2, i1)
         //  When i ← hit(xs)
         //  Then i is nothing
-        [Test]
+        [Fact]
         public void ShouldReturnHitWhenAllIntersectionsHaveNegativeT()
         {
             var s = new Sphere();
             var i1 = new Intersection(-2, s);
             var i2 = new Intersection(-1, s);
             var xs = new List<Intersection> { i1, i2 };
-            Assert.That(xs.TryGetHit(), Is.Null);
+            xs.TryGetHit().ShouldBeNull();
         }
 
         //Scenario: The hit is always the lowest nonnegative intersection
@@ -206,7 +206,7 @@ namespace RayTracer.Tests.SpecTests
         //  And xs ← intersections(i1, i2, i3, i4)
         //When i ← hit(xs)
         //Then i = i4
-        [Test]
+        [Fact]
         public void ShouldReturnHitWhenIntersectionsAreOutOfOrder()
         {
             var s = new Sphere();
@@ -215,7 +215,7 @@ namespace RayTracer.Tests.SpecTests
             var i3 = new Intersection(-3, s);
             var i4 = new Intersection(2, s);
             var xs = new List<Intersection> { i1, i2, i3, i4 };
-            Assert.That(xs.TryGetHit(), Is.EqualTo(i4));
+            xs.TryGetHit().ShouldBe(i4);
         }
 
         //Scenario Outline: Finding n1 and n2 at various intersections
