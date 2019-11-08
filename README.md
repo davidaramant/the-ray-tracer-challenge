@@ -73,3 +73,8 @@ I don't know how to reason about why this is happening, so hopefully when planes
 * Shoving the pattern shading method on `IShape` _works_ but feels a bit clunky... I wonder if I'm just sticking to OO patterns because that's what I'm used to.  I suppose there's nothing preventing me from moving them out to free standing static functions in the future.
 * Didn't bother trying to do pattern combinations quite yet.
 * I did some work on a hack to get around that horrible `float` issue.  I made a new `FarOverPoint` on `Computation` that's shifted farther out and that's what's used for determining if a point is in shadow.
+
+#### Refactorings
+
+* Camera movement is in.  However, this is clearly going beyond what WPF's `Composition` event is intended for... I discovered that multiple events are being executed in parallel since there are a bunch of tasks involved.  Not ideal and I think I have to bite the bullet and port the GUI over to use MonoGame instead (which apparently _does_ support Core now?!)
+* Switched over from NUnit to [xUnit](https://xunit.net/) with [Shouldly](https://github.com/shouldly/shouldly).  What's the point of a personal project if you don't try out something new? 😊 [Comby](https://comby.dev) was invaluable in making the conversion relatively painless.
