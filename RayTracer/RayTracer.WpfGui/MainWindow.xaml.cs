@@ -101,7 +101,7 @@ namespace RayTracer.WpfGui
         {
             _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = new CancellationTokenSource();
-            await Renderer.TraceScene(_camera, _world, _canvas.SetPixel, _cancellationTokenSource.Token);
+            await Renderer.TraceScene(_camera, _world, _canvas.SetPixel, maximumReflections: 5, _cancellationTokenSource.Token);
         }
 
         async void GameLoop(object sender, EventArgs e)
@@ -118,7 +118,7 @@ namespace RayTracer.WpfGui
         async Task UpdateCameraPosition(TimeSpan frameTime)
         {
             float inlineDistance = MovementSpeed * (float)frameTime.TotalMilliseconds;
-            float rotationAmount = RotationSpeed * (float) frameTime.TotalMilliseconds;
+            float rotationAmount = RotationSpeed * (float)frameTime.TotalMilliseconds;
             bool moved = false;
 
             Matrix4x4 movementMatrix = Matrix4x4.Identity;

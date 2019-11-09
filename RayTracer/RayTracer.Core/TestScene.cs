@@ -20,6 +20,7 @@ namespace RayTracer.Core
                         Transform = CreateScale(2,2,2) * CreateShear(0,1,0,0,0,0)
                     },
                     Specular = 0,
+                    Reflective = 0.1f,
                 },
             };
             var rightWall = new XZPlane("right wall")
@@ -57,6 +58,7 @@ namespace RayTracer.Core
                     },
                     Diffuse = 0.7f,
                     Specular = 0.3f,
+                    Reflective = 0.05f,
                 }
             };
             var right = new Sphere("right")
@@ -68,6 +70,7 @@ namespace RayTracer.Core
                     Color = VColor.Black,
                     Diffuse = 0.7f,
                     Specular = 0.3f,
+                    Reflective = 0.015f,
                 }
             };
             var left = new Sphere("left")
@@ -77,8 +80,10 @@ namespace RayTracer.Core
                 Material =
                 {
                     Color = VColor.White,
-                    Diffuse = 0.7f,
-                    Specular = 0.3f,
+                    Ambient = 0.1f,
+                    Diffuse = 0.4f,
+                    Specular = 0,
+                    Reflective = 1
                 }
             };
 

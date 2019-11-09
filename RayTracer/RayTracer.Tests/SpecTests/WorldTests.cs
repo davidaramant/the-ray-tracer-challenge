@@ -14,7 +14,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// world.feature
     /// </summary>
-        public class WorldTests
+    public class WorldTests
     {
         //Scenario: Creating a world
         //  Given w ← world()
@@ -256,6 +256,18 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And color ← reflected_color(w, comps)
         //  Then color = color(0, 0, 0)
+        [Fact]
+        public void ShouldDetermineReflectedColorForNonReflectiveMaterial()
+        {
+            var w = World.CreateDefault();
+            var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 0, 1));
+            var shape = w.Objects[1];
+            shape.Material.Ambient = 1;
+            var i = new Intersection(1, shape);
+            var comps = Computations.Prepare(i, r);
+            var color = w.ComputeReflectedColor(comps);
+            AssertActualEqualToExpected(color, VColor.Black);
+        }
 
         //Scenario: The reflected color for a reflective material
         //  Given w ← default_world()
@@ -268,6 +280,22 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And color ← reflected_color(w, comps)
         //  Then color = color(0.19032, 0.2379, 0.14274)
+        [Fact]
+        public void ShouldDetermineReflectedColorForReflectiveMaterial()
+        {
+            var w = World.CreateDefault();
+            var shape = new XZPlane
+            {
+                Material = { Reflective = 0.5f },
+                Transform = CreateTranslation(0, -1, 0),
+            };
+            w.Objects.Add(shape);
+            var r = CreateRay(CreatePoint(0, 0, -3), CreateVector(0, -Sqrt(2) / 2, Sqrt(2) / 2));
+            var i = new Intersection(Sqrt(2), shape);
+            var comps = Computations.Prepare(i, r);
+            var color = w.ComputeReflectedColor(comps, 1);
+            AssertActualEqualToExpected(color, VColor.LinearRGB(0.19032f, 0.2379f, 0.14274f));
+        }
 
         //Scenario: shade_hit() with a reflective material
         //  Given w ← default_world()
@@ -280,6 +308,22 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And color ← shade_hit(w, comps)
         //  Then color = color(0.87677, 0.92436, 0.82918)
+        [Fact]
+        public void ShouldComputeColorForReflectiveMaterial()
+        {
+            var w = World.CreateDefault();
+            var shape = new XZPlane
+            {
+                Material = { Reflective = 0.5f },
+                Transform = CreateTranslation(0, -1, 0),
+            };
+            w.Objects.Add(shape);
+            var r = CreateRay(CreatePoint(0, 0, -3), CreateVector(0, -Sqrt(2) / 2, Sqrt(2) / 2));
+            var i = new Intersection(Sqrt(2), shape);
+            var comps = Computations.Prepare(i, r);
+            var color = w.ShadeHit(comps, 4);
+            AssertActualEqualToExpected(color, VColor.LinearRGB(0.87677f, 0.92436f, 0.82918f));
+        }
 
         //Scenario: color_at() with mutually reflective surfaces
         //  Given w ← world()
@@ -294,6 +338,29 @@ namespace RayTracer.Tests.SpecTests
         //    And upper is added to w
         //    And r ← ray(point(0, 0, 0), vector(0, 1, 0))
         //  Then color_at(w, r) should terminate successfully
+        [Fact]
+        public void ShouldPreventInfiniteReflections()
+        {
+            var w = new World
+            {
+                Lights = { new PointLight(CreatePoint(0, 0, 0), VColor.White) },
+                Objects =
+                {
+                    new XZPlane
+                    {
+                        Material = {Reflective = 1},
+                        Transform = CreateTranslation(0,-1,0),
+                    },
+                    new XZPlane
+                    {
+                        Material = {Reflective = 1},
+                        Transform = CreateTranslation(0,1,0),
+                    }
+                }
+            };
+            var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 1, 0));
+            w.ComputeColor(r);
+        }
 
         //Scenario: The reflected color at the maximum recursive depth
         //  Given w ← default_world()
@@ -306,6 +373,22 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r)
         //    And color ← reflected_color(w, comps, 0)    
         //  Then color = color(0, 0, 0)
+        [Fact]
+        public void ShouldComputeColorForReflectiveMaterialAtMaximumRecursiveDepth()
+        {
+            var w = World.CreateDefault();
+            var shape = new XZPlane
+            {
+                Material = { Reflective = 0.5f },
+                Transform = CreateTranslation(0, -1, 0),
+            };
+            w.Objects.Add(shape);
+            var r = CreateRay(CreatePoint(0, 0, -3), CreateVector(0, -Sqrt(2) / 2, Sqrt(2) / 2));
+            var i = new Intersection(Sqrt(2), shape);
+            var comps = Computations.Prepare(i, r);
+            var color = w.ComputeReflectedColor(comps, 0);
+            AssertActualEqualToExpected(color, VColor.Black);
+        }
 
         //Scenario: The refracted color with an opaque surface
         //  Given w ← default_world()

@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using RayTracer.Core.Shapes;
 using static System.Numerics.Vector4;
+using static RayTracer.Core.Tuples;
 
 namespace RayTracer.Core
 {
@@ -13,6 +14,7 @@ namespace RayTracer.Core
         public Vector4 FarOverPoint { get; }
         public Vector4 EyeV { get; }
         public Vector4 NormalV { get; }
+        public Vector4 ReflectV { get; }
         public bool Inside { get; }
 
         private Computations(float t, IShape o, Vector4 point, Vector4 eyeV, Vector4 normalV)
@@ -31,7 +33,9 @@ namespace RayTracer.Core
                 Inside = false;
                 NormalV = normalV;
             }
-            OverPoint = point + NormalV * Tuples.Tolerance;
+
+            ReflectV = Reflect(-eyeV, NormalV);
+            OverPoint = point + NormalV * Tolerance;
             // HACK: Move the point pretty far for use in IsShadowed.  Some floating point error somewhere causes issues otherwise
             FarOverPoint = point + NormalV * 0.001f;
         }

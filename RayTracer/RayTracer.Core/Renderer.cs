@@ -13,6 +13,7 @@ namespace RayTracer.Core
             Camera camera, 
             World world, 
             DrawPixel drawPixel, 
+            int maximumReflections,
             CancellationToken cancelToken,
             Action reportRowRendered = null) =>
                 Task.Factory.StartNew(() =>
@@ -31,7 +32,7 @@ namespace RayTracer.Core
                                 for (int x = 0; x < camera.Dimensions.Width && !loopState.ShouldExitCurrentIteration; x++)
                                 {
                                     var ray = camera.CreateRayForPixel(x, y);
-                                    var color = world.ComputeColor(ray);
+                                    var color = world.ComputeColor(ray, maximumReflections);
                                     drawPixel(x, y, color);
                                 }
 

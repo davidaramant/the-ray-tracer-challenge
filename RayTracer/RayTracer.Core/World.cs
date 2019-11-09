@@ -50,18 +50,18 @@ namespace RayTracer.Core
             },
         };
 
-        public Vector4 ShadeHit(Computations comp) =>
+        public Vector4 ShadeHit(Computations comp, int remainingReflections = 0) =>
             Lights.Select(light =>
                 comp.Object.Material.ComputeColor(
                     light,
                     comp.Object,
-                    comp.OverPoint, 
-                    comp.EyeV, 
-                    comp.NormalV, 
+                    comp.OverPoint,
+                    comp.EyeV,
+                    comp.NormalV,
                     inShadow: IsShadowed(light, comp.FarOverPoint)))
-                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color);
+                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color) + ComputeReflectedColor(comp, remainingReflections);
 
-        public Vector4 ComputeColor(Ray ray)
+        public Vector4 ComputeColor(Ray ray, int remainingReflections = 0)
         {
             var xs = Intersect(ray);
 
@@ -73,7 +73,7 @@ namespace RayTracer.Core
 
             var comp = Computations.Prepare(hit, ray);
 
-            return ShadeHit(comp);
+            return ShadeHit(comp, remainingReflections);
         }
 
         public bool IsShadowed(PointLight light, Vector4 point)
@@ -86,6 +86,19 @@ namespace RayTracer.Core
             var xs = Intersect(r);
             var hit = xs.TryGetHit();
             return hit?.T < distance;
+        }
+
+        public Vector4 ComputeReflectedColor(Computations comps, int remainingReflections = 0)
+        {
+            if (comps.Object.Material.Reflective.IsZero() || remainingReflections == 0)
+            {
+                return VColor.Black;
+            }
+
+            var reflectRay = CreateRay(comps.OverPoint, comps.ReflectV);
+            var color = ComputeColor(reflectRay, remainingReflections - 1);
+
+            return color * comps.Object.Material.Reflective;
         }
     }
 }

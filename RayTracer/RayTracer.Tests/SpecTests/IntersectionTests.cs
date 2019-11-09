@@ -17,7 +17,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// intersections.feature
     /// </summary>
-        public class IntersectionTests
+    public class IntersectionTests
     {
         //Scenario: An intersection encapsulates t and object
         //  Given s ← sphere()
@@ -54,7 +54,17 @@ namespace RayTracer.Tests.SpecTests
         //    And r ← ray(point(0, 1, -1), vector(0, -√2/2, √2/2)) 
         //    And i ← intersection(√2, shape)                      
         //  When comps ← prepare_computations(i, r)
-        //  Then comps.reflectv = vector(0, √2/2, √2/2)                
+        //  Then comps.reflectv = vector(0, √2/2, √2/2)
+        [Fact]
+        public void ShouldPrecomputeReflectionVector()
+        {
+            var shape = new XZPlane();
+            var r = CreateRay(CreatePoint(0, 1, -1), CreateVector(0, -Sqrt(2) / 2, Sqrt(2) / 2));
+            var i = new Intersection(Sqrt(2), shape);
+            var comps = Computations.Prepare(i, r);
+            AssertActualEqualToExpected(comps.ReflectV, CreateVector(0, Sqrt(2) / 2, Sqrt(2) / 2));
+
+        }
 
         //Scenario: The hit, when an intersection occurs on the outside
         //  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
