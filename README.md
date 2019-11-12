@@ -77,4 +77,4 @@ I don't know how to reason about why this is happening, so hopefully when planes
 #### Refactorings
 
 * Camera movement is in.  However, this is clearly going beyond what WPF's `Composition` event is intended for... I discovered that multiple events are being executed in parallel since there are a bunch of tasks involved.  Not ideal and I think I have to bite the bullet and port the GUI over to use MonoGame instead (which apparently _does_ support Core now?!)
-* Switched over from NUnit to [xUnit](https://xunit.net/) with [Shouldly](https://github.com/shouldly/shouldly).  What's the point of a personal project if you don't try out something new? 😊 [Comby](https://comby.dev) was invaluable in making the conversion relatively painless.
+* Switched over from NUnit to [xUnit](https://xunit.net/) with ~~[Shouldly](https://github.com/shouldly/shouldly)~~ [FluentAssertions](https://fluentassertions.com).  What's the point of a personal project if you don't try out something new? 😊 [Comby](https://comby.dev) was invaluable in making the conversion relatively painless.
