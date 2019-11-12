@@ -2,7 +2,7 @@
 using System.Numerics;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -55,7 +55,7 @@ namespace RayTracer.Tests.SpecTests
             var p = new XZPlane();
             var r = CreateRay(CreatePoint(x, y, z), CreateVector(0, 0, 1));
             var xs = p.LocalIntersect(r);
-            xs.ShouldBeEmpty();
+            xs.Should().BeEmpty();
         }
 
         //Scenario: A ray intersecting a plane from above
@@ -81,8 +81,8 @@ namespace RayTracer.Tests.SpecTests
             var p = new XZPlane();
             var r = CreateRay(CreatePoint(px, py, pz), CreateVector(vx, vy, vz));
             var xs = p.LocalIntersect(r);
-            xs.ShouldHaveSingleItem().T.ShouldBe(1);
-            xs.First().Shape.ShouldBe(p);
+            xs.Should().ContainSingle().And.Subject.First().T.Should().Be(1);
+            xs.First().Shape.Should().Be(p);
         }
     }
 }

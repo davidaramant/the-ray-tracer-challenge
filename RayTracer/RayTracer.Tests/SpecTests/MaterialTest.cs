@@ -1,7 +1,7 @@
 ﻿using RayTracer.Core;
 using RayTracer.Core.Patterns;
 using RayTracer.Core.Shapes;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -28,10 +28,10 @@ namespace RayTracer.Tests.SpecTests
         {
             var m = new Material();
             AssertActualEqualToExpected(m.Color, VColor.White);
-            m.Ambient.ShouldBe(0.1f, Tolerance);
-            m.Diffuse.ShouldBe(0.9f, Tolerance);
-            m.Specular.ShouldBe(0.9f, Tolerance);
-            m.Shininess.ShouldBe(200, Tolerance);
+            m.Ambient.Should().BeApproximately(0.1f, Tolerance);
+            m.Diffuse.Should().BeApproximately(0.9f, Tolerance);
+            m.Specular.Should().BeApproximately(0.9f, Tolerance);
+            m.Shininess.Should().BeApproximately(200, Tolerance);
         }
 
         //Scenario: Reflectivity for the default material

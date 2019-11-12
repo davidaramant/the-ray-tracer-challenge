@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -37,7 +37,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
             var s = new Sphere();
             var xs = s.Intersect(r);
-            xs.ShouldBe(new[] { new Intersection(4f, s), new Intersection(6f, s) });
+            xs.Should().ContainInOrder(new[] { new Intersection(4f, s), new Intersection(6f, s) });
         }
 
         //Scenario: A ray intersects a sphere at a tangent
@@ -53,7 +53,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 1, -5), CreateVector(0, 0, 1));
             var s = new Sphere();
             var xs = s.Intersect(r);
-            xs.ShouldBe(new[] { new Intersection(5f, s), new Intersection(5f, s) });
+            xs.Should().ContainInOrder(new[] { new Intersection(5f, s), new Intersection(5f, s) });
         }
 
         //Scenario: A ray misses a sphere
@@ -67,7 +67,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 2, -5), CreateVector(0, 0, 1));
             var s = new Sphere();
             var xs = s.Intersect(r);
-            xs.ShouldBeEmpty();
+            xs.Should().BeEmpty();
         }
 
         //Scenario: A ray originates inside a sphere
@@ -83,7 +83,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 0, 0), CreateVector(0, 0, 1));
             var s = new Sphere();
             var xs = s.Intersect(r);
-            xs.ShouldBe(new[] { new Intersection(-1f, s), new Intersection(1f, s) });
+            xs.Should().ContainInOrder(new[] { new Intersection(-1f, s), new Intersection(1f, s) });
         }
 
         //Scenario: A sphere is behind a ray
@@ -99,7 +99,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 0, 5), CreateVector(0, 0, 1));
             var s = new Sphere();
             var xs = s.Intersect(r);
-            xs.ShouldBe(new[] { new Intersection(-6f, s), new Intersection(-4f, s) });
+            xs.Should().ContainInOrder(new[] { new Intersection(-6f, s), new Intersection(-4f, s) });
         }
 
         //Scenario: A sphere's default transformation
@@ -138,7 +138,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
             var s = new Sphere { Transform = CreateScale(2, 2, 2) };
             var xs = s.Intersect(r);
-            xs.ShouldBe(new[] { new Intersection(3f, s), new Intersection(7f, s) });
+            xs.Should().ContainInOrder(new[] { new Intersection(3f, s), new Intersection(7f, s) });
         }
 
         //Scenario: Intersecting a translated sphere with a ray
@@ -153,7 +153,7 @@ namespace RayTracer.Tests.SpecTests
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
             var s = new Sphere { Transform = CreateTranslation(5, 0, 0) };
             var xs = s.Intersect(r);
-            xs.ShouldBeEmpty();
+            xs.Should().BeEmpty();
         }
 
         //Scenario: The normal on a sphere at a point on the x axis

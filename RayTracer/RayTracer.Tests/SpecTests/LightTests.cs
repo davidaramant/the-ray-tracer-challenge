@@ -1,5 +1,5 @@
 ﻿using RayTracer.Core;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -26,8 +26,8 @@ namespace RayTracer.Tests.SpecTests
             var intensity = VColor.White;
             var position = CreatePoint(0, 0, 0);
             var light = new PointLight(position, intensity);
-            light.Position.ShouldBe(position);
-            light.Intensity.ShouldBe(intensity);
+            light.Position.Should().Be(position);
+            light.Intensity.Should().Be(intensity);
         }
 
     }

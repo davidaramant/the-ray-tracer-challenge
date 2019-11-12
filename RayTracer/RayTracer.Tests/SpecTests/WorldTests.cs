@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -24,8 +24,8 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldCreateEmptyWorld()
         {
             var w = new World();
-            w.Objects.ShouldBeEmpty();
-            w.Lights.ShouldBeEmpty();
+            w.Objects.Should().BeEmpty();
+            w.Lights.Should().BeEmpty();
         }
 
         //Scenario: The default world
@@ -59,12 +59,12 @@ namespace RayTracer.Tests.SpecTests
             };
 
             var w = World.CreateDefault();
-            w.Lights.ShouldContain(light);
-            w.Objects.Count.ShouldBe(2);
-            w.Objects[0].Material.ShouldBe(s1.Material);
-            w.Objects[0].Transform.ShouldBe(s1.Transform);
-            w.Objects[1].Material.ShouldBe(s2.Material);
-            w.Objects[1].Transform.ShouldBe(s2.Transform);
+            w.Lights.Should().Contain(light);
+            w.Objects.Count.Should().Be(2);
+            w.Objects[0].Material.Should().Be(s1.Material);
+            w.Objects[0].Transform.Should().Be(s1.Transform);
+            w.Objects[1].Material.Should().Be(s2.Material);
+            w.Objects[1].Transform.Should().Be(s2.Transform);
         }
 
         //Scenario: Intersect a world with a ray
@@ -82,11 +82,11 @@ namespace RayTracer.Tests.SpecTests
             var w = World.CreateDefault();
             var r = CreateRay(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
             var xs = w.Intersect(r);
-            xs.Count.ShouldBe(4);
-            xs[0].T.ShouldBe(4, Tolerance);
-            xs[1].T.ShouldBe(4.5f, Tolerance);
-            xs[2].T.ShouldBe(5.5f, Tolerance);
-            xs[3].T.ShouldBe(6, Tolerance);
+            xs.Count.Should().Be(4);
+            xs[0].T.Should().BeApproximately(4, Tolerance);
+            xs[1].T.Should().BeApproximately(4.5f, Tolerance);
+            xs[2].T.Should().BeApproximately(5.5f, Tolerance);
+            xs[3].T.Should().BeApproximately(6, Tolerance);
         }
 
         //Scenario: Shading an intersection
@@ -209,7 +209,7 @@ namespace RayTracer.Tests.SpecTests
         {
             var w = World.CreateDefault();
             var p = CreatePoint(x, y, z);
-            w.IsShadowed(w.Lights.First(), p).ShouldBe(expectedInShadow);
+            w.IsShadowed(w.Lights.First(), p).Should().Be(expectedInShadow);
         }
 
         //Scenario: shade_hit() is given an intersection in shadow

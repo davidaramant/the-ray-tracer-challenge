@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -43,7 +43,7 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(4, shape);
 
             var comps = Computations.Prepare(i, r);
-            comps.Object.ShouldBe(shape);
+            comps.Object.Should().Be(shape);
             AssertActualEqualToExpected(comps.Point, CreatePoint(0, 0, -1));
             AssertActualEqualToExpected(comps.EyeV, CreateVector(0, 0, -1));
             AssertActualEqualToExpected(comps.NormalV, CreateVector(0, 0, -1));
@@ -80,7 +80,7 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(4, shape);
 
             var comps = Computations.Prepare(i, r);
-            comps.Inside.ShouldBe(false);
+            comps.Inside.Should().Be(false);
         }
 
         //Scenario: The hit, when an intersection occurs on the inside
@@ -103,7 +103,7 @@ namespace RayTracer.Tests.SpecTests
             var comps = Computations.Prepare(i, r);
             AssertActualEqualToExpected(comps.Point, CreatePoint(0, 0, 1));
             AssertActualEqualToExpected(comps.EyeV, CreateVector(0, 0, -1));
-            comps.Inside.ShouldBe(true);
+            comps.Inside.Should().Be(true);
             AssertActualEqualToExpected(comps.NormalV, CreateVector(0, 0, -1));
         }
 
@@ -123,8 +123,8 @@ namespace RayTracer.Tests.SpecTests
             var i = new Intersection(5, shape);
 
             var comps = Computations.Prepare(i, r);
-            comps.OverPoint.Z.ShouldBeLessThan(-Tolerance / 2);
-            comps.Point.Z.ShouldBeGreaterThan(comps.OverPoint.Z);
+            comps.OverPoint.Z.Should().BeLessThan(-Tolerance / 2);
+            comps.Point.Z.Should().BeGreaterThan(comps.OverPoint.Z);
         }
 
         //Scenario: The under point is offset below the surface
@@ -152,8 +152,8 @@ namespace RayTracer.Tests.SpecTests
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
             var xs = new List<Intersection> { i1, i2 };
-            xs.Count.ShouldBe(2);
-            xs.ShouldBe(new[] { i1, i2 });
+            xs.Count.Should().Be(2);
+            xs.Should().Contain(new[] { i1, i2 });
         }
 
         //Scenario: The hit, when all intersections have positive t
@@ -170,7 +170,7 @@ namespace RayTracer.Tests.SpecTests
             var i1 = new Intersection(1, s);
             var i2 = new Intersection(2, s);
             var xs = new List<Intersection> { i1, i2 };
-            xs.TryGetHit().ShouldBe(i1);
+            xs.TryGetHit().Should().Be(i1);
         }
 
         //Scenario: The hit, when some intersections have negative t
@@ -187,7 +187,7 @@ namespace RayTracer.Tests.SpecTests
             var i1 = new Intersection(-1, s);
             var i2 = new Intersection(1, s);
             var xs = new List<Intersection> { i1, i2 };
-            xs.TryGetHit().ShouldBe(i2);
+            xs.TryGetHit().Should().Be(i2);
         }
 
         //Scenario: The hit, when all intersections have negative t
@@ -204,7 +204,7 @@ namespace RayTracer.Tests.SpecTests
             var i1 = new Intersection(-2, s);
             var i2 = new Intersection(-1, s);
             var xs = new List<Intersection> { i1, i2 };
-            xs.TryGetHit().ShouldBeNull();
+            xs.TryGetHit().Should().BeNull();
         }
 
         //Scenario: The hit is always the lowest nonnegative intersection
@@ -225,7 +225,7 @@ namespace RayTracer.Tests.SpecTests
             var i3 = new Intersection(-3, s);
             var i4 = new Intersection(2, s);
             var xs = new List<Intersection> { i1, i2, i3, i4 };
-            xs.TryGetHit().ShouldBe(i4);
+            xs.TryGetHit().Should().Be(i4);
         }
 
         //Scenario Outline: Finding n1 and n2 at various intersections

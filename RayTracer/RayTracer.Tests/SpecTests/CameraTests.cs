@@ -3,7 +3,7 @@ using System.Drawing;
 using Moq;
 using RayTracer.Core;
 using RayTracer.Core.Utilities;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -41,9 +41,9 @@ namespace RayTracer.Tests.SpecTests
             var vSize = 120;
             var fieldOfView = PI / 2;
             var c = new Camera(CreateMockBuffer(hSize, vSize), fieldOfView);
-            c.Dimensions.Width.ShouldBe(hSize);
-            c.Dimensions.Height.ShouldBe(vSize);
-            c.FieldOfView.ShouldBe(fieldOfView, Tolerance);
+            c.Dimensions.Width.Should().Be(hSize);
+            c.Dimensions.Height.Should().Be(vSize);
+            c.FieldOfView.Should().BeApproximately(fieldOfView, Tolerance);
             AssertActualEqualToExpected(c.Transform, Identity);
         }
 
@@ -54,7 +54,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldCalculatePixelSizeForHorizontalCanvas()
         {
             var c = new Camera(CreateMockBuffer(200, 125), PI / 2);
-            c.PixelSize.ShouldBe(0.01f, Tolerance);
+            c.PixelSize.Should().BeApproximately(0.01f, Tolerance);
         }
 
         //Scenario: The pixel size for a vertical canvas
@@ -64,7 +64,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldCalculatePixelSizeForVerticalCanvas()
         {
             var c = new Camera(CreateMockBuffer(125, 200), PI / 2);
-            c.PixelSize.ShouldBe(0.01f, Tolerance);
+            c.PixelSize.Should().BeApproximately(0.01f, Tolerance);
         }
 
         //Scenario: Constructing a ray through the center of the canvas

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using RayTracer.Core;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -28,8 +28,8 @@ namespace RayTracer.Tests.SpecTests
             var origin = CreatePoint(1, 2, 3);
             var direction = CreateVector(4, 5, 6);
             var r = new Ray(origin, direction);
-            r.Origin.ShouldBe(origin);
-            r.Direction.ShouldBe(direction);
+            r.Origin.Should().Be(origin);
+            r.Direction.Should().Be(direction);
         }
 
 #if DEBUG

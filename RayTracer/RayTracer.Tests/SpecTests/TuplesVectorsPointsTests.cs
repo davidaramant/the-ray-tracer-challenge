@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Vector4;
@@ -25,8 +25,8 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldDetermineIfPoint()
         {
             var a = new Vector4(4.3f, -4.2f, 3.1f, 1.0f);
-            a.IsPoint().ShouldBe(true);
-            a.IsVector().ShouldBe(false);
+            a.IsPoint().Should().Be(true);
+            a.IsVector().Should().Be(false);
         }
 
         //Scenario: A tuple with w=0 is a vector
@@ -41,8 +41,8 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldDetermineIfVector()
         {
             var a = new Vector4(4.3f, -4.2f, 3.1f, 0.0f);
-            a.IsPoint().ShouldBe(false);
-            a.IsVector().ShouldBe(true);
+            a.IsPoint().Should().Be(false);
+            a.IsVector().Should().Be(true);
         }
 
         //Scenario: point() creates tuples with w=1
@@ -177,7 +177,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldComputeMagnitudeOfUnitVector(float x, float y, float z)
         {
             var v = CreateVector(x, y, z);
-            v.Length().ShouldBe(1);
+            v.Length().Should().Be(1);
         }
 
         //Scenario: Computing the magnitude of vector(-1, -2, -3)
@@ -187,7 +187,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldComputeMagnitudeOfVector123()
         {
             var v = CreateVector(1, 2, 3);
-            v.Length().ShouldBe(Sqrt(14), Tolerance);
+            v.Length().Should().BeApproximately(Sqrt(14), Tolerance);
         }
 
         //Scenario: Computing the magnitude of vector(-1, -2, -3)
@@ -197,7 +197,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldComputeMagnitudeOfVectorNegative123()
         {
             var v = CreateVector(-1, -2, -3);
-            v.Length().ShouldBe(Sqrt(14), Tolerance);
+            v.Length().Should().BeApproximately(Sqrt(14), Tolerance);
         }
 
         //Scenario: Normalizing vector(4, 0, 0) gives (1, 0, 0)
@@ -229,7 +229,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldGetMagnitudeOfNormalizedVector123()
         {
             var v = CreateVector(1, 2, 3);
-            Normalize(v).Length().ShouldBe(1, Tolerance);
+            Normalize(v).Length().Should().BeApproximately(1, Tolerance);
         }
 
         //Scenario: The dot product of two tuples
@@ -241,7 +241,7 @@ namespace RayTracer.Tests.SpecTests
         {
             var a = CreateVector(1, 2, 3);
             var b = CreateVector(2, 3, 4);
-            Dot(a, b).ShouldBe(20, Tolerance);
+            Dot(a, b).Should().BeApproximately(20, Tolerance);
         }
 
         //Scenario: The cross product of two vectors

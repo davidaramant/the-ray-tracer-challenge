@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using RayTracer.Core;
-using Shouldly;
+using FluentAssertions;
 using Xunit;
 using static System.Numerics.Matrix4x4;
 using static RayTracer.Core.Tuples;
@@ -35,13 +35,13 @@ namespace RayTracer.Tests.SpecTests
                 9, 10, 11, 12,
                 13.5f, 14.5f, 15.5f, 16.5f);
 
-            m.M11.ShouldBe(1);
-            m.M14.ShouldBe(4);
-            m.M21.ShouldBe(5.5f);
-            m.M23.ShouldBe(7.5f);
-            m.M33.ShouldBe(11f);
-            m.M41.ShouldBe(13.5f);
-            m.M43.ShouldBe(15.5f);
+            m.M11.Should().Be(1);
+            m.M14.Should().Be(4);
+            m.M21.Should().Be(5.5f);
+            m.M23.Should().Be(7.5f);
+            m.M33.Should().Be(11f);
+            m.M41.Should().Be(13.5f);
+            m.M43.Should().Be(15.5f);
         }
 
         //Scenario: A 2x2 matrix ought to be representable
@@ -57,10 +57,10 @@ namespace RayTracer.Tests.SpecTests
         {
             var m = new Matrix2x2(-3, 5, 1, -2);
 
-            m.M11.ShouldBe(-3);
-            m.M12.ShouldBe(5);
-            m.M21.ShouldBe(1);
-            m.M22.ShouldBe(-2);
+            m.M11.Should().Be(-3);
+            m.M12.Should().Be(5);
+            m.M21.Should().Be(1);
+            m.M22.Should().Be(-2);
         }
 
         //Scenario: A 3x3 matrix ought to be representable
@@ -79,9 +79,9 @@ namespace RayTracer.Tests.SpecTests
                  1, -2, -7,
                  0, 1, 1);
 
-            m.M11.ShouldBe(-3);
-            m.M22.ShouldBe(-2);
-            m.M33.ShouldBe(1);
+            m.M11.Should().Be(-3);
+            m.M22.Should().Be(-2);
+            m.M33.Should().Be(1);
         }
 
         //Scenario: Matrix equality with identical matrices
@@ -110,7 +110,7 @@ namespace RayTracer.Tests.SpecTests
                 9, 8, 7, 6,
                 5, 4, 3, 2);
 
-            a.ShouldBe(b);
+            a.Should().Be(b);
         }
 
         //Scenario: Matrix equality with different matrices
@@ -139,7 +139,7 @@ namespace RayTracer.Tests.SpecTests
                 8, 7, 6, 5,
                 4, 3, 2, 1);
 
-            a.ShouldNotBe(b);
+            a.Should().NotBe(b);
         }
 
         //Scenario: Multiplying two matrices
@@ -177,7 +177,7 @@ namespace RayTracer.Tests.SpecTests
                 40, 58, 110, 102,
                 16, 26, 46, 42);
 
-            (a * b).ShouldBe(expected);
+            (a * b).Should().Be(expected);
         }
 
         //Scenario: A matrix multiplied by a tuple
@@ -200,7 +200,7 @@ namespace RayTracer.Tests.SpecTests
             var b = new Vector4(1, 2, 3, 1);
             var expected = new Vector4(18, 24, 33, 1);
 
-            Multiply(ref a, ref b).ShouldBe(expected);
+            Multiply(ref a, ref b).Should().Be(expected);
         }
 
         //Scenario: Multiplying a matrix by the identity matrix
@@ -219,7 +219,7 @@ namespace RayTracer.Tests.SpecTests
                 2, 4, 8, 16,
                 4, 8, 16, 32);
 
-            (a * Identity).ShouldBe(a);
+            (a * Identity).Should().Be(a);
         }
 
         //Scenario: Multiplying the identity matrix by a tuple
@@ -229,7 +229,7 @@ namespace RayTracer.Tests.SpecTests
         public void ShouldMultiplyIdentityMatrixByTuple()
         {
             var a = new Vector4(1, 2, 3, 4);
-            Multiply(Identity, ref a).ShouldBe(a);
+            Multiply(Identity, ref a).Should().Be(a);
         }
 
         //Scenario: Transposing a matrix
@@ -257,7 +257,7 @@ namespace RayTracer.Tests.SpecTests
                 3, 0, 5, 5,
                 0, 8, 3, 8);
 
-            Transpose(a).ShouldBe(expected);
+            Transpose(a).Should().Be(expected);
         }
 
         //Scenario: Transposing the identity matrix
@@ -266,7 +266,7 @@ namespace RayTracer.Tests.SpecTests
         [Fact]
         public void ShouldTransposeIdentityMatrix()
         {
-            Transpose(Identity).ShouldBe(Identity);
+            Transpose(Identity).Should().Be(Identity);
         }
 
         //Scenario: Calculating the determinant of a 2x2 matrix
@@ -345,7 +345,7 @@ namespace RayTracer.Tests.SpecTests
                 1, 2, -9, 6,
                 -6, 7, 7, -9);
 
-            a.GetDeterminant().ShouldBe(-4071);
+            a.GetDeterminant().Should().Be(-4071);
         }
 
         //Scenario: Testing an invertible matrix for invertibility
@@ -364,7 +364,7 @@ namespace RayTracer.Tests.SpecTests
                 5, 5, 7, 6,
                 4, -9, 3, -7,
                 9, 1, 7, -6);
-            Invert(a, out _).ShouldBe(true);
+            Invert(a, out _).Should().Be(true);
         }
 
         //Scenario: Testing a noninvertible matrix for invertibility
@@ -383,7 +383,7 @@ namespace RayTracer.Tests.SpecTests
                 9, 6, 2, 6,
                 0, -5, 1, -5,
                 0, 0, 0, 0);
-            Invert(a, out _).ShouldBe(false);
+            Invert(a, out _).Should().Be(false);
         }
 
         //Scenario: Calculating the inverse of a matrix
@@ -411,7 +411,7 @@ namespace RayTracer.Tests.SpecTests
                 1, -5, 1, 8,
                 7, 7, -6, -7,
                 1, -3, 7, 4);
-            Invert(a, out var b).ShouldBe(true);
+            Invert(a, out var b).Should().Be(true);
 
             var expected = new Matrix4x4(
                 0.21805f, 0.45113f, 0.24060f, -0.04511f,
@@ -441,7 +441,7 @@ namespace RayTracer.Tests.SpecTests
                 7, 5, 6, 1,
                 -6, 0, 9, 6,
                 -3, 0, -9, -4);
-            Invert(a, out var b).ShouldBe(true);
+            Invert(a, out var b).Should().Be(true);
 
             var expected = new Matrix4x4(
                 -0.15385f, -0.15385f, -0.28205f, -0.53846f,
@@ -471,7 +471,7 @@ namespace RayTracer.Tests.SpecTests
                 -5, -2, -6, -3,
                 -4, 9, 6, 4,
                 -7, 6, 6, 2);
-            Invert(a, out Matrix4x4 b).ShouldBe(true);
+            Invert(a, out Matrix4x4 b).Should().Be(true);
 
             var expected = new Matrix4x4(
                 -0.04074f, -0.07778f, 0.14444f, -0.22222f,
