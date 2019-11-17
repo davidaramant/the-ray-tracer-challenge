@@ -14,6 +14,7 @@ namespace RayTracer.Core
         public Vector4 Point { get; }
         public Vector4 OverPoint { get; }
         public Vector4 FarOverPoint { get; }
+        public Vector4 UnderPoint { get; }
         public Vector4 EyeV { get; }
         public Vector4 NormalV { get; }
         public Vector4 ReflectV { get; }
@@ -42,6 +43,7 @@ namespace RayTracer.Core
 
             ReflectV = Reflect(-eyeV, NormalV);
             OverPoint = point + NormalV * Tolerance;
+            UnderPoint = point - NormalV * Tolerance;
             // HACK: Move the point pretty far for use in IsShadowed.  Some floating point error somewhere causes issues otherwise
             FarOverPoint = point + NormalV * 0.001f;
         }

@@ -136,6 +136,18 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(i, r, xs)
         //  Then comps.under_point.z > EPSILON/2
         //    And comps.point.z < comps.under_point.z
+        [Fact]
+        public void ShouldComputeUnderPointBelowTheSurface()
+        {
+            var r = new Ray(CreatePoint(0,0,-5f),CreateVector(0,0,1));
+            var shape = Sphere.CreateGlass();
+            shape.Transform = CreateTranslation(0, 0, 1);
+            var i = new Intersection(5,shape);
+            var xs = new List<Intersection> {i};
+            var comps = Computations.Prepare(i, r, xs);
+            comps.UnderPoint.Z.Should().BeGreaterThan(Tolerance / 2);
+            comps.Point.Z.Should().BeLessThan(comps.UnderPoint.Z);
+        }
 
         //Scenario: Aggregating intersections
         //  Given s ← sphere()
