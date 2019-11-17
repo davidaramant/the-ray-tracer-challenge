@@ -14,7 +14,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// spheres.feature
     /// </summary>
-        public class SphereTests
+    public class SphereTests
     {
         //Scenario: A ray intersects a sphere at two points
         //  Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
@@ -262,6 +262,13 @@ namespace RayTracer.Tests.SpecTests
         //  Then s.transform = identity_matrix
         //    And s.material.transparency = 1.0
         //    And s.material.refractive_index = 1.5
-
+        [Fact]
+        public void ShouldCreateGlassSphere()
+        {
+            var s = Sphere.CreateGlass();
+            AssertActualEqualToExpected(s.Transform, Identity);
+            s.Material.Transparency.Should().Be(1);
+            s.Material.RefractiveIndex.Should().BeApproximately(1.5f, Tolerance);
+        }
     }
 }

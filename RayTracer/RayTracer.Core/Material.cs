@@ -16,6 +16,8 @@ namespace RayTracer.Core
         public float Specular { get; set; } = 0.9f;
         public float Shininess { get; set; } = 200;
         public float Reflective { get; set; } = 0;
+        public float Transparency { get; set; } = 0;
+        public float RefractiveIndex { get; set; } = 1;
         public IPattern Pattern { get; set; } = EmptyPattern.Instance;
 
         public void Validate()

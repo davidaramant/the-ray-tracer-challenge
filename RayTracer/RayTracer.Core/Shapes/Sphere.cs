@@ -16,6 +16,15 @@ namespace RayTracer.Core.Shapes
 
         public override string ToString() => Name;
 
+        public static Sphere CreateGlass() => new Sphere
+        {
+            Material =
+            {
+                Transparency = 1,
+                RefractiveIndex = 1.5f,
+            }
+        };
+
         private bool SolveQuadratic(float a, float b, float c, ref float t0, ref float t1)
         {
             void Swap(ref float one, ref float two)

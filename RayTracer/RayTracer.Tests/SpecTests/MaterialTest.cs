@@ -37,11 +37,24 @@ namespace RayTracer.Tests.SpecTests
         //Scenario: Reflectivity for the default material
         //  Given m ← material()
         //  Then m.reflective = 0.0
+        [Fact]
+        public void ShouldHaveDefaultReflectivity()
+        {
+            var m = new Material();
+            m.Reflective.Should().Be(0);
+        }
 
         //Scenario: Transparency and Refractive Index for the default material
         //  Given m ← material()
         //  Then m.transparency = 0.0
         //    And m.refractive_index = 1.0
+        [Fact]
+        public void ShouldHaveDefaultTransparencyAndRefractiveIndex()
+        {
+            var m = new Material();
+            m.Transparency.Should().Be(0);
+            m.RefractiveIndex.Should().Be(1);
+        }
 
         //Scenario: Lighting with the eye between the light and the surface
         //  Given eyev ← vector(0, 0, -1)
