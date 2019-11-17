@@ -252,6 +252,42 @@ namespace RayTracer.Tests.SpecTests
         //    | 3     | 2.5 | 2.5 |
         //    | 4     | 2.5 | 1.5 |
         //    | 5     | 1.5 | 1.0 |
+        [Theory]
+        [InlineData(0, 1.0f, 1.5f)]
+        [InlineData(1, 1.5f, 2.0f)]
+        [InlineData(2, 2.0f, 2.5f)]
+        [InlineData(3, 2.5f, 2.5f)]
+        [InlineData(4, 2.5f, 1.5f)]
+        [InlineData(5, 1.5f, 1.0f)]
+        public void ShouldFindN1AndN2AtIntersection(int index, float n1, float n2)
+        {
+            var a = Sphere.CreateGlass();
+            a.Transform = CreateScale(2, 2, 2);
+            a.Material.RefractiveIndex = 1.5f;
+
+            var b = Sphere.CreateGlass();
+            b.Transform = CreateTranslation(0, 0, -0.25f);
+            b.Material.RefractiveIndex = 2f;
+
+            var c = Sphere.CreateGlass();
+            c.Transform = CreateTranslation(0, 0, 0.25f);
+            c.Material.RefractiveIndex = 2.5f;
+
+            var r = new Ray(CreatePoint(0, 0, -4f), CreateVector(0, 0, 1));
+            var xs = new List<Intersection>
+            {
+                new Intersection(2,a),
+                new Intersection(2.75f,b),
+                new Intersection(3.25f,c),
+                new Intersection(4.75f,b),
+                new Intersection(5.25f,c),
+                new Intersection(6,a),
+            };
+
+            var comps = Computations.Prepare(xs[index], r, xs);
+            comps.N1.Should().BeApproximately(n1, Tolerance);
+            comps.N2.Should().BeApproximately(n2, Tolerance);
+        }
 
         //Scenario: The Schlick approximation under total internal reflection
         //  Given shape ← glass_sphere()

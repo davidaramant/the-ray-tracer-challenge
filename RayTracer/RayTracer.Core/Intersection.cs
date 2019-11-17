@@ -47,12 +47,13 @@ namespace RayTracer.Core
 
         public static bool operator ==(Intersection left, Intersection right)
         {
-            return Equals(left, right);
+            if (ReferenceEquals(left, right)) return true;
+            return left.Equals(right);
         }
 
         public static bool operator !=(Intersection left, Intersection right)
         {
-            return !Equals(left, right);
+            return !(left == right);
         }
 
         #endregion

@@ -71,7 +71,7 @@ namespace RayTracer.Core
                 return VColor.Black;
             }
 
-            var comp = Computations.Prepare(hit, ray);
+            var comp = Computations.Prepare(hit, ray, xs);
 
             return ShadeHit(comp, remainingReflections);
         }
