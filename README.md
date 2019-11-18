@@ -4,6 +4,8 @@ WIP implementation of the book [The Ray Tracer Challenge](http://raytracerchalle
 
 Implemented using .NET Core 3.
 
+![Build Status](https://github.com/davidaramant/the-ray-tracer-challenge/workflows/Build%20and%20Test/badge.svg)
+
 ## Chapter Notes
 
 ### Chapter 1 - Tuples
