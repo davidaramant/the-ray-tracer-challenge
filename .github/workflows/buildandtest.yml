@@ -1,4 +1,4 @@
-name: .NET Core
+name: Build and Test
 
 on: [push]
 
@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
-    - name: Build with dotnet
+    - name: Build
       run: dotnet build --configuration Release RayTracer\RayTracer.sln
-    - name: Runs tests
+    - name: Run tests
       run: dotnet test RayTracer\RayTracer.sln
