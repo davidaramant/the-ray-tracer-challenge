@@ -23,8 +23,9 @@ namespace RayTracer.MonoGameGui
         private RenderScale _renderScale = RenderScale.Normal;
 
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private Task _renderingLoopTask;
-        private Task _frameRenderingTask;
+        private Task _rayTracingRenderingLoopTask;
+        private readonly AutoResetEvent _restartRayTracingEvent = new AutoResetEvent(false);
+        private Task _rayTracingFrameTask;
 
         readonly ContinuousInputs _continuousInputs = new ContinuousInputs();
         readonly ConcurrentQueue<Action> _renderChangeQueue = new ConcurrentQueue<Action>();
@@ -33,7 +34,7 @@ namespace RayTracer.MonoGameGui
         private Camera _camera;
 
         // world units per ms
-        private const float MovementSpeed = 0.0001f;
+        private const float MovementSpeed = 0.0005f;
         private const float RotationSpeed = 0.00005f;
 
         private Size CurrentScreenSize => new Size(
@@ -83,22 +84,9 @@ namespace RayTracer.MonoGameGui
 
         private void StartRenderingScene()
         {
-            _frameRenderingTask = RenderSceneAsync();
+            _rayTracingFrameTask = RenderSceneAsync();
         }
         
-        private async Task RestartRendering()
-        {
-            await _frameRenderingTask;
-
-            while (_renderChangeQueue.TryDequeue(out Action change))
-            {
-                change();
-            }
-
-            StartRenderingScene();
-        }
-
-
         private Task RenderSceneAsync()
         {
             var oldSource = _cancellationTokenSource;
@@ -117,10 +105,25 @@ namespace RayTracer.MonoGameGui
             _world = TestScene.CreateTestWorld();
             _camera = TestScene.CreateCamera(_screenBuffer);
 
-            // TODO: Kick off long running task
-            // TODO: Need an AutoResetEvent, maybe?
-
+            _rayTracingRenderingLoopTask = Task.Factory.StartNew(RayTracingLoop, TaskCreationOptions.LongRunning);
             StartRenderingScene();
+        }
+
+        private async void RayTracingLoop()
+        {
+            while (true)
+            {
+                _restartRayTracingEvent.WaitOne();
+
+                await _rayTracingFrameTask;
+
+                while (_renderChangeQueue.TryDequeue(out Action change))
+                {
+                    change();
+                }
+
+                StartRenderingScene();
+            }
         }
 
         protected override void UnloadContent()
@@ -190,7 +193,7 @@ namespace RayTracer.MonoGameGui
         {
             _renderChangeQueue.Enqueue(change);
             _cancellationTokenSource.Cancel();
-            // TODO: Notify someone to restart rendering.  AutoResetEvent?
+            _restartRayTracingEvent.Set();
         }
 
         protected override void Draw(GameTime gameTime)
