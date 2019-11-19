@@ -25,8 +25,6 @@ namespace RayTracer.Core.Utilities
             UpdateRenderingDimensions();
         }
 
-        public event EventHandler DimensionsUpdated;
-
         public void SetPixel(int x, int y, Vector4 color)
         {
             if (Scale == RenderScale.Normal)
@@ -50,7 +48,6 @@ namespace RayTracer.Core.Utilities
         {
             var divisor = (int)Scale;
             Dimensions = new Size(ActualDimensions.Width / divisor, ActualDimensions.Height / divisor);
-            DimensionsUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         public void SetScale(RenderScale scale)

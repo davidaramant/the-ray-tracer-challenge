@@ -8,6 +8,5 @@ namespace RayTracer.Core.Utilities
     {
         Size Dimensions { get; }
         void SetPixel(int x, int y, Vector4 color);
-        event EventHandler DimensionsUpdated;
     }
 }

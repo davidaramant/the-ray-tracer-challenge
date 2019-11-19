@@ -12,7 +12,7 @@ namespace RayTracer.Core
 {
     public sealed class Camera
     {
-        private readonly IOutputBuffer _output;
+        private IOutputBuffer _output;
         public Size Dimensions => _output.Dimensions;
         public float FieldOfView { get; }
         private Matrix4x4 _transform = Identity;
@@ -36,7 +36,12 @@ namespace RayTracer.Core
         {
             FieldOfView = fieldOfView;
             _output = output;
-            _output.DimensionsUpdated += (s, e) => OutputDimensionsUpdated();
+            OutputDimensionsUpdated();
+        }
+
+        public void UpdateOutputBuffer(IOutputBuffer output)
+        {
+            _output = output;
             OutputDimensionsUpdated();
         }
 
