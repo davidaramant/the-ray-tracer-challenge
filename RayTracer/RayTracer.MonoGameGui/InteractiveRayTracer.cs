@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Drawing;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -21,13 +23,18 @@ namespace RayTracer.MonoGameGui
         private RenderScale _renderScale = RenderScale.Normal;
 
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private Task _renderingTask;
+        private Task _renderingLoopTask;
+        private Task _frameRenderingTask;
 
-        readonly KeyToggles _keyToggles = new KeyToggles();
         readonly ContinuousInputs _continuousInputs = new ContinuousInputs();
+        readonly ConcurrentQueue<Action> _renderChangeQueue = new ConcurrentQueue<Action>();
 
         private World _world;
         private Camera _camera;
+
+        // world units per ms
+        private const float MovementSpeed = 0.0001f;
+        private const float RotationSpeed = 0.00005f;
 
         private Size CurrentScreenSize => new Size(
             _graphics.PreferredBackBufferWidth,
@@ -51,16 +58,21 @@ namespace RayTracer.MonoGameGui
         private void UpdateScreenBufferWithNewSize(object sender, EventArgs e) =>
             UpdateScreenBuffer(CurrentScreenSize.DivideBy(_renderScale));
 
-        async void UpdateScreenBuffer(Size renderSize)
+        void UpdateScreenBuffer(Size renderSize)
         {
-            if (_screenBuffer.Dimensions != renderSize)
+            // TODO: Wonder if this should just take the current screen size instead and deal with the render scale internally
+            EnqueueRenderChange(() =>
             {
-                await CancelRendering();
-                _outputTexture.Dispose();
-                _outputTexture = new Texture2D(_graphics.GraphicsDevice, width: renderSize.Width, height: renderSize.Height);
-                _screenBuffer = new ScreenBuffer(renderSize);
-                StartRenderingScene();
-            }
+                if (_screenBuffer.Dimensions != renderSize)
+                {
+                    _outputTexture.Dispose();
+                    _outputTexture = new Texture2D(_graphics.GraphicsDevice, 
+                            width: renderSize.Width,
+                            height: renderSize.Height);
+                    _screenBuffer = new ScreenBuffer(renderSize);
+                    _camera.UpdateOutputBuffer(_screenBuffer);
+                }
+            });
         }
 
         protected override void Initialize()
@@ -69,27 +81,30 @@ namespace RayTracer.MonoGameGui
             base.Initialize();
         }
 
-        private async Task CancelRendering()
-        {
-            if (!_cancellationTokenSource.IsCancellationRequested)
-            {
-                _cancellationTokenSource.Cancel();
-            }
-
-            await _renderingTask;
-        }
-
         private void StartRenderingScene()
         {
-            _renderingTask = RenderSceneAsync();
+            _frameRenderingTask = RenderSceneAsync();
+        }
+        
+        private async Task RestartRendering()
+        {
+            await _frameRenderingTask;
+
+            while (_renderChangeQueue.TryDequeue(out Action change))
+            {
+                change();
+            }
+
+            StartRenderingScene();
         }
 
-        private async Task RenderSceneAsync()
+
+        private Task RenderSceneAsync()
         {
-            _cancellationTokenSource?.Dispose();
+            var oldSource = _cancellationTokenSource;
             _cancellationTokenSource = new CancellationTokenSource();
-            _camera.UpdateOutputBuffer(_screenBuffer);
-            await Renderer.TraceScene(_camera, _world, _screenBuffer.SetPixel, maximumReflections: 5, _cancellationTokenSource.Token);
+            oldSource?.Dispose();
+            return Renderer.TraceScene(_camera, _world, _screenBuffer.SetPixel, maximumReflections: 5, _cancellationTokenSource.Token);
         }
 
         protected override void LoadContent()
@@ -101,6 +116,9 @@ namespace RayTracer.MonoGameGui
 
             _world = TestScene.CreateTestWorld();
             _camera = TestScene.CreateCamera(_screenBuffer);
+
+            // TODO: Kick off long running task
+            // TODO: Need an AutoResetEvent, maybe?
 
             StartRenderingScene();
         }
@@ -119,8 +137,7 @@ namespace RayTracer.MonoGameGui
 
             if (keyboard.IsKeyDown(Keys.Escape))
                 Exit();
-            
-            var discreteInput = _keyToggles.Update(keyboard);
+
             _continuousInputs.Forward = keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W);
             _continuousInputs.Backward = keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S);
             _continuousInputs.TurnLeft = keyboard.IsKeyDown(Keys.Left);
@@ -128,27 +145,52 @@ namespace RayTracer.MonoGameGui
             _continuousInputs.StrafeLeft = keyboard.IsKeyDown(Keys.Q);
             _continuousInputs.StrafeRight = keyboard.IsKeyDown(Keys.E);
 
-            //_playerInfo.Update(_continuousInputs, gameTime);
-            //_renderer.Update(_continuousInputs, gameTime);
-            //_settings.Update(discreteInput);
+            EnqueueMovements(_continuousInputs, gameTime);
 
             base.Update(gameTime);
         }
 
-        private async void UpdateRenderScale(DiscreteInput input)
+        private void EnqueueMovements(ContinuousInputs inputs, GameTime gameTime)
         {
-            if (input == DiscreteInput.DecreaseRenderFidelity && !_renderScale.IsMinimumQuality())
+            float inlineDistance = MovementSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            float rotationAmount = RotationSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            bool moved = false;
+
+            Matrix4x4 movementMatrix = Matrix4x4.Identity;
+
+            if (inputs.Forward)
             {
-                await CancelRendering();
-                _renderScale.DecreaseQuality();
-                StartRenderingScene();
+                moved = true;
+                movementMatrix *= Matrix4x4.CreateTranslation(0, 0, inlineDistance);
             }
-            else if (input == DiscreteInput.IncreaseRenderFidelity && !_renderScale.IsMaximumQuality())
+            else if (inputs.Backward)
             {
-                await CancelRendering();
-                _renderScale.IncreaseQuality();
-                StartRenderingScene();
+                moved = true;
+                movementMatrix *= Matrix4x4.CreateTranslation(0, 0, -inlineDistance);
             }
+
+            if (inputs.TurnRight)
+            {
+                moved = true;
+                movementMatrix *= Matrix4x4.CreateRotationY(-rotationAmount);
+            }
+            else if (inputs.TurnLeft)
+            {
+                moved = true;
+                movementMatrix *= Matrix4x4.CreateRotationY(rotationAmount);
+            }
+
+            if (moved)
+            {
+                EnqueueRenderChange(() => _camera.Transform *= movementMatrix);
+            }
+        }
+
+        private void EnqueueRenderChange(Action change)
+        {
+            _renderChangeQueue.Enqueue(change);
+            _cancellationTokenSource.Cancel();
+            // TODO: Notify someone to restart rendering.  AutoResetEvent?
         }
 
         protected override void Draw(GameTime gameTime)
