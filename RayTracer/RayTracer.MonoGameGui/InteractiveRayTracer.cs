@@ -115,6 +115,8 @@ namespace RayTracer.MonoGameGui
             {
                 _restartRayTracingEvent.WaitOne();
 
+                _cancellationTokenSource.Cancel();
+
                 await _rayTracingFrameTask;
 
                 while (_renderChangeQueue.TryDequeue(out Action change))
@@ -192,7 +194,6 @@ namespace RayTracer.MonoGameGui
         private void EnqueueRenderChange(Action change)
         {
             _renderChangeQueue.Enqueue(change);
-            _cancellationTokenSource.Cancel();
             _restartRayTracingEvent.Set();
         }
 
@@ -205,7 +206,10 @@ namespace RayTracer.MonoGameGui
                 depthStencilState: DepthStencilState.None,
                 rasterizerState: RasterizerState.CullNone);
 
-            _screenBuffer.CopyToTexture(_outputTexture);
+            if (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                _screenBuffer.CopyToTexture(_outputTexture);
+            }
 
             _spriteBatch.Draw(
                 texture: _outputTexture,
