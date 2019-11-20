@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Numerics;
@@ -56,21 +56,18 @@ namespace RayTracer.MonoGameGui
             IsMouseVisible = true;
         }
 
-        private void UpdateScreenBufferWithNewSize(object sender, EventArgs e) =>
-            UpdateScreenBuffer(CurrentScreenSize.DivideBy(_renderScale));
-
-        void UpdateScreenBuffer(Size renderSize)
+        private void UpdateScreenBufferWithNewSize(object sender, EventArgs e) 
         {
-            // TODO: Wonder if this should just take the current screen size instead and deal with the render scale internally
             EnqueueRenderChange(() =>
             {
-                if (_screenBuffer.Dimensions != renderSize)
+                var newSize = CurrentScreenSize;
+                if (_screenBuffer.Dimensions != newSize)
                 {
                     _outputTexture.Dispose();
                     _outputTexture = new Texture2D(_graphics.GraphicsDevice, 
-                            width: renderSize.Width,
-                            height: renderSize.Height);
-                    _screenBuffer = new ScreenBuffer(renderSize);
+                            width: newSize.Width,
+                            height: newSize.Height);
+                    _screenBuffer = new ScreenBuffer(newSize.DivideBy(_renderScale));
                     _camera.UpdateOutputBuffer(_screenBuffer);
                 }
             });
@@ -84,15 +81,11 @@ namespace RayTracer.MonoGameGui
 
         private void StartRenderingScene()
         {
-            _rayTracingFrameTask = RenderSceneAsync();
-        }
-        
-        private Task RenderSceneAsync()
-        {
             var oldSource = _cancellationTokenSource;
             _cancellationTokenSource = new CancellationTokenSource();
             oldSource?.Dispose();
-            return Renderer.TraceScene(_camera, _world, _screenBuffer.SetPixel, maximumReflections: 5, _cancellationTokenSource.Token);
+            
+            _rayTracingFrameTask = Renderer.TraceScene(_camera, _world, _screenBuffer.SetPixel, maximumReflections: 5, _cancellationTokenSource.Token);
         }
 
         protected override void LoadContent()
