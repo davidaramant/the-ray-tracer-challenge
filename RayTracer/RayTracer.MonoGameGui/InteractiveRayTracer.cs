@@ -18,7 +18,7 @@ namespace RayTracer.MonoGameGui
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Texture2D _outputTexture;
-        private ScreenBuffer _screenBuffer;
+        private ImageBuffer _screenBuffer;
 
         private RenderScale _renderScale = RenderScale.Normal;
 
@@ -66,7 +66,7 @@ namespace RayTracer.MonoGameGui
                     _outputTexture = new Texture2D(_graphics.GraphicsDevice, 
                             width: newSize.Width,
                             height: newSize.Height);
-                    _screenBuffer = new ScreenBuffer(newSize.DivideBy(_renderScale));
+                    _screenBuffer = new ImageBuffer(newSize.DivideBy(_renderScale));
                     _camera.UpdateOutputBuffer(_screenBuffer);
                 }
             });
@@ -92,7 +92,7 @@ namespace RayTracer.MonoGameGui
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _outputTexture = new Texture2D(_graphics.GraphicsDevice, width: CurrentScreenSize.Width, height: CurrentScreenSize.Height);
-            _screenBuffer = new ScreenBuffer(CurrentScreenSize);
+            _screenBuffer = new ImageBuffer(CurrentScreenSize);
 
             _world = TestScene.CreateTestWorld();
             _camera = TestScene.CreateCamera(_screenBuffer);

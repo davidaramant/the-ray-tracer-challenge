@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.Core", "RayTracer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.Tests", "RayTracer.Tests\RayTracer.Tests.csproj", "{8B9B1639-3280-4914-984E-336C7971472A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.WpfGui", "RayTracer.WpfGui\RayTracer.WpfGui.csproj", "{2A64590E-F4C9-48D9-8952-C12B6D6A26D1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.ConsoleRunner", "RayTracer.ConsoleRunner\RayTracer.ConsoleRunner.csproj", "{196684DA-26D1-4AC9-8479-68A221EB9EC9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayTracer.MonoGameGui", "RayTracer.MonoGameGui\RayTracer.MonoGameGui.csproj", "{6C2638D9-5B38-490D-9F2E-20B1F1037AF7}"
@@ -27,10 +25,6 @@ Global
 		{8B9B1639-3280-4914-984E-336C7971472A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9B1639-3280-4914-984E-336C7971472A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9B1639-3280-4914-984E-336C7971472A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A64590E-F4C9-48D9-8952-C12B6D6A26D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A64590E-F4C9-48D9-8952-C12B6D6A26D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A64590E-F4C9-48D9-8952-C12B6D6A26D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A64590E-F4C9-48D9-8952-C12B6D6A26D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{196684DA-26D1-4AC9-8479-68A221EB9EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{196684DA-26D1-4AC9-8479-68A221EB9EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{196684DA-26D1-4AC9-8479-68A221EB9EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
