@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Numerics;
@@ -23,7 +23,6 @@ namespace RayTracer.MonoGameGui
         private RenderScale _renderScale = RenderScale.Normal;
 
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private Task _rayTracingRenderingLoopTask;
         private readonly ManualResetEventSlim _restartRayTracingEvent = new ManualResetEventSlim(false);
         private Task _rayTracingFrameTask;
 
@@ -98,12 +97,13 @@ namespace RayTracer.MonoGameGui
             _world = TestScene.CreateTestWorld();
             _camera = TestScene.CreateCamera(_screenBuffer);
 
-            _rayTracingRenderingLoopTask = Task.Factory.StartNew(RayTracingLoop, TaskCreationOptions.LongRunning);
+            Task.Factory.StartNew(RayTracingLoop, TaskCreationOptions.LongRunning);
             StartRenderingScene();
         }
 
         private async void RayTracingLoop()
         {
+            // TODO: Somehow lower the quality "while moving" (based on timer?)
             while (true)
             {
                 _restartRayTracingEvent.Wait();
