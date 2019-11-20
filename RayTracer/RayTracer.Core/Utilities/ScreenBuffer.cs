@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Colourful;
 using Colourful.Conversion;
 using Microsoft.Xna.Framework.Graphics;
@@ -50,6 +52,10 @@ namespace RayTracer.Core.Utilities
             }
         }
 
+        public ScreenBuffer(int width, int height) : this(new Size(width, height))
+        {
+        }
+
         public ScreenBuffer(Size size)
         {
             Dimensions = size;
@@ -81,6 +87,40 @@ namespace RayTracer.Core.Utilities
                     destinationArray: _buffer, destinationIndex: (destination.Y + y) * Width + destination.X,
                     length: xToCopy);
             }
+        }
+
+        public void Save(string filePath)
+        {
+            const PixelFormat format = PixelFormat.Format32bppRgb;
+            int pixelSizeInBytes = Image.GetPixelFormatSize(format) / 8;
+            var pixelBuffer = new byte[Width * Height * pixelSizeInBytes];
+
+            // Convert to BGRA format
+            for (int index = 0; index < Width * Height; index++)
+            {
+                var color = _buffer[index];
+
+                pixelBuffer[index * pixelSizeInBytes] = color.B;
+                pixelBuffer[index * pixelSizeInBytes + 1] = color.G;
+                pixelBuffer[index * pixelSizeInBytes + 2] = color.R;
+            }
+            
+            using var bmp = new Bitmap(Width, Height, format);
+            var bmpData = bmp.LockBits(
+                new Rectangle(0, 0, Width, Height),
+                ImageLockMode.WriteOnly,
+                bmp.PixelFormat);
+
+            // Get the address of the first line.
+            IntPtr ptr = bmpData.Scan0;
+
+            // Copy the RGB values back to the bitmap
+            Marshal.Copy(pixelBuffer, 0, ptr, pixelBuffer.Length);
+
+            // Unlock the bits.
+            bmp.UnlockBits(bmpData);
+
+            bmp.Save(filePath);
         }
     }
 }
