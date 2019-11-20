@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Numerics;
@@ -24,7 +24,7 @@ namespace RayTracer.MonoGameGui
 
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private Task _rayTracingRenderingLoopTask;
-        private readonly AutoResetEvent _restartRayTracingEvent = new AutoResetEvent(false);
+        private readonly ManualResetEventSlim _restartRayTracingEvent = new ManualResetEventSlim(false);
         private Task _rayTracingFrameTask;
 
         readonly ContinuousInputs _continuousInputs = new ContinuousInputs();
@@ -113,7 +113,7 @@ namespace RayTracer.MonoGameGui
         {
             while (true)
             {
-                _restartRayTracingEvent.WaitOne();
+                _restartRayTracingEvent.Wait();
 
                 _cancellationTokenSource.Cancel();
 
@@ -124,6 +124,7 @@ namespace RayTracer.MonoGameGui
                     change();
                 }
 
+                _restartRayTracingEvent.Reset();
                 StartRenderingScene();
             }
         }
