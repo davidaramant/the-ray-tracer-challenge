@@ -13,7 +13,7 @@ namespace RayTracer.ConsoleRunner
             var image = new ImageBuffer(800, 800);
             var cancelTokenSource = new CancellationTokenSource();
 
-            using (var progress = new ProgressBar(image.Height, "Tracing image..."))
+            using (var progress = new ProgressBar(image.Dimensions.Area(), "Tracing image..."))
             {
                 await Renderer.TraceScene(
                     TestScene.CreateCamera(image),

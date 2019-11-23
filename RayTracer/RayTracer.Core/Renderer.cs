@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,33 +13,29 @@ namespace RayTracer.Core
         public delegate void DrawPixel(int x, int y, Vector4 color);
 
         public static Task TraceScene(
-            Camera camera, 
-            World world, 
-            DrawPixel drawPixel, 
+            Camera camera,
+            World world,
+            DrawPixel drawPixel,
             int maximumReflections,
             CancellationToken cancelToken,
-            Action reportRowRendered = null) =>
+            Action reportPixelRendered = null) =>
                 Task.Factory.StartNew(() =>
                 {
                     try
                     {
-                        Parallel.For(
-                            0,
-                            camera.Dimensions.Height,
+                        Parallel.ForEach(
+                            Shuffled(GetAllPoints(camera.Dimensions)),
                             new ParallelOptions
                             {
                                 CancellationToken = cancelToken,
                             },
-                            (y, loopState) =>
+                            (position, loopState) =>
                             {
-                                for (int x = 0; x < camera.Dimensions.Width && !loopState.ShouldExitCurrentIteration; x++)
-                                {
-                                    var ray = camera.CreateRayForPixel(x, y);
-                                    var color = world.ComputeColor(ray, maximumReflections);
-                                    drawPixel(x, y, color);
-                                }
+                                var ray = camera.CreateRayForPixel(position.X, position.Y);
+                                var color = world.ComputeColor(ray, maximumReflections);
+                                drawPixel(position.X, position.Y, color);
 
-                                reportRowRendered?.Invoke();
+                                reportPixelRendered?.Invoke();
                             });
                     }
                     catch (OperationCanceledException)
@@ -44,5 +43,33 @@ namespace RayTracer.Core
                         // Why does this throw??? What am I supposed to do here other than ignore it???
                     }
                 });
+
+        private static IEnumerable<Point> GetAllPoints(Size dimensions)
+        {
+            for (int y = 0; y < dimensions.Height; y++)
+            {
+                for (int x = 0; x < dimensions.Width; x++)
+                {
+                    yield return new Point(x, y);
+                }
+            }
+        }
+
+        private static IEnumerable<T> Shuffled<T>(IEnumerable<T> sequence)
+        {
+            var list = sequence.ToList();
+            var rand = new Random();
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rand.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+
+            return list;
+        }
     }
 }
