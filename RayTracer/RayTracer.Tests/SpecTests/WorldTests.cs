@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using RayTracer.Core;
 using RayTracer.Core.Shapes;
 using FluentAssertions;
+using RayTracer.Core.Patterns;
+using RayTracer.Tests.SpecTests.Framework;
 using Xunit;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
@@ -398,6 +401,17 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[0], r, xs)
         //    And c ← refracted_color(w, comps, 5)
         //  Then c = color(0, 0, 0)
+        [Fact]
+        public void ShouldComputeRefractedColorWithOpaqueSurface()
+        {
+            var w = World.CreateDefault();
+            var shape = w.Objects.First();
+            var r = new Ray(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var xs = new List<Intersection> { new Intersection(4, shape), new Intersection(6, shape) };
+            var comps = Computations.Prepare(xs[0], r, xs);
+            var c = w.ComputeRefractedColor(comps, 5);
+            AssertActualEqualToExpected(c, VColor.Black);
+        }
 
         //Scenario: The refracted color at the maximum recursive depth
         //  Given w ← default_world()
@@ -410,6 +424,19 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[0], r, xs)
         //    And c ← refracted_color(w, comps, 0)
         //  Then c = color(0, 0, 0)
+        [Fact]
+        public void ShouldComputeRefractedColorAtMaxRecursiveDepth()
+        {
+            var w = World.CreateDefault();
+            var shape = w.Objects.First();
+            shape.Material.Transparency = 1;
+            shape.Material.RefractiveIndex = 1.5f;
+            var r = new Ray(CreatePoint(0, 0, -5), CreateVector(0, 0, 1));
+            var xs = new List<Intersection> { new Intersection(4, shape), new Intersection(6, shape) };
+            var comps = Computations.Prepare(xs[0], r, xs);
+            var c = w.ComputeRefractedColor(comps, 0);
+            AssertActualEqualToExpected(c, VColor.Black);
+        }
 
         //Scenario: The refracted color under total internal reflection
         //  Given w ← default_world()
@@ -424,6 +451,19 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[1], r, xs)
         //    And c ← refracted_color(w, comps, 5)
         //  Then c = color(0, 0, 0)
+        [Fact]
+        public void ShouldComputeRefractedColorUnderTotalInternalReflection()
+        {
+            var w = World.CreateDefault();
+            var shape = w.Objects.First();
+            shape.Material.Transparency = 1;
+            shape.Material.RefractiveIndex = 1.5f;
+            var r = new Ray(CreatePoint(0, 0, Sqrt(2) / 2), CreateVector(0, 1, 0));
+            var xs = new List<Intersection> { new Intersection(-Sqrt(2) / 2, shape), new Intersection(Sqrt(2) / 2, shape) };
+            var comps = Computations.Prepare(xs[1], r, xs);
+            var c = w.ComputeRefractedColor(comps, 5);
+            AssertActualEqualToExpected(c, VColor.Black);
+        }
 
         //Scenario: The refracted color with a refracted ray
         //  Given w ← default_world()
@@ -440,6 +480,25 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[2], r, xs)
         //    And c ← refracted_color(w, comps, 5)
         //  Then c = color(0, 0.99888, 0.04725)
+        [Fact]
+        public void ShouldComputeRefractedColorWithRefractedRay()
+        {
+            var w = World.CreateDefault();
+
+            var a = w.Objects.First();
+            a.Material.Ambient = 1;
+            a.Material.Pattern = new TestPattern();
+
+            var b = w.Objects[1];
+            b.Material.Transparency = 1;
+            b.Material.RefractiveIndex = 1.5f;
+
+            var r = new Ray(CreatePoint(0, 0, 0.1f), CreateVector(0, 1, 0));
+            var xs = Intersection.CreateList((-0.9899f, a), (-0.4899f, b), (0.4899f, b), (0.9899f, a));
+            var comps = Computations.Prepare(xs[2], r, xs);
+            var c = w.ComputeRefractedColor(comps, 5);
+            AssertActualEqualToExpected(c, VColor.LinearRGB(0, 0.99888f, 0.04725f));
+        }
 
         //Scenario: shade_hit() with a transparent material
         //  Given w ← default_world()
@@ -458,6 +517,37 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[0], r, xs)
         //    And color ← shade_hit(w, comps, 5)
         //  Then color = color(0.93642, 0.68642, 0.68642)
+        [Fact]
+        public void ShouldShadeHitWithTransparentMaterial()
+        {
+            var w = World.CreateDefault();
+            var floorPlane = new XZPlane
+            {
+                Transform = CreateTranslation(0, -1, 0),
+                Material =
+                {
+                    Transparency = 0.5f,
+                    RefractiveIndex = 1.5f,
+                }
+            };
+            w.Objects.Add(floorPlane);
+            var ball = new Sphere
+            {
+                Material =
+                {
+                    Color = VColor.LinearRGB(1,0,0),
+                    Ambient =  0.5f,
+                },
+                Transform = CreateTranslation(0, -3.5f, -0.5f),
+            };
+            w.Objects.Add(ball);
+
+            var r = new Ray(CreatePoint(0, 0, -3), CreateVector(0, -Sqrt(2) / 2, Sqrt(2) / 2));
+            var xs = Intersection.CreateList((Sqrt(2), floorPlane));
+            var comps = Computations.Prepare(xs[0], r, xs);
+            var color = w.ShadeHit(comps, 5);
+            AssertActualEqualToExpected(color, VColor.LinearRGB(0.93642f, 0.68642f, 0.68642f));
+        }
 
         //Scenario: shade_hit() with a reflective, transparent material
         //  Given w ← default_world()

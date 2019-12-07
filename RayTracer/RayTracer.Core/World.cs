@@ -59,7 +59,9 @@ namespace RayTracer.Core
                     comp.EyeV,
                     comp.NormalV,
                     inShadow: IsShadowed(light, comp.FarOverPoint)))
-                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color) + ComputeReflectedColor(comp, remainingReflections);
+                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color)
+                + ComputeReflectedColor(comp, remainingReflections)
+                + ComputeRefractedColor(comp, remainingReflections);
 
         public Vector4 ComputeColor(Ray ray, int remainingReflections = 0)
         {
@@ -99,6 +101,28 @@ namespace RayTracer.Core
             var color = ComputeColor(reflectRay, remainingReflections - 1);
 
             return color * comps.Object.Material.Reflective;
+        }
+
+        public Vector4 ComputeRefractedColor(Computations comps, int remainingReflections)
+        {
+            if (comps.Object.Material.Transparency.IsZero() || remainingReflections == 0)
+            {
+                return VColor.Black;
+            }
+
+            var nRatio = comps.N1 / comps.N2;
+            var cosI = Dot(comps.EyeV, comps.NormalV);
+            var sinT2 = nRatio * nRatio * (1 - cosI * cosI);
+            if (sinT2 > 1)
+            {
+                return VColor.Black;
+            }
+
+            var cosT = Sqrt(1 - sinT2);
+            var direction = comps.NormalV * (nRatio * cosI - cosT) - comps.EyeV * nRatio;
+            var refractRay = new Ray(comps.UnderPoint, direction);
+
+            return ComputeColor(refractRay, remainingReflections - 1) * comps.Object.Material.Transparency;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using RayTracer.Core.Shapes;
 
 namespace RayTracer.Core
@@ -22,6 +24,9 @@ namespace RayTracer.Core
             if (ReferenceEquals(null, other)) return 1;
             return T.CompareTo(other.T);
         }
+
+        public static List<Intersection> CreateList(params (float t, IShape shape)[] values) =>
+            values.Select(value => new Intersection(value.t, value.shape)).ToList();
 
         #region Equality
 
