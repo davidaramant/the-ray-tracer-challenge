@@ -551,7 +551,6 @@ namespace RayTracer.Tests.SpecTests
 
         //Scenario: shade_hit() with a reflective, transparent material
         //  Given w ← default_world()
-        //    And r ← ray(point(0, 0, -3), vector(0, -√2/2, √2/2))
         //    And floor ← plane() with:
         //      | transform                 | translation(0, -1, 0) |
         //      | material.reflective       | 0.5                   |
@@ -563,10 +562,42 @@ namespace RayTracer.Tests.SpecTests
         //      | material.ambient   | 0.5                        |
         //      | transform          | translation(0, -3.5, -0.5) |
         //    And ball is added to w
+        //    And r ← ray(point(0, 0, -3), vector(0, -√2/2, √2/2))
         //    And xs ← intersections(√2:floor)
         //  When comps ← prepare_computations(xs[0], r, xs)
         //    And color ← shade_hit(w, comps, 5)
         //  Then color = color(0.93391, 0.69643, 0.69243)
+        [Fact]
+        public void ShouldShadeHitWithReflectiveTransparentMaterial()
+        {
+            var w = World.CreateDefault();
+            var floorPlane = new XZPlane
+            {
+                Transform = CreateTranslation(0, -1, 0),
+                Material =
+                {
+                    Reflective = 0.5f,
+                    Transparency = 0.5f,
+                    RefractiveIndex = 1.5f,
+                }
+            };
+            w.Objects.Add(floorPlane);
+            var ball = new Sphere
+            {
+                Material =
+                {
+                    Color = VColor.LinearRGB(1,0,0),
+                    Ambient =  0.5f,
+                },
+                Transform = CreateTranslation(0, -3.5f, -0.5f),
+            };
+            w.Objects.Add(ball);
 
+            var r = new Ray(CreatePoint(0, 0, -3), CreateVector(0, -Sqrt(2) / 2, Sqrt(2) / 2));
+            var xs = Intersection.CreateList((Sqrt(2), floorPlane));
+            var comps = Computations.Prepare(xs[0], r, xs);
+            var color = w.ShadeHit(comps, 5);
+            AssertActualEqualToExpected(color, VColor.LinearRGB(0.93391f, 0.69643f, 0.69243f));
+        }
     }
 }

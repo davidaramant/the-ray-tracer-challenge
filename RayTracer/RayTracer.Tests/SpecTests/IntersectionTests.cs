@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Numerics;
 using RayTracer.Core;
@@ -139,11 +140,11 @@ namespace RayTracer.Tests.SpecTests
         [Fact]
         public void ShouldComputeUnderPointBelowTheSurface()
         {
-            var r = new Ray(CreatePoint(0,0,-5f),CreateVector(0,0,1));
+            var r = new Ray(CreatePoint(0, 0, -5f), CreateVector(0, 0, 1));
             var shape = Sphere.CreateGlass();
             shape.Transform = CreateTranslation(0, 0, 1);
-            var i = new Intersection(5,shape);
-            var xs = new List<Intersection> {i};
+            var i = new Intersection(5, shape);
+            var xs = new List<Intersection> { i };
             var comps = Computations.Prepare(i, r, xs);
             comps.UnderPoint.Z.Should().BeGreaterThan(Tolerance / 2);
             comps.Point.Z.Should().BeLessThan(comps.UnderPoint.Z);
@@ -308,6 +309,16 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[1], r, xs)
         //    And reflectance ← schlick(comps)
         //  Then reflectance = 1.0
+        [Fact]
+        public void ShouldComputeSchlickApproximationUnderTotalInternalReflection()
+        {
+            var shape = Sphere.CreateGlass();
+            var r = new Ray(CreatePoint(0, 0, Sqrt(2) / 2), CreateVector(0, 1, 0));
+            var xs = Intersection.CreateList((-Sqrt(2) / 2, shape), (Sqrt(2) / 2, shape));
+            var comps = Computations.Prepare(xs[1], r, xs);
+            var reflectance = comps.GetSchlickReflectance();
+            reflectance.Should().BeApproximately(1, Tolerance);
+        }
 
         //Scenario: The Schlick approximation with a perpendicular viewing angle
         //  Given shape ← glass_sphere()
@@ -316,6 +327,16 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[1], r, xs)
         //    And reflectance ← schlick(comps)
         //  Then reflectance = 0.04
+        [Fact]
+        public void ShouldComputeSchlickApproximationWithPerpendicularViewingAngle()
+        {
+            var shape = Sphere.CreateGlass();
+            var r = new Ray(CreatePoint(0, 0, 0), CreateVector(0, 1, 0));
+            var xs = Intersection.CreateList((-1, shape), (1, shape));
+            var comps = Computations.Prepare(xs[1], r, xs);
+            var reflectance = comps.GetSchlickReflectance();
+            reflectance.Should().BeApproximately(0.04f, Tolerance);
+        }
 
         //Scenario: The Schlick approximation with small angle and n2 > n1
         //  Given shape ← glass_sphere()
@@ -324,12 +345,21 @@ namespace RayTracer.Tests.SpecTests
         //  When comps ← prepare_computations(xs[0], r, xs)
         //    And reflectance ← schlick(comps)
         //  Then reflectance = 0.48873
+        [Fact]
+        public void ShouldComputeSchlickApproximationWithSmallAngleAndN2GreaterThanN1()
+        {
+            var shape = Sphere.CreateGlass();
+            var r = new Ray(CreatePoint(0, .99f, -2), CreateVector(0, 0, 1));
+            var xs = Intersection.CreateList((1.8589f, shape));
+            var comps = Computations.Prepare(xs[0], r, xs);
+            var reflectance = comps.GetSchlickReflectance();
+            reflectance.Should().BeApproximately(0.48873f, Tolerance);
+        }
 
         //Scenario: An intersection can encapsulate `u` and `v`
         //  Given s ← triangle(point(0, 1, 0), point(-1, 0, 0), point(1, 0, 0))
         //  When i ← intersection_with_uv(3.5, s, 0.2, 0.4)
         //  Then i.u = 0.2
         //    And i.v = 0.4
-
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using RayTracer.Core.Shapes;
+using static System.MathF;
 using static System.Numerics.Vector4;
 using static RayTracer.Core.Tuples;
 
@@ -46,6 +47,28 @@ namespace RayTracer.Core
             UnderPoint = point - NormalV * Tolerance;
             // HACK: Move the point pretty far for use in IsShadowed.  Some floating point error somewhere causes issues otherwise
             FarOverPoint = point + NormalV * 0.001f;
+        }
+
+        public float GetSchlickReflectance()
+        {
+            var cos = Dot(EyeV, NormalV);
+
+            if (N1 > N2)
+            {
+                var n = N1 / N2;
+                var sinT2 = n * n * (1 - cos * cos);
+                if (sinT2 > 1)
+                {
+                    return 1;
+                }
+
+                var cosT = Sqrt(1 - sinT2);
+                cos = cosT;
+            }
+
+            var temp = (N1 - N2) / (N1 + N2);
+            var r0 = temp * temp;
+            return r0 + (1 - r0) * Pow(1 - cos, 5);
         }
 
         public static Computations Prepare(Intersection hit, Ray ray) => Prepare(hit, ray, new List<Intersection> { hit });

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using RayTracer.Core.Shapes;
+using SharpDX.WIC;
 using static RayTracer.Core.Tuples;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
@@ -50,18 +51,32 @@ namespace RayTracer.Core
             },
         };
 
-        public Vector4 ShadeHit(Computations comp, int remainingReflections = 0) =>
-            Lights.Select(light =>
-                comp.Object.Material.ComputeColor(
-                    light,
-                    comp.Object,
-                    comp.OverPoint,
-                    comp.EyeV,
-                    comp.NormalV,
-                    inShadow: IsShadowed(light, comp.FarOverPoint)))
-                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color)
-                + ComputeReflectedColor(comp, remainingReflections)
-                + ComputeRefractedColor(comp, remainingReflections);
+        public Vector4 ShadeHit(Computations comp, int remainingReflections = 0)
+        {
+            var surfaceColor = Lights.Select(light =>
+                    comp.Object.Material.ComputeColor(
+                        light,
+                        comp.Object,
+                        comp.OverPoint,
+                        comp.EyeV,
+                        comp.NormalV,
+                        inShadow: IsShadowed(light, comp.FarOverPoint)))
+                .Aggregate(VColor.Black, (finalColor, color) => finalColor + color);
+
+            var reflectedColor = ComputeReflectedColor(comp, remainingReflections);
+            var refractedColor = ComputeRefractedColor(comp, remainingReflections);
+
+            var material = comp.Object.Material;
+            if (material.Reflective > 0 && material.Transparency > 0)
+            {
+                var reflectance = comp.GetSchlickReflectance();
+                return surfaceColor + reflectedColor * reflectance + refractedColor * (1 - reflectance);
+            }
+            else
+            {
+                return surfaceColor + reflectedColor + refractedColor;
+            }
+        }
 
         public Vector4 ComputeColor(Ray ray, int remainingReflections = 0)
         {
