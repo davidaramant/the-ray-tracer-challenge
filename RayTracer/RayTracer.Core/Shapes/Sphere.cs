@@ -16,7 +16,7 @@ namespace RayTracer.Core.Shapes
 
         public override string ToString() => Name;
 
-        public static Sphere CreateGlass() => new Sphere
+        public static Sphere CreateGlass(string name = null) => new Sphere(name)
         {
             Material =
             {

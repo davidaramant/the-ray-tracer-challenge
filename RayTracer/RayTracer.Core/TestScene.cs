@@ -23,6 +23,17 @@ namespace RayTracer.Core
                     Reflective = 0.1f,
                 },
             };
+            var water = new XZPlane("water")
+            {
+                Transform = CreateTranslation(0,0.25f,0),
+                Material =
+                {
+                    Color = VColor.LinearRGB(0,0,0.1f),
+                    Reflective = 0.4f,
+                    RefractiveIndex = 1.7f,
+                    Transparency = 0.9f,
+                }
+            };
             var rightWall = new XZPlane("right wall")
             {
                 Transform =
@@ -59,20 +70,15 @@ namespace RayTracer.Core
                     Diffuse = 0.7f,
                     Specular = 0.3f,
                     Reflective = 0.05f,
+                    Transparency = 0.3f,
+                    RefractiveIndex = 1.5f,
                 }
             };
-            var right = new Sphere("right")
-            {
-                Transform = CreateScale(0.5f, 0.5f, 0.5f) *
-                            CreateTranslation(1.5f, 0.5f, -0.5f),
-                Material =
-                {
-                    Color = VColor.Black,
-                    Diffuse = 0.7f,
-                    Specular = 0.3f,
-                    Reflective = 0.015f,
-                }
-            };
+            var right = Sphere.CreateGlass("right");
+            right.Transform = CreateScale(0.5f, 0.5f, 0.5f) *
+                              CreateTranslation(1.5f, 0.5f, -0.5f);
+            right.Material.Color = VColor.Black;
+
             var left = new Sphere("left")
             {
                 Transform = CreateScale(0.33f, 0.33f, 0.33f) *
@@ -80,16 +86,15 @@ namespace RayTracer.Core
                 Material =
                 {
                     Color = VColor.White,
-                    Ambient = 0.1f,
-                    Diffuse = 0.4f,
-                    Specular = 0,
-                    Reflective = 1
+                    //Ambient = 0.1f,
+                    //Diffuse = 0.4f,
+                    //Specular = 0,
                 }
             };
 
             return new World
             {
-                Objects = { floor, rightWall, leftWall, middle, right, left, },
+                Objects = { floor, water, rightWall, leftWall, middle, right, left, },
                 Lights =
                 {
                     new PointLight(CreatePoint(-10, 10, -10), VColor.LinearRGB(0.3f,0.3f,0.3f)),
