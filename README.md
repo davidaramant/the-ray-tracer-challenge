@@ -84,3 +84,8 @@ I don't know how to reason about why this is happening, so hopefully when planes
   * I tried to make "dynamic resolution" work (lowering quality when moving) but I ran into too many problems.  I think the concept of creating a brand new smaller rendering buffer isn't what I want anyway; ideally the chunky pixels should get filled in with more detail once you stop moving.  I'll come back to this.
   * I randomized the order that pixels are rendered, which is much more satisfying especially when moving.
   * I realized that my renderer right now is still built around making still images... If the world is continually updating too (stuff moving) then that won't work.  Making the rendering continuous would probably simplify a lot of stuff, albeit at the cost of potentially melting the CPU 🙂
+
+### Chapter 11 - Reflection and Refraction
+
+* *Man* that took forever. Not only was the chapter long, but I got bogged down with work and couldn't spend as much time with it, **plus** all the large refactorings above happened too.
+* The rendering speed is really starting to drop...  I was planning on doing an optimization pass closer to the end but it might be painful until then.
