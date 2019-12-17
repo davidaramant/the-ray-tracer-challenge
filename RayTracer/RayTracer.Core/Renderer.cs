@@ -12,13 +12,34 @@ namespace RayTracer.Core
     {
         public delegate void DrawPixel(int x, int y, Vector4 color);
 
-        public static Task TraceScene(
+        public static Task TraceSceneByRows(
             Camera camera,
             World world,
             DrawPixel drawPixel,
             int maximumReflections,
             CancellationToken cancelToken,
-            Action reportPixelRendered = null) =>
+            Action reportRowRendered) =>
+            Task.Factory.StartNew(() => Parallel.For(
+                0, camera.Dimensions.Height, 
+                new ParallelOptions{CancellationToken = cancelToken}, 
+                row =>
+                {
+                    for (int col = 0; col < camera.Dimensions.Width; col++)
+                    {
+                        var ray = camera.CreateRayForPixel(col, row);
+                        var color = world.ComputeColor(ray, maximumReflections);
+                        drawPixel(col, row, color);
+                    }
+
+                    reportRowRendered();
+                }));
+
+        public static Task TraceScene(
+            Camera camera,
+            World world,
+            DrawPixel drawPixel,
+            int maximumReflections,
+            CancellationToken cancelToken) =>
                 Task.Factory.StartNew(() =>
                 {
                     try
@@ -34,8 +55,6 @@ namespace RayTracer.Core
                                 var ray = camera.CreateRayForPixel(position.X, position.Y);
                                 var color = world.ComputeColor(ray, maximumReflections);
                                 drawPixel(position.X, position.Y, color);
-
-                                reportPixelRendered?.Invoke();
                             });
                     }
                     catch (OperationCanceledException)
