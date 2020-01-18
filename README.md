@@ -89,3 +89,8 @@ I don't know how to reason about why this is happening, so hopefully when planes
 
 * *Man* that took forever. Not only was the chapter long, but I got bogged down with work and couldn't spend as much time with it, **plus** all the large refactorings above happened too.
 * The rendering speed is really starting to drop...  I was planning on doing an optimization pass closer to the end but it might be painful until then.
+
+### Chapter 12 - Cubes
+
+* About a month's delay since I finished the last chapter.  I forgot a ton of context, but the chapter thankfully wasn't that hard.
+* Having the code look different than the pseudo code can make it really hard to come back to. It might be worth it to drop most of the object methods in favor of free functions like the book uses.

@@ -16,7 +16,7 @@ namespace RayTracer.Tests.SpecTests
     /// <summary>
     /// camera.feature
     /// </summary>
-        public class CameraTests
+    public class CameraTests
     {
         private static IOutputBuffer CreateMockBuffer(int width, int height)
         {
