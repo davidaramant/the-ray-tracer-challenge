@@ -5,15 +5,11 @@ using static System.MathF;
 
 namespace RayTracer.Core.Shapes
 {
-    public sealed class Cylinder : Shape
+    public sealed class Cylinder : Conic
     {
-        public string Name { get; }
-        public Cylinder(string name = null) => Name = name ?? "cylinder";
-        public override string ToString() => Name;
-
-        public float Minimum { get; set; } = float.NegativeInfinity;
-        public float Maximum { get; set; } = float.PositiveInfinity;
-        public bool Closed { get; set; } = false;
+        public Cylinder(string name = null) : base(name ?? "cylinder")
+        {
+        }
 
         public override List<Intersection> LocalIntersect(Ray localRay)
         {
@@ -33,7 +29,7 @@ namespace RayTracer.Core.Shapes
                 var disc = b * b - 4 * a * c;
                 if (disc < 0)
                 {
-                    return new List<Intersection>();
+                    return xs;
                 }
 
                 var t0 = (-b - Sqrt(disc)) / (2 * a);
@@ -56,15 +52,6 @@ namespace RayTracer.Core.Shapes
             IntersectCaps(localRay, xs);
 
             return xs;
-        }
-
-        private static bool CheckCap(Ray ray, float t)
-        {
-            var x = ray.Origin.X + t * ray.Direction.X;
-            var z = ray.Origin.Z + t * ray.Direction.Z;
-
-            // HACK: Add the tolerance here since two tests fail otherwise.  
-            return (x * x + z * z) <= (1 + Tolerance);
         }
 
         private void IntersectCaps(Ray ray, List<Intersection> xs)

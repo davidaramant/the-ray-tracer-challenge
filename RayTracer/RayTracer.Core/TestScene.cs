@@ -79,13 +79,13 @@ namespace RayTracer.Core
                               CreateTranslation(1.5f, 0.5f, -0.5f);
             right.Material.Color = VColor.Black;
 
-            var left = new Cylinder("left")
+            var left = new Cone("left")
             {
                 Closed = true,
-                Minimum = 1,
-                Maximum = 2,
-                Transform = CreateScale(0.33f, 0.33f, 0.33f) *
-                            CreateTranslation(-1.5f, 0.33f, -0.75f),
+                Minimum = -1,
+                Maximum = 1,
+                Transform = CreateScale(0.33f, 1, 0.33f) *
+                            CreateTranslation(-1.5f, 1, -0.75f),
                 Material =
                 {
                     Color = VColor.White,
