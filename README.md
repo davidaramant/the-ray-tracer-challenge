@@ -94,3 +94,7 @@ I don't know how to reason about why this is happening, so hopefully when planes
 
 * About a month's delay since I finished the last chapter.  I forgot a ton of context, but the chapter thankfully wasn't that hard.
 * Having the code look different than the pseudo code can make it really hard to come back to. It might be worth it to drop most of the object methods in favor of free functions like the book uses.
+
+### Chapter 13 - Cylinders and Cones
+
+* This was an extremely rough chapter.  I had nasty failures with both cylinders and cones that I _think_ are ultimately due to floating point error from using `float` instead of `double`.  Both were for fringe cases of intersecting with the edge of a cylinder and (I think) the middle point of the cone.  Even if they do ultimately show up in the visual output it should just be a pixel or two that's off, so who cares.  I'm more worried it will screw up the CSG chapter but that will probably be the same magnitude of error.
