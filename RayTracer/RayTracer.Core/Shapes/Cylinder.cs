@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using static System.MathF;
-using static RayTracer.Core.FloatExtensions;
 using static RayTracer.Core.Tuples;
+using static System.MathF;
 
 namespace RayTracer.Core.Shapes
 {

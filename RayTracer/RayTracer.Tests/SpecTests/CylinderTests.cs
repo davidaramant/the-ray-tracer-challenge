@@ -9,7 +9,6 @@ using FluentAssertions;
 using Xunit;
 using System.Numerics;
 using RayTracer.Core.Shapes;
-using SharpDX.DirectWrite;
 using static System.MathF;
 using static System.Numerics.Matrix4x4;
 using static System.Numerics.Vector4;
