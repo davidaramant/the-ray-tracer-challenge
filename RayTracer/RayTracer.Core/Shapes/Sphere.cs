@@ -2,6 +2,7 @@
 using System.Numerics;
 using static System.MathF;
 using static System.Numerics.Vector4;
+using static RayTracer.Core.Tuples;
 
 namespace RayTracer.Core.Shapes
 {
@@ -27,13 +28,6 @@ namespace RayTracer.Core.Shapes
 
         private bool SolveQuadratic(float a, float b, float c, ref float t0, ref float t1)
         {
-            void Swap(ref float one, ref float two)
-            {
-                var temp = one;
-                one = two;
-                two = temp;
-            }
-
             float discriminant = b * b - 4 * a * c;
             if (discriminant < 0)
             {

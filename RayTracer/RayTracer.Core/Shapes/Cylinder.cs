@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -10,6 +10,10 @@ namespace RayTracer.Core.Shapes
 {
     public sealed class Cylinder : Shape
     {
+        public string Name { get; }
+        public Cylinder(string name = null) => Name = name ?? "cylinder";
+        public override string ToString() => Name;
+
         public float Minimum { get; set; } = float.NegativeInfinity;
         public float Maximum { get; set; } = float.PositiveInfinity;
         public bool Closed { get; set; } = false;
@@ -23,8 +27,9 @@ namespace RayTracer.Core.Shapes
             if (!a.IsZero())
             {
 
-                var b = 2 * localRay.Origin.X * localRay.Direction.X +
-                        2 * localRay.Origin.Z * localRay.Direction.Z;
+                var b =
+                    2 * localRay.Origin.X * localRay.Direction.X +
+                    2 * localRay.Origin.Z * localRay.Direction.Z;
 
                 var c = localRay.Origin.X * localRay.Origin.X + localRay.Origin.Z * localRay.Origin.Z - 1;
 
@@ -37,8 +42,7 @@ namespace RayTracer.Core.Shapes
                 var t0 = (-b - Sqrt(disc)) / (2 * a);
                 var t1 = (-b + Sqrt(disc)) / (2 * a);
 
-
-
+                
                 var y0 = localRay.Origin.Y + t0 * localRay.Direction.Y;
                 if (Minimum < y0 && y0 < Maximum)
                 {
@@ -62,7 +66,8 @@ namespace RayTracer.Core.Shapes
             var x = ray.Origin.X + t * ray.Direction.X;
             var z = ray.Origin.Z + t * ray.Direction.Z;
 
-            return (x * x + z * z) <= 1;
+            // HACK: Add the tolerance here since two tests fail otherwise.  
+            return (x * x + z * z) <= (1 + Tolerance);
         }
 
         private void IntersectCaps(Ray ray, List<Intersection> xs)

@@ -12,6 +12,13 @@ namespace RayTracer.Core
 
         public static float Truncate(this float f) => MathF.Round(f, 4);
 
+        public static void Swap(ref float one, ref float two)
+        {
+            var temp = one;
+            one = two;
+            two = temp;
+        }
+
         public static bool IsEquivalentTo(this float a, float b) => System.MathF.Abs(a - b) < Tolerance;
 
         public static bool IsEquivalentTo(this Vector4 a, Vector4 b) =>
